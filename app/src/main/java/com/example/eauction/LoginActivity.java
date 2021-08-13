@@ -17,6 +17,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         transitionButton = findViewById(R.id.transition_button);
+
         transitionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
