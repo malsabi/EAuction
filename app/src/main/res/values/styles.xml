@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="TextInputLayoutStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+        <item name="colorAccent">@color/PrimaryPeachyColor</item>
+        <item name="colorControlNormal">@color/PrimaryPeachyColor</item>
+        <item name="colorControlActivated">@color/PrimaryPeachyColor</item>
+        <item name="colorPrimary">@color/PrimaryPeachyColor</item> // Activated State
+        <item name="colorOnSurface">@color/PrimaryPeachyColor</item> // Normal State
+    </style>
+
+</resources>

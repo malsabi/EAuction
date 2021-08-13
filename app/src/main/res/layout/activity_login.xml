@@ -6,78 +6,120 @@
     android:layout_height="match_parent"
     tools:context=".LoginActivity">
 
+
     <TextView
         android:id="@+id/TvLogin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Log In"
+        android:text="@string/log_in"
         android:textColor="#000"
         android:textSize="32sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/guidelineH2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/guidelineH1"
+        app:layout_constraintVertical_bias="0.051" />
 
+    <TextView
+        android:id="@+id/tvLogin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/sign_up"
+        android:textColor="@color/PrimaryRedColor"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/guidelineH2"
+        app:layout_constraintEnd_toStartOf="@+id/guideline2"
+        app:layout_constraintStart_toStartOf="@+id/guideline1"
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayout"
+        app:layout_constraintVertical_bias="0.152" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.1"  />
+        app:layout_constraintGuide_percent="0.1" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.9"  />
+        app:layout_constraintGuide_percent="0.9" />
 
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/EtEmailLoginFloatLabel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:background="@android:color/transparent"
+        android:theme="@style/TextInputLayoutStyle"
         app:layout_constraintEnd_toStartOf="@+id/guideline2"
         app:layout_constraintStart_toStartOf="@+id/guideline1"
-        app:layout_constraintTop_toBottomOf="@+id/TvLogin"
-        android:background="@android:color/transparent"
-        android:id="@+id/EtEmailLoginFloatLabel"
-        >
+        app:layout_constraintTop_toBottomOf="@+id/TvLogin">
 
         <EditText
             android:id="@+id/EtEmailLogin"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:ems="10"
-            android:hint="Email"
-            android:inputType="textEmailAddress"
             android:background="@android:color/transparent"
-            />
+            android:ems="10"
+            android:hint="@string/email"
+            android:inputType="textEmailAddress" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textInputLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:background="@android:color/transparent"
         app:layout_constraintEnd_toStartOf="@+id/guideline2"
         app:layout_constraintStart_toStartOf="@+id/guideline1"
         app:layout_constraintTop_toBottomOf="@+id/EtEmailLoginFloatLabel"
-        android:background="@android:color/transparent"
+        android:theme="@style/TextInputLayoutStyle"
         >
 
         <EditText
             android:id="@+id/EtPasswordLogin"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:ems="10"
-            android:hint="Password"
-            android:inputType="textPassword"
             android:background="@android:color/transparent"
-            />
+            android:ems="10"
+            android:hint="@string/password"
+            android:inputType="textPassword" />
 
     </com.google.android.material.textfield.TextInputLayout>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineH1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.2" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineH2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.8" />
+
+    <com.royrodriguez.transitionbutton.TransitionButton
+        android:id="@+id/transition_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Login"
+        android:textColor="@android:color/white"
+        app:defaultColor="@color/PrimaryRedColor"
+        app:layout_constraintBottom_toTopOf="@+id/guidelineH2"
+        app:layout_constraintEnd_toStartOf="@+id/guideline2"
+        app:layout_constraintHorizontal_bias="0.51"
+        app:layout_constraintStart_toStartOf="@+id/guideline1"
+        app:loaderColor="@android:color/white" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
