@@ -67,7 +67,8 @@
             android:background="@android:color/transparent"
             android:ems="10"
             android:hint="@string/email"
-            android:inputType="textEmailAddress" />
+            android:inputType="textEmailAddress"
+            android:autofillHints="Must write the email address" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -90,7 +91,8 @@
             android:background="@android:color/transparent"
             android:ems="10"
             android:hint="@string/password"
-            android:inputType="textPassword" />
+            android:inputType="textPassword"
+            android:autofillHints="Must write the password" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -112,7 +114,7 @@
         android:id="@+id/transition_button"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Login"
+        android:text="@string/LoginButtonText"
         android:textColor="@android:color/white"
         app:defaultColor="@color/PrimaryRedColor"
         app:layout_constraintBottom_toTopOf="@+id/guidelineH2"

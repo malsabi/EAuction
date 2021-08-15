@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 
 import com.royrodriguez.transitionbutton.TransitionButton;
 
@@ -17,13 +18,8 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         transitionButton = findViewById(R.id.transition_button);
-
-        transitionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                transitionButton.startAnimation();
-            }
-        });
-
+        transitionButton.setOnClickListener(view ->
+                transitionButton.startAnimation()
+        );
     }
 }
