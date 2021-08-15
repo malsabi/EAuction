@@ -7,5 +7,4 @@
         <item name="colorPrimary">@color/PrimaryPeachyColor</item> // Activated State
         <item name="colorOnSurface">@color/PrimaryPeachyColor</item> // Normal State
     </style>
-
 </resources>
