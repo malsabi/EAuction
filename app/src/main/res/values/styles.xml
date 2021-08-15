@@ -8,4 +8,8 @@
         <item name="colorOnSurface">@color/PrimaryPeachyColor</item> // Normal State
     </style>
 
+    <style name="DialogTheme" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorAccent">@color/PrimaryPeachyColor</item>
+    </style>
+
 </resources>

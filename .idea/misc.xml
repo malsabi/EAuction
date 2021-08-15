@@ -3,7 +3,9 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/moham/AndroidStudioProjects/EAuction/app/src/main/res/drawable/profile_picture_vec.xml" value="0.5055555555555555" />
         <entry key="..\:/Users/moham/AndroidStudioProjects/EAuction/app/src/main/res/layout/activity_login.xml" value="0.5546875" />
+        <entry key="..\:/Users/moham/AndroidStudioProjects/EAuction/app/src/main/res/layout/activity_signup.xml" value="0.4003623188405797" />
       </map>
     </option>
   </component>

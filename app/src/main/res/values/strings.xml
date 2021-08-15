@@ -4,4 +4,12 @@
     <string name="email">Email</string>
     <string name="sign_up"><u>Sign Up</u></string>
     <string name="log_in">Log In</string>
+    <string name="first_name">First Name</string>
+    <string name="second_name">Second Name</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="birth_date">Birth Date</string>
+    <string name="female">Female</string>
+    <string name="male">Male</string>
+    <string name="ssn">SSN</string>
+    <string name="sign_up_noUL">Sign up</string>
 </resources>
