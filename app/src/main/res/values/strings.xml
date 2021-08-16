@@ -13,4 +13,15 @@
     <string name="male">Male</string>
     <string name="ssn">SSN</string>
     <string name="sign_up_noUL">Sign up</string>
+    <string name="home">Home</string>
+    <string name="auctions">Auctions</string>
+    <string name="my_properties">My Properties</string>
+    <string name="about_us">About us</string>
+    <string name="terms_amp_conditions"><![CDATA[Terms & Conditions]]></string>
+    <string name="contact_us">Contact Us</string>
+    <string name="default_name">Default Name</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

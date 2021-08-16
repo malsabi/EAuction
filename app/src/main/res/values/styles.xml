@@ -12,4 +12,9 @@
         <item name="colorAccent">@color/PrimaryPeachyColor</item>
     </style>
 
+    <style name="Theme.Design.NoActionBar" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+            <item name="windowActionBar">false</item>
+            <item name="windowNoTitle">true</item>
+            <item name="android:statusBarColor">@color/PrimaryPeachyColor</item>
+    </style>
 </resources>

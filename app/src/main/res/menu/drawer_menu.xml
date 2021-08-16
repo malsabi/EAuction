@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/dm_home"
+            android:icon="@drawable/ic_home"
+            android:title="@string/home"
+
+            />
+
+        <item
+            android:id="@+id/dm_auctions"
+            android:icon="@drawable/ic_auction"
+            android:title="@string/auctions"
+
+            />
+
+        <item
+            android:id="@+id/dm_myproperties"
+            android:icon="@drawable/ic_myproperties"
+            android:title="@string/my_properties"
+
+            />
+
+        <item
+            android:id="@+id/dm_aboutus"
+            android:icon="@drawable/ic_aboutus"
+            android:title="@string/about_us"
+
+            />
+
+        <item
+            android:id="@+id/dm_terms"
+            android:icon="@drawable/ic_termsandconditions"
+            android:title="@string/terms_amp_conditions"
+
+            />
+
+        <item
+            android:id="@+id/dm_contactus"
+            android:icon="@drawable/ic_contactus"
+            android:title="@string/contact_us"
+
+            />
+    </group>
+
+</menu>

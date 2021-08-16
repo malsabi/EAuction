@@ -17,12 +17,21 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class SignUpActivity extends AppCompatActivity
 {
 
-    private EditText PhoneNumberEt;
-    private EditText EtDOBSignup;
-    private EditText EtSSNSignup;
+    @BindView(R.id.EtPhoneNumberSignup)
+    EditText PhoneNumberEt;
+
+    @BindView(R.id.EtDOBSignup)
+    EditText EtDOBSignup;
+
+    @BindView(R.id.EtSSNignup)
+    EditText EtSSNSignup;
+
     String lastChar = " ";
     String lastCharSSN = " ";
     Calendar myCalendar;
@@ -31,9 +40,9 @@ public class SignUpActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
+        ButterKnife.bind(this);
 
-        //Phone Number Mask Input
-        PhoneNumberEt = findViewById(R.id.EtPhoneNumberSignup);
+        //region PhoneNumber TextWatcher
         PhoneNumberEt.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -58,11 +67,12 @@ public class SignUpActivity extends AppCompatActivity
 
             }
         });
+        //endregion
 
-        //DatePicker Event DOB
+        //region DatePicker Event DOB
         myCalendar = Calendar.getInstance();
 
-        EtDOBSignup= findViewById(R.id.EtDOBSignup);
+
         DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
 
             @Override
@@ -90,9 +100,9 @@ public class SignUpActivity extends AppCompatActivity
                 dp.getButton(DatePickerDialog.BUTTON_POSITIVE).setBackgroundColor(Color.WHITE);
             }
         });
+        //endregion
 
-
-        //Textwatcher for the SSN 784-1998-XXXXXXXX
+        //region Textwatcher for the SSN 784-1998-XXXXXXXX
         EtSSNSignup = findViewById(R.id.EtSSNignup);
         EtSSNSignup.addTextChangedListener(new TextWatcher() {
             @Override
@@ -118,9 +128,10 @@ public class SignUpActivity extends AppCompatActivity
 
             }
         });
-
+        //endregion
     }
 
+    //Updates text in DOB after selection
     private void updateLabel() {
         String myFormat = "dd/MM/yyyy"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
