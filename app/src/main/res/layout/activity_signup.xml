@@ -35,7 +35,7 @@
         app:layout_constraintGuide_percent="0.95" />
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/profile_image"
+        android:id="@+id/ProfileImage"
         android:layout_width="96dp"
         android:layout_height="96dp"
         android:src="@drawable/profile_picture_vec"
@@ -54,7 +54,7 @@
         app:layout_constraintBottom_toTopOf="@+id/guideline5"
         app:layout_constraintEnd_toStartOf="@+id/EtLastNameFloatLabel"
         app:layout_constraintStart_toStartOf="@+id/guideline"
-        app:layout_constraintTop_toBottomOf="@+id/profile_image"
+        app:layout_constraintTop_toBottomOf="@+id/ProfileImage"
         app:layout_constraintVertical_bias="0.05"
         app:layout_constraintHorizontal_bias="0"
         android:paddingEnd="4dp"
@@ -81,7 +81,7 @@
         android:theme="@style/TextInputLayoutStyle"
         app:layout_constraintBottom_toTopOf="@+id/guideline5"
         app:layout_constraintEnd_toStartOf="@+id/guideline3"
-        app:layout_constraintTop_toBottomOf="@+id/profile_image"
+        app:layout_constraintTop_toBottomOf="@+id/ProfileImage"
         app:layout_constraintVertical_bias="0.05"
         android:paddingStart="4dp"
         >
@@ -212,7 +212,7 @@
         >
 
         <RadioButton
-            android:id="@+id/radio1"
+            android:id="@+id/MaleRadioBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -224,7 +224,7 @@
             />
 
         <RadioButton
-            android:id="@+id/radio2"
+            android:id="@+id/FemaleRadioBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -246,7 +246,7 @@
         >
 
         <EditText
-            android:id="@+id/EtSSNignup"
+            android:id="@+id/EtSSNSignup"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@android:color/transparent"

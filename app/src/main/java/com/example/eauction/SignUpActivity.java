@@ -3,7 +3,6 @@ package com.example.eauction;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
-import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
@@ -29,7 +28,7 @@ public class SignUpActivity extends AppCompatActivity
     @BindView(R.id.EtDOBSignup)
     EditText EtDOBSignup;
 
-    @BindView(R.id.EtSSNignup)
+    @BindView(R.id.EtSSNSignup)
     EditText EtSSNSignup;
 
     String lastChar = " ";
@@ -37,7 +36,8 @@ public class SignUpActivity extends AppCompatActivity
     Calendar myCalendar;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
         ButterKnife.bind(this);
@@ -45,26 +45,32 @@ public class SignUpActivity extends AppCompatActivity
         //region PhoneNumber TextWatcher
         PhoneNumberEt.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            public void beforeTextChanged(CharSequence s, int start, int count, int after)
+            {
                 int digits = PhoneNumberEt.getText().toString().length();
                 if (digits > 1)
+                {
                     lastChar = PhoneNumberEt.getText().toString().substring(digits-1);
+                }
             }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            public void onTextChanged(CharSequence s, int start, int before, int count)
+            {
                 int digits = PhoneNumberEt.getText().toString().length();
                 Log.d("LENGTH",""+digits);
-                if (!lastChar.equals("-")) {
-                    if (digits == 3 || digits == 7) {
+                if (!lastChar.equals("-"))
+                {
+                    if (digits == 3 || digits == 7)
+                    {
                         PhoneNumberEt.append("-");
                     }
                 }
             }
 
             @Override
-            public void afterTextChanged(Editable s) {
-
+            public void afterTextChanged(Editable s)
+            {
             }
         });
         //endregion
@@ -76,9 +82,8 @@ public class SignUpActivity extends AppCompatActivity
         DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
 
             @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear,
-                                  int dayOfMonth) {
-                // TODO Auto-generated method stub
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth)
+            {
                 myCalendar.set(Calendar.YEAR, year);
                 myCalendar.set(Calendar.MONTH, monthOfYear);
                 myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
@@ -87,14 +92,12 @@ public class SignUpActivity extends AppCompatActivity
 
         };
 
-        EtDOBSignup.setOnClickListener(new View.OnClickListener() {
+        EtDOBSignup.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
-                // TODO Auto-generated method stub
-                DatePickerDialog dp = new DatePickerDialog(SignUpActivity.this,R.style.DialogTheme, date, myCalendar
-                        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                        myCalendar.get(Calendar.DAY_OF_MONTH));
-
+            public void onClick(View v)
+            {
+                DatePickerDialog dp = new DatePickerDialog(SignUpActivity.this, R.style.DialogTheme, date, myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH));
                 dp.show();
                 dp.getButton(DatePickerDialog.BUTTON_NEGATIVE).setBackgroundColor(Color.WHITE);
                 dp.getButton(DatePickerDialog.BUTTON_POSITIVE).setBackgroundColor(Color.WHITE);
@@ -103,39 +106,42 @@ public class SignUpActivity extends AppCompatActivity
         //endregion
 
         //region Textwatcher for the SSN 784-1998-XXXXXXXX
-        EtSSNSignup = findViewById(R.id.EtSSNignup);
         EtSSNSignup.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            public void beforeTextChanged(CharSequence s, int start, int count, int after)
+            {
                 int digits = EtSSNSignup.getText().toString().length();
                 if (digits > 1)
-                    lastCharSSN = EtSSNSignup.getText().toString().substring(digits-1);
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                int digits = EtSSNSignup.getText().toString().length();
-                Log.d("LENGTH",""+digits);
-                if (!lastCharSSN.equals("-")) {
-                    if (digits == 3 || digits == 8|| digits == 16) {
-                        EtSSNSignup.append("-");
-                    }
+                {
+                    lastCharSSN = EtSSNSignup.getText().toString().substring(digits - 1);
                 }
             }
 
             @Override
-            public void afterTextChanged(Editable s) {
-
+            public void onTextChanged(CharSequence s, int start, int before, int count)
+            {
+                int digits = EtSSNSignup.getText().toString().length();
+                Log.d("LENGTH",""+digits);
+                if (!lastCharSSN.equals("-"))
+                {
+                    if (digits == 3 || digits == 8|| digits == 16)
+                    {
+                        EtSSNSignup.append("-");
+                    }
+                }
+            }
+            @Override
+            public void afterTextChanged(Editable s)
+            {
             }
         });
         //endregion
     }
 
-    //Updates text in DOB after selection
-    private void updateLabel() {
-        String myFormat = "dd/MM/yyyy"; //In which you need put here
+    private void updateLabel()
+    {
+        String myFormat = "dd/MM/yyyy";
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
-
         EtDOBSignup.setText(sdf.format(myCalendar.getTime()));
     }
 }
