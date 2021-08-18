@@ -10,6 +10,7 @@ public class Telemetry
     private String auctionStart;
     private String auctionEnd;
     private String details;
+    private String iD;
 
     //region Constructor
     public Telemetry()
@@ -20,6 +21,7 @@ public class Telemetry
         auctionStart = "";
         auctionEnd = "";
         details = "";
+        iD = "";
     }
     //endregion
     //region Setters
@@ -47,6 +49,7 @@ public class Telemetry
     {
         this.details = details;
     }
+    public void setID(String iD) {this.iD = iD;}
     //endregion
     //region Getters
     public StatusEnum getStatus()
@@ -72,6 +75,10 @@ public class Telemetry
     public String getDetails()
     {
         return details;
+    }
+    public String getID()
+    {
+        return iD;
     }
     //endregion
 }

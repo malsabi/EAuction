@@ -7,6 +7,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.app.Activity;
+import android.app.Application;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.MenuItem;
@@ -27,24 +29,28 @@ import butterknife.ButterKnife;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     @BindView(R.id.BtnSignoutDrawer)
-    TransitionButton TBtnSignout;
+    private TransitionButton TBtnSignout;
 
     @BindView(R.id.toolbar)
-    Toolbar toolbar;
+    private Toolbar toolbar;
 
     @BindView(R.id.drawerLayout)
-    DrawerLayout drawerLayout;
+    private DrawerLayout drawerLayout;
 
     @BindView(R.id.nav_view) //Placeholder for fragments
-    NavigationView navigationView;
+    private NavigationView navigationView;
+
+    private App AppInstance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
-        ButterKnife.bind(this); //Butterknife binding Method
-        setSupportActionBar(toolbar); //Toolbar binding Method(For custom side menu ;D )
+
+        AppInstance = (App)getApplication();
+
+        ButterKnife.bind(this); //ButterKnife binding Method
+        setSupportActionBar(toolbar); //Toolbar binding Method(For custom side menu)
 
         navigationView.setNavigationItemSelectedListener(this); //Attaching Listener to Selected Item
 
@@ -53,33 +59,37 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.navigation_drawer_open,R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
-
         //endregion
 
 
-        if(savedInstanceState == null){ //Prevents fragment from getting destroyed
+        if(savedInstanceState == null)
+        {
+            //Prevents fragment from getting destroyed
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit(); //Default Fragment
             navigationView.setCheckedItem(R.id.dm_home);
         }
-
     }
 
     @Override
-    public void onBackPressed() {
-
+    public void onBackPressed()
+    {
         //Tiny Handle If the user makes a back while the menu is open
-        if(drawerLayout.isDrawerOpen(GravityCompat.START)){
+        if(drawerLayout.isDrawerOpen(GravityCompat.START))
+        {
             drawerLayout.closeDrawer(GravityCompat.START);
         }
-        else{
+        else
+        {
             super.onBackPressed();
         }
     }
 
     //Handles menu selection
     @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
+    public boolean onNavigationItemSelected(@NonNull MenuItem item)
+    {
+        switch (item.getItemId())
+        {
             case R.id.dm_home:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
                 break;
@@ -99,7 +109,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ContactUsFragment()).commit();
                 break;
         }
-
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
