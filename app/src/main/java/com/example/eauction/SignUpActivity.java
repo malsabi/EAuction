@@ -1,39 +1,69 @@
 package com.example.eauction;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.View;
-import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.Toast;
 
+import com.example.eauction.Interfaces.RegisterUserCallback;
+import com.example.eauction.Models.FireStoreResult;
+import com.example.eauction.Models.User;
+import com.royrodriguez.transitionbutton.TransitionButton;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class SignUpActivity extends AppCompatActivity
 {
+    //region Binding Controls
+    @BindView(R.id.ProfileImage)
+    ImageView ProfileImage;
+
+    @BindView(R.id.EtFirstNameSignup)
+    EditText FirstNameEditText;
+
+    @BindView(R.id.EtLastNameSignup)
+    EditText LastNameEditText;
+
+    @BindView(R.id.EtEmailSignup)
+    EditText EmailEditText;
 
     @BindView(R.id.EtPhoneNumberSignup)
-    EditText PhoneNumberEt;
+    EditText PhoneNumberEditText;
+
+    @BindView(R.id.EtPasswordSignup)
+    EditText PasswordEditText;
 
     @BindView(R.id.EtDOBSignup)
-    EditText EtDOBSignup;
+    EditText DayOfBirthEditText;
+
+    @BindView(R.id.MaleRadioBtn)
+    RadioButton MaleRadioButton;
+
+    @BindView(R.id.FemaleRadioBtn)
+    RadioButton FemaleRadioButton;
 
     @BindView(R.id.EtSSNSignup)
-    EditText EtSSNSignup;
+    EditText SSNEditText;
 
-    String lastChar = " ";
-    String lastCharSSN = " ";
-    Calendar myCalendar;
+    @BindView(R.id.BtnSignup)
+    TransitionButton SignUpButton;
+    //endregion
+
+    private String LastChar = " ";
+    private String LastCharSSN = " ";
+    private Calendar MyCalendar = null;
+    private App AppInstance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -42,91 +72,79 @@ public class SignUpActivity extends AppCompatActivity
         setContentView(R.layout.activity_signup);
         ButterKnife.bind(this);
 
+        AppInstance = (App)getApplication();
+
         //region PhoneNumber TextWatcher
-        PhoneNumberEt.addTextChangedListener(new TextWatcher() {
+        PhoneNumberEditText.addTextChangedListener(new TextWatcher()
+        {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after)
             {
-                int digits = PhoneNumberEt.getText().toString().length();
+                int digits = PhoneNumberEditText.getText().toString().length();
                 if (digits > 1)
                 {
-                    lastChar = PhoneNumberEt.getText().toString().substring(digits-1);
+                    LastChar = PhoneNumberEditText.getText().toString().substring(digits-1);
                 }
             }
-
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count)
             {
-                int digits = PhoneNumberEt.getText().toString().length();
+                int digits = PhoneNumberEditText.getText().toString().length();
                 Log.d("LENGTH",""+digits);
-                if (!lastChar.equals("-"))
+                if (!LastChar.equals("-"))
                 {
                     if (digits == 3 || digits == 7)
                     {
-                        PhoneNumberEt.append("-");
+                        PhoneNumberEditText.append("-");
                     }
                 }
             }
-
             @Override
             public void afterTextChanged(Editable s)
             {
             }
         });
         //endregion
-
         //region DatePicker Event DOB
-        myCalendar = Calendar.getInstance();
-
-
-        DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
-
-            @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth)
-            {
-                myCalendar.set(Calendar.YEAR, year);
-                myCalendar.set(Calendar.MONTH, monthOfYear);
-                myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                updateLabel();
-            }
-
-        };
-
-        EtDOBSignup.setOnClickListener(new View.OnClickListener()
+        MyCalendar = Calendar.getInstance();
+        DatePickerDialog.OnDateSetListener date = (view, year, monthOfYear, dayOfMonth) ->
         {
-            @Override
-            public void onClick(View v)
-            {
-                DatePickerDialog dp = new DatePickerDialog(SignUpActivity.this, R.style.DialogTheme, date, myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH));
-                dp.show();
-                dp.getButton(DatePickerDialog.BUTTON_NEGATIVE).setBackgroundColor(Color.WHITE);
-                dp.getButton(DatePickerDialog.BUTTON_POSITIVE).setBackgroundColor(Color.WHITE);
-            }
+            MyCalendar.set(Calendar.YEAR, year);
+            MyCalendar.set(Calendar.MONTH, monthOfYear);
+            MyCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+            UpdateLabel();
+        };
+        DayOfBirthEditText.setOnClickListener(v ->
+        {
+            DatePickerDialog dp = new DatePickerDialog(SignUpActivity.this, R.style.DialogTheme, date, MyCalendar.get(Calendar.YEAR), MyCalendar.get(Calendar.MONTH), MyCalendar.get(Calendar.DAY_OF_MONTH));
+            dp.show();
+            dp.getButton(DatePickerDialog.BUTTON_NEGATIVE).setBackgroundColor(Color.WHITE);
+            dp.getButton(DatePickerDialog.BUTTON_POSITIVE).setBackgroundColor(Color.WHITE);
         });
         //endregion
-
-        //region Textwatcher for the SSN 784-1998-XXXXXXXX
-        EtSSNSignup.addTextChangedListener(new TextWatcher() {
+        //region SSN TextWatcher
+        SSNEditText.addTextChangedListener(new TextWatcher()
+        {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after)
             {
-                int digits = EtSSNSignup.getText().toString().length();
+                int digits = SSNEditText.getText().toString().length();
                 if (digits > 1)
                 {
-                    lastCharSSN = EtSSNSignup.getText().toString().substring(digits - 1);
+                    LastCharSSN = SSNEditText.getText().toString().substring(digits - 1);
                 }
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count)
             {
-                int digits = EtSSNSignup.getText().toString().length();
+                int digits = SSNEditText.getText().toString().length();
                 Log.d("LENGTH",""+digits);
-                if (!lastCharSSN.equals("-"))
+                if (!LastCharSSN.equals("-"))
                 {
                     if (digits == 3 || digits == 8|| digits == 16)
                     {
-                        EtSSNSignup.append("-");
+                        SSNEditText.append("-");
                     }
                 }
             }
@@ -136,13 +154,63 @@ public class SignUpActivity extends AppCompatActivity
             }
         });
         //endregion
-    }
 
-    private void updateLabel()
+        ProfileImage.setOnClickListener(v ->
+        {
+            HandleUserImage();
+        });
+        SignUpButton.setOnClickListener(v ->
+        {
+            HandleSignUpUser();
+        });
+    }
+    private void UpdateLabel()
     {
         String myFormat = "dd/MM/yyyy";
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
-        EtDOBSignup.setText(sdf.format(myCalendar.getTime()));
+        DayOfBirthEditText.setText(sdf.format(MyCalendar.getTime()));
+    }
+    private void HandleUserImage()
+    {
+    }
+    private void HandleSignUpUser()
+    {
+        SignUpButton.startAnimation();
+
+        User UserObj = new User();
+        UserObj.setFirstName(FirstNameEditText.getText().toString());
+        UserObj.setLastName(LastNameEditText.getText().toString());
+        UserObj.setPhoneNumber(PhoneNumberEditText.getText().toString());
+        UserObj.setPassword(PasswordEditText.getText().toString());
+        UserObj.setEmail(EmailEditText.getText().toString());
+        UserObj.setDate(DayOfBirthEditText.getText().toString());
+        UserObj.setGender(MaleRadioButton.isChecked() ? "Male" : "Female");
+        UserObj.setSsn(SSNEditText.getText().toString());
+
+        AppInstance.GetFireStoreInstance().RegisterUser(new RegisterUserCallback()
+        {
+            @Override
+            public void onCallback(FireStoreResult Result)
+            {
+                if (Result.isSuccess()) {
+                    Toast.makeText(SignUpActivity.this, Result.getMessage(), Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(SignUpActivity.this, LoginActivity.class));
+                    finish();
+                }
+                else
+                    {
+                    int resID = getResources().getIdentifier(Result.getTitle(), "id", getPackageName());
+                    if (resID != 0) {
+                        EditText InvalidControl = findViewById(resID);
+                        InvalidControl.setError(Result.getMessage());
+                    } else
+                        {
+                        Toast.makeText(SignUpActivity.this, Result.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+                Log.d("TAG", "Finished from registerUser");
+                SignUpButton.stopAnimation(TransitionButton.StopAnimationStyle.SHAKE, null);
+            }
+        }, UserObj);
     }
 }
-

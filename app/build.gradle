@@ -1,5 +1,6 @@
 plugins {
     id 'com.android.application'
+    id 'com.google.gms.google-services'
 }
 
 android {
@@ -28,21 +29,29 @@ android {
     }
 }
 
-dependencies {
-
-    implementation 'androidx.appcompat:appcompat:1.1.0'
+dependencies
+{
+    //region Android Libraries
+    implementation 'androidx.appcompat:appcompat:1.3.1'
     implementation 'com.google.android.material:material:1.1.0'
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-
+    //endregion
+    //region Controls Library
     implementation 'com.royrodriguez:transitionbutton:0.2.0' //Loading Button
     implementation 'de.hdodenhof:circleimageview:3.1.0' //Circular ImageView
-
-    implementation 'com.jakewharton:butterknife:10.2.3' //Butterknife
-    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.3' //Butterknife
-
-
+    //endregion
+    //region ButterKnife
+    implementation 'com.jakewharton:butterknife:10.2.3'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.3'
+    //endregion
+    //region FireBase
+    implementation("io.grpc:grpc-okhttp:1.32.2")
+    implementation platform('com.google.firebase:firebase-bom:28.3.1')
+    implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.google.firebase:firebase-firestore'
+    //endregion
 }

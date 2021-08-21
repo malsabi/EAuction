@@ -50,15 +50,13 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
+        android:paddingEnd="4dp"
         android:theme="@style/TextInputLayoutStyle"
         app:layout_constraintBottom_toTopOf="@+id/guideline5"
         app:layout_constraintEnd_toStartOf="@+id/EtLastNameFloatLabel"
         app:layout_constraintStart_toStartOf="@+id/guideline"
         app:layout_constraintTop_toBottomOf="@+id/ProfileImage"
-        app:layout_constraintVertical_bias="0.05"
-        app:layout_constraintHorizontal_bias="0"
-        android:paddingEnd="4dp"
-        >
+        app:layout_constraintVertical_bias="0.05">
 
         <EditText
             android:id="@+id/EtFirstNameSignup"
@@ -66,7 +64,7 @@
             android:layout_height="match_parent"
             android:background="@android:color/transparent"
             android:ems="10"
-            android:hint="@string/first_name"
+            android:hint="First Name"
             android:inputType="text"
 
             />
@@ -194,7 +192,7 @@
             android:cursorVisible="false"
             android:focusable="false"
             android:focusableInTouchMode="false"
-             />
+            />
 
     </com.google.android.material.textfield.TextInputLayout>
 

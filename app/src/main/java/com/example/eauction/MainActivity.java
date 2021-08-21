@@ -21,6 +21,7 @@ import com.example.eauction.Fragments.HomeFragment;
 import com.example.eauction.Fragments.MyPropertiesFragment;
 import com.example.eauction.Fragments.TermsCondFragment;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.FirebaseApp;
 import com.royrodriguez.transitionbutton.TransitionButton;
 
 import butterknife.BindView;
@@ -29,21 +30,22 @@ import butterknife.ButterKnife;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     @BindView(R.id.BtnSignoutDrawer)
-    private TransitionButton TBtnSignout;
+    TransitionButton TBtnSignout;
 
     @BindView(R.id.toolbar)
-    private Toolbar toolbar;
+    Toolbar toolbar;
 
     @BindView(R.id.drawerLayout)
-    private DrawerLayout drawerLayout;
+    DrawerLayout drawerLayout;
 
     @BindView(R.id.nav_view) //Placeholder for fragments
-    private NavigationView navigationView;
+    NavigationView navigationView;
 
     private App AppInstance;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
