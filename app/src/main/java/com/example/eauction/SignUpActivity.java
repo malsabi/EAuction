@@ -138,11 +138,10 @@ public class SignUpActivity extends AppCompatActivity
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count)
             {
-                int digits = SSNEditText.getText().toString().length();
-                Log.d("LENGTH",""+digits);
+                int characters = SSNEditText.getText().toString().length();
                 if (!LastCharSSN.equals("-"))
                 {
-                    if (digits == 3 || digits == 8|| digits == 16)
+                    if (characters == 3 || characters == 6)
                     {
                         SSNEditText.append("-");
                     }

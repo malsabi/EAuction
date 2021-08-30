@@ -28,8 +28,8 @@ public class FireStoreManager
     {
         FireStoreResult Result = new FireStoreResult();
         UserValidation Validation = new UserValidation();
-        ValidationResult UserValidationResult = Validation.ValidateٌRegister(UserObj);
-        if (UserValidationResult.isSuccess() == false)
+        ValidationResult UserValidationResult = Validation.ValidateRegister(UserObj);
+        if (!UserValidationResult.isSuccess())
         {
             Result.setSuccess(false);
             Result.setTitle(UserValidationResult.getTitle());
@@ -89,6 +89,7 @@ public class FireStoreManager
                         Result.setSuccess(true);
                         Result.setTitle("Success");
                         Result.setMessage("User successfully logged in");
+                        //handle isActive = true
                     }
                     else
                     {

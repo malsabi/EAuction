@@ -15,6 +15,7 @@ public class User
     private String ssn;
     private String profilePicture;
     private List<Telemetry> ownedTelemetry;
+    private boolean isActive;
 
     //region Constructors
     public User()
@@ -30,9 +31,11 @@ public class User
         this.ssn = "";
         this.profilePicture = "";
         this.ownedTelemetry = null;
+        this.isActive = false;
     }
 
-    public User(String firstName, String lastName, String email, String phoneNumber, String password, String date, String gender, String nationality, String ssn, String profilePicture, List<Telemetry> ownedTelemetry) {
+    public User(String firstName, String lastName, String email, String phoneNumber, String password, String date, String gender, String nationality, String ssn, String profilePicture, List<Telemetry> ownedTelemetry, boolean isActive)
+    {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -44,6 +47,7 @@ public class User
         this.ssn = ssn;
         this.profilePicture = profilePicture;
         this.ownedTelemetry = ownedTelemetry;
+        this.isActive = isActive;
     }
     //endregion
     //region Setters
@@ -91,6 +95,10 @@ public class User
     {
         this.ownedTelemetry = ownedTelemetry;
     }
+    public void setActive(boolean active)
+    {
+        isActive = active;
+    }
     //endregion
     //region Getters
     public String getFirstName()
@@ -136,6 +144,10 @@ public class User
     public List<Telemetry> getOwnedTelemetry()
     {
         return ownedTelemetry;
+    }
+    public void getActive(boolean active)
+    {
+        isActive = active;
     }
     //endregion
 }

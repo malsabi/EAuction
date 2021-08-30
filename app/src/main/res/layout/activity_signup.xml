@@ -251,9 +251,8 @@
             android:ems="10"
             android:hint="@string/ssn"
             android:inputType="phone"
-            android:paddingBottom="8dp"
-            android:maxLength="18"
-            />
+            android:maxLength="10"
+            android:paddingBottom="8dp" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
