@@ -10,9 +10,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.eauction.Interfaces.GetUserInformationCallback;
 import com.example.eauction.Interfaces.SignInUserCallback;
 import com.example.eauction.Models.FireStoreResult;
 import com.example.eauction.Models.SignIn;
+import com.example.eauction.Models.User;
+import com.example.eauction.Utilities.PreferenceUtils;
+import com.google.gson.Gson;
 import com.royrodriguez.transitionbutton.TransitionButton;
 
 import butterknife.BindView;
@@ -38,7 +42,9 @@ public class LoginActivity extends AppCompatActivity
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
         AppInstance = (App)getApplication();
+
         CheckIsUserSignedIn();
+
         SignInButton.setOnClickListener(v ->
         {
             OnSignInClick();
@@ -49,9 +55,14 @@ public class LoginActivity extends AppCompatActivity
         });
     }
 
-
     private void CheckIsUserSignedIn()
     {
+        if (PreferenceUtils.getEmail(this) != null && PreferenceUtils.getPassword(this) != null)
+        {
+            Intent IntentObj = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(IntentObj);
+            finish();
+        }
     }
 
     private void OnSignInClick()
@@ -64,12 +75,22 @@ public class LoginActivity extends AppCompatActivity
         SignIn SignInObj = new SignIn(Email, Password);
         Log.d("TAG", "Starting SignIn function");
 
-        AppInstance.GetFireStoreInstance().SignInUser(Result ->
+        AppInstance.GetFireStoreInstance().SignInUser((SignInUserCallback) (Result, UserObj) ->
         {
             if (Result.isSuccess())
             {
                 Toast.makeText(LoginActivity.this, Result.getMessage(), Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(LoginActivity.this, MainActivity.class));
+
+                PreferenceUtils.saveEmail(UserObj.getEmail(), this);
+                PreferenceUtils.savePassword(UserObj.getPassword(), this);
+
+                Gson gson = new Gson();
+                String myJson = gson.toJson(UserObj);
+                Log.d("JSON", myJson);
+                Intent I = new Intent(LoginActivity.this, MainActivity.class);
+                I.putExtra("UserObject", myJson);
+
+                startActivity(I);
                 finish();
             }
             else

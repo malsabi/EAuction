@@ -1,8 +1,14 @@
 package com.example.eauction.Validations;
 
+import android.util.Log;
+
 import com.example.eauction.Models.SignIn;
 import com.example.eauction.Models.User;
 import com.example.eauction.Models.ValidationResult;
+
+import java.text.DateFormatSymbols;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.regex.Matcher;
@@ -162,8 +168,7 @@ public class UserValidation
         ValidationResult Result = new ValidationResult();
         Result.setSuccess(true);
         Result.setMessage("Valid phone number");
-        //050-123-4567, 050-abcedgf
-        if (PhoneNumber.length() != 9)
+        if (PhoneNumber.length() != 12)
         {
             Result.setSuccess(false);
             Result.setMessage("Phone number should contain 9 digits");
@@ -172,7 +177,7 @@ public class UserValidation
         {
             for (int i = 0; i < PhoneNumber.length(); i++)
             {
-                if (!IsDigit(PhoneNumber.charAt(i)))
+                if (!IsDigit(PhoneNumber.charAt(i)) && PhoneNumber.charAt(i) != '-')
                 {
                     Result.setSuccess(false);
                     Result.setMessage("Phone number should contain only digits");
@@ -203,7 +208,7 @@ public class UserValidation
     public ValidationResult DateValidation(String Date)
     {
         ValidationResult Result = new ValidationResult();
-        if (IsValidDate(Date) == true)
+        if (IsValidDate(Date))
         {
             Result.setSuccess(true);
             Result.setMessage("Date is valid");
@@ -291,15 +296,22 @@ public class UserValidation
     }
     private boolean IsValidDate(String date)
     {
-        try
+        if (!date.trim().equals(""))
         {
-            LocalDate.parse(date);
+            SimpleDateFormat SDFormat = new SimpleDateFormat("mm/dd/yyyy");
+            SDFormat.setLenient(false);
+            try
+            {
+                SDFormat.parse(date);
+                return true;
+            }
+            catch (ParseException e)
+            {
+                Log.d("DATE", e.getMessage());
+                return false;
+            }
         }
-        catch (DateTimeParseException ex)
-        {
-            return false;
-        }
-       return true;
+        return false;
     }
     //endregion
 }

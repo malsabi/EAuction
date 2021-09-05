@@ -1,27 +1,28 @@
 package com.example.eauction.DataBase;
 
-import android.app.Activity;
 import android.util.Log;
 
+import com.example.eauction.Cryptograpgy.Hashing;
 import com.example.eauction.Interfaces.RegisterUserCallback;
 import com.example.eauction.Interfaces.SignInUserCallback;
+import com.example.eauction.Interfaces.SignOutUserCallback;
 import com.example.eauction.Models.FireStoreResult;
 import com.example.eauction.Models.SignIn;
 import com.example.eauction.Models.Telemetry;
 import com.example.eauction.Models.User;
 import com.example.eauction.Models.ValidationResult;
 import com.example.eauction.Validations.UserValidation;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.List;
 
-public class FireStoreManager
+public class FireStoreManager extends FireStoreHelpers
 {
     private final FirebaseFirestore DB;
-    //get, set, update
+
     public FireStoreManager()
     {
         DB = FirebaseFirestore.getInstance();
+        SetFirebaseFirestore(DB);
     }
 
     public void RegisterUser(final RegisterUserCallback RegisterCallback, User UserObj)
@@ -38,6 +39,8 @@ public class FireStoreManager
         }
         else
         {
+            UserObj.setEmail(Hashing.SHA256(UserObj.getEmail()));
+            UserObj.setPassword(Hashing.SHA256(UserObj.getPassword()));
             Log.d("TAG", "Attempting to make set request");
             DB.collection("USERS").document(UserObj.getEmail()).set(UserObj)
             .addOnSuccessListener(d ->
@@ -71,32 +74,64 @@ public class FireStoreManager
             Result.setSuccess(false);
             Result.setTitle(UserValidationResult.getTitle());
             Result.setMessage(UserValidationResult.getMessage());
-            SignInCallback.onCallback(Result);
+            SignInCallback.onCallback(Result, null);
         }
         else
         {
             Log.d("TAG", "Attempting to make get request");
+            SignInObj.setEmail(Hashing.SHA256(SignInObj.getEmail()));
+            SignInObj.setPassword(Hashing.SHA256(SignInObj.getPassword()));
             DB.collection("USERS").document(SignInObj.getEmail()).get()
             .addOnSuccessListener(d ->
             {
+                User UserObj = null;
                 if (d.exists())
                 {
-                    User UserObj = d.toObject(User.class);
-                    assert UserObj != null;
-                    if (UserObj.getPassword().equals(SignInObj.getPassword()))
+                    UserObj = d.toObject(User.class);
+                    if (UserObj != null)
                     {
-                        Log.d("TAG", "Received all documents: " + UserObj.getSsn());
-                        Result.setSuccess(true);
-                        Result.setTitle("Success");
-                        Result.setMessage("User successfully logged in");
-                        //handle isActive = true
-                    }
-                    else
-                    {
-                        Log.d("TAG", "failed to sign in, make sure you typed the correct password!");
-                        Result.setSuccess(false);
-                        Result.setTitle("Exception");
-                        Result.setMessage("failed to sign in, make sure you typed the correct password!");
+                        if (UserObj.getActive().equals("Online"))
+                        {
+                            Log.d("TAG", "This account is already signed in");
+                            Result.setSuccess(false);
+                            Result.setTitle("Exception");
+                            Result.setMessage("failed to sign in, because this account is already signed in");
+                            SignInCallback.onCallback(Result, null);
+                        }
+                        else
+                        {
+                            if (UserObj.getPassword().equals(SignInObj.getPassword()))
+                            {
+                                Log.d("TAG", "Received all documents: " + UserObj.getSsn());
+                                User FinalUserObj = UserObj;
+                                SetUserIsActive(IsOperatingSuccess ->
+                                {
+                                    Log.d("TAG", "SetUserIsActive");
+                                    if (!IsOperatingSuccess)
+                                    {
+                                        Result.setSuccess(false);
+                                        Result.setTitle("Exception");
+                                        Result.setMessage("Failed to set the user activity");
+                                        SignInCallback.onCallback(Result, null);
+                                    }
+                                    else
+                                    {
+                                        Result.setSuccess(true);
+                                        Result.setTitle("Success");
+                                        Result.setMessage("User successfully logged in");
+                                        SignInCallback.onCallback(Result, FinalUserObj);
+                                    }
+                                }, "Online", SignInObj.getEmail());
+                            }
+                            else
+                            {
+                                Log.d("TAG", "failed to sign in, make sure you typed the correct password!");
+                                Result.setSuccess(false);
+                                Result.setTitle("Exception");
+                                Result.setMessage("failed to sign in, make sure you typed the correct password!");
+                                SignInCallback.onCallback(Result, null);
+                            }
+                        }
                     }
                 }
                 else
@@ -105,8 +140,8 @@ public class FireStoreManager
                     Result.setSuccess(false);
                     Result.setTitle("Exception");
                     Result.setMessage("failed to sign in, make sure you are registered!");
+                    SignInCallback.onCallback(Result, null);
                 }
-                SignInCallback.onCallback(Result);
 
             })
             .addOnFailureListener(e ->
@@ -115,10 +150,31 @@ public class FireStoreManager
                 Result.setSuccess(false);
                 Result.setTitle("Exception");
                 Result.setMessage(e.getMessage());
-                SignInCallback.onCallback(Result);
+                SignInCallback.onCallback(Result, null);
             });
         }
     }
+
+    public void SignOut(final SignOutUserCallback SignOutCallback, User UserObj)
+    {
+        FireStoreResult Result = new FireStoreResult();
+        SetUserIsActive(IsOperationSuccess ->
+        {
+            if (!IsOperationSuccess)
+            {
+                Result.setSuccess(false);
+                Result.setTitle("Exception");
+                Result.setMessage("Failed to sign out");
+            }
+            else
+            {
+                Result.setSuccess(true);
+                Result.setMessage("Successfully signed out");
+            }
+            SignOutCallback.onCallback(Result);
+        }, "Offline", UserObj.getEmail());
+    }
+
 
     public List<Telemetry> GetActiveAuctions()
     {
@@ -129,10 +185,6 @@ public class FireStoreManager
         return new FireStoreResult();
     }
     public FireStoreResult UpdateAuction(Telemetry TelemetryObj)
-    {
-        return new FireStoreResult();
-    }
-    public FireStoreResult SignOut(User UserObj)
     {
         return new FireStoreResult();
     }

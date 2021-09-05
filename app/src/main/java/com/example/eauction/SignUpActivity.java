@@ -185,6 +185,7 @@ public class SignUpActivity extends AppCompatActivity
         UserObj.setDate(DayOfBirthEditText.getText().toString());
         UserObj.setGender(MaleRadioButton.isChecked() ? "Male" : "Female");
         UserObj.setSsn(SSNEditText.getText().toString());
+        UserObj.setActive("Offline");
 
         AppInstance.GetFireStoreInstance().RegisterUser(new RegisterUserCallback()
         {

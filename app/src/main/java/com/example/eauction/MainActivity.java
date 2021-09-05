@@ -9,10 +9,13 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.example.eauction.Fragments.AboutUsFragment;
 import com.example.eauction.Fragments.AuctionsFragment;
@@ -20,17 +23,22 @@ import com.example.eauction.Fragments.ContactUsFragment;
 import com.example.eauction.Fragments.HomeFragment;
 import com.example.eauction.Fragments.MyPropertiesFragment;
 import com.example.eauction.Fragments.TermsCondFragment;
+import com.example.eauction.Interfaces.GetUserInformationCallback;
+import com.example.eauction.Models.User;
+import com.example.eauction.Utilities.PreferenceUtils;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.FirebaseApp;
+import com.google.gson.Gson;
 import com.royrodriguez.transitionbutton.TransitionButton;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
+{
 
     @BindView(R.id.BtnSignoutDrawer)
-    TransitionButton TBtnSignout;
+    TransitionButton SignOutButton;
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -38,40 +46,77 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @BindView(R.id.drawerLayout)
     DrawerLayout drawerLayout;
 
-    @BindView(R.id.nav_view) //Placeholder for fragments
+    @BindView(R.id.nav_view)
     NavigationView navigationView;
 
     private App AppInstance;
+    private User UserObj;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        ButterKnife.bind(this);
+        navigationView.setNavigationItemSelectedListener(this);
+        setSupportActionBar(toolbar);
         AppInstance = (App)getApplication();
+        if(savedInstanceState == null)
+        {
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
+            navigationView.setCheckedItem(R.id.dm_home);
+        }
+        InitializeBurgerButtonAnimation();
+        GetUserInformation();
+        SignOutButton.setOnClickListener(v ->
+        {
+            OnSignOutClick();
+        });
+    }
 
-        ButterKnife.bind(this); //ButterKnife binding Method
-        setSupportActionBar(toolbar); //Toolbar binding Method(For custom side menu)
-
-        navigationView.setNavigationItemSelectedListener(this); //Attaching Listener to Selected Item
-
-
+    private void InitializeBurgerButtonAnimation()
+    {
         //region Burger Button Animation
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.navigation_drawer_open,R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         //endregion
+    }
 
-
-        if(savedInstanceState == null)
+    private void GetUserInformation()
+    {
+        if (PreferenceUtils.getEmail(this) != null && PreferenceUtils.getPassword(this) != null)
         {
-            //Prevents fragment from getting destroyed
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit(); //Default Fragment
-            navigationView.setCheckedItem(R.id.dm_home);
+            Log.d("UserObj", "MSG: " + PreferenceUtils.getEmail(this));
+            AppInstance.GetFireStoreInstance().GetUserInformation(UserObj ->
+            {
+                this.UserObj = UserObj;
+            }, PreferenceUtils.getEmail(this));
+        }
+        else
+        {
+            Gson gson = new Gson();
+            UserObj = gson.fromJson(getIntent().getStringExtra("UserObject"), User.class);
         }
     }
 
+    private void OnSignOutClick()
+    {
+        AppInstance.GetFireStoreInstance().SignOut(Result ->
+        {
+            Toast.makeText(MainActivity.this, Result.getMessage(), Toast.LENGTH_SHORT).show();
+            if (Result.isSuccess())
+            {
+                PreferenceUtils.saveEmail(null, this);
+                PreferenceUtils.savePassword(null, this);
+                startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                finish();
+            }
+        }, UserObj);
+    }
+
+
+    //region NavigationView Methods
     @Override
     public void onBackPressed()
     {
@@ -85,8 +130,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             super.onBackPressed();
         }
     }
-
-    //Handles menu selection
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item)
     {
@@ -114,4 +157,5 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
+    //endregion
 }
