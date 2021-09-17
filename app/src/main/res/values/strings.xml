@@ -24,4 +24,23 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="car">Car</string>
+    <string name="car_plate">Car Plate</string>
+    <string name="landmark">Landmark</string>
+    <string name="vip_phone_number">VIP Phone Number</string>
+    <string name="general_item">General Item</string>
+    <string name="car_plate_number">Car Plate Number</string>
+    <string name="plate_code">Plate Code</string>
+    <string name="model">Model</string>
+    <string name="milage">Milage</string>
+    <string name="car_name">Car Name</string>
+    <string name="horse_power">Horse Power</string>
+    <string name="type">Type</string>
+    <string name="location">Location</string>
+    <string name="name">Name</string>
+    <string name="area">Area</string>
+    <string name="extra_details">Extra Details</string>
+    <string name="add_telemetry">Add Telemetry</string>
+
+
 </resources>

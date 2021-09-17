@@ -43,6 +43,7 @@ dependencies
     //region Controls Library
     implementation 'com.royrodriguez:transitionbutton:0.2.0' //Loading Button
     implementation 'de.hdodenhof:circleimageview:3.1.0' //Circular ImageView
+    implementation 'com.github.ganfra:material-spinner:2.0.0' //Spinner Material
     //endregion
     //region ButterKnife
     implementation 'com.jakewharton:butterknife:10.2.3'

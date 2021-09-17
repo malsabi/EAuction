@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/EtCarPlateNumberLoginFloatLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@android:color/transparent"
+        android:theme="@style/TextInputLayoutStyle"
+        >
+
+        <EditText
+            android:id="@+id/EtCarPlateNumber"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:ems="10"
+            android:hint="@string/car_plate_number"
+            android:inputType="number"
+            android:autofillHints="Must write the car plate number" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/EtCarPlateCodeFloatLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@android:color/transparent"
+        android:theme="@style/TextInputLayoutStyle"
+        >
+
+        <EditText
+            android:id="@+id/EtCarPlateCode"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:ems="10"
+            android:hint="@string/plate_code"
+            android:inputType="number"
+            android:autofillHints="Must write the car plate code" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <fr.ganfra.materialspinner.MaterialSpinner
+        android:id="@+id/SpinnerCountry"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:ms_alignLabels="false"
+        app:ms_arrowColor="@color/PrimaryPeachyColor"
+        app:ms_arrowSize="16dp"
+        app:ms_baseColor="@color/PrimaryPeachyColor"
+        app:ms_enableErrorLabel="false"
+        app:ms_enableFloatingLabel="false"
+        app:ms_floatingLabelColor="@color/PrimaryPeachyColor"
+        app:ms_floatingLabelText="floating label"
+        app:ms_highlightColor="@color/PrimaryRedColor"
+        app:ms_hintColor="@color/PrimaryPeachyColor"
+        app:ms_multiline="false"
+        app:ms_thickness="2dp"
+        />
+
+
+</LinearLayout>

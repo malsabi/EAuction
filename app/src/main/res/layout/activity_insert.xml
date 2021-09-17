@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".InsertActivity">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.05" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.95" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineH1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.05" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineH2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.95" />
+
+    <fr.ganfra.materialspinner.MaterialSpinner
+        android:id="@+id/spinner"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toStartOf="@+id/guideline2"
+        app:layout_constraintStart_toStartOf="@+id/guideline1"
+        app:layout_constraintTop_toTopOf="@+id/guidelineH1"
+        app:ms_alignLabels="false"
+        app:ms_arrowColor="@color/PrimaryPeachyColor"
+        app:ms_arrowSize="16dp"
+        app:ms_baseColor="@color/PrimaryPeachyColor"
+        app:ms_enableErrorLabel="false"
+        app:ms_enableFloatingLabel="false"
+        app:ms_floatingLabelColor="@color/PrimaryPeachyColor"
+        app:ms_floatingLabelText="floating label"
+        app:ms_highlightColor="@color/PrimaryRedColor"
+        app:ms_hintColor="@color/PrimaryPeachyColor"
+        app:ms_multiline="false"
+        app:ms_thickness="2dp" />
+
+    <FrameLayout
+        android:id="@+id/TeleFragmentContainer"
+        android:layout_width="0dp"
+        android:layout_height="445dp"
+        android:layout_marginTop="32dp"
+        app:layout_constraintEnd_toStartOf="@+id/guideline2"
+        app:layout_constraintStart_toStartOf="@+id/guideline1"
+        app:layout_constraintTop_toBottomOf="@+id/BtnUploadImg" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/EtExtraDetailsFloatLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:background="@android:color/transparent"
+        android:theme="@style/TextInputLayoutStyle"
+        app:layout_constraintBottom_toTopOf="@+id/BtnAddTelemetry"
+        app:layout_constraintEnd_toStartOf="@+id/guideline2"
+        app:layout_constraintStart_toStartOf="@+id/guideline1">
+
+        <EditText
+            android:id="@+id/EtExtraDetails"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:autofillHints="Must write the email address"
+            android:background="@android:color/transparent"
+            android:ems="10"
+            android:hint="@string/extra_details"
+            android:inputType="textEmailAddress" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.royrodriguez.transitionbutton.TransitionButton
+        android:id="@+id/BtnAddTelemetry"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/add_telemetry"
+        android:textColor="@android:color/white"
+        app:defaultColor="@color/PrimaryRedColor"
+        app:layout_constraintBottom_toTopOf="@+id/guidelineH2"
+        app:layout_constraintEnd_toStartOf="@+id/guideline2"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/guideline1"
+        app:loaderColor="@android:color/white" />
+
+    <ImageView
+        android:id="@+id/BtnUploadImg"
+        android:layout_width="64dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        app:layout_constraintEnd_toStartOf="@+id/guideline2"
+        app:layout_constraintStart_toStartOf="@+id/guideline1"
+        app:layout_constraintTop_toBottomOf="@+id/spinner"
+        app:srcCompat="@drawable/ic_baseline_image_24"
+        android:scaleType="centerInside"
+        android:adjustViewBounds="true"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

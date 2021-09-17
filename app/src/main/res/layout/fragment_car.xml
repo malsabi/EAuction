@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/EtModelFloatLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:background="@android:color/transparent"
+        android:theme="@style/TextInputLayoutStyle"
+        >
+
+        <EditText
+            android:id="@+id/EtCarModel"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:ems="10"
+            android:hint="@string/model"
+            android:inputType="text"
+            android:autofillHints="Must write the car plate number" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/EtMilageFloatLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@android:color/transparent"
+        android:theme="@style/TextInputLayoutStyle"
+        >
+
+        <EditText
+            android:id="@+id/EtMilage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:ems="10"
+            android:hint="@string/milage"
+            android:inputType="number"
+            android:autofillHints="Must write the car plate code" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/EtCarNameFloatLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@android:color/transparent"
+        android:theme="@style/TextInputLayoutStyle"
+        >
+
+        <EditText
+            android:id="@+id/EtCarName"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:ems="10"
+            android:hint="@string/car_name"
+            android:inputType="text"
+            android:autofillHints="Must write the car plate code" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/EtHorsePowerFloatLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@android:color/transparent"
+        android:theme="@style/TextInputLayoutStyle"
+        >
+
+        <EditText
+            android:id="@+id/EtHorsePower"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:ems="10"
+            android:hint="@string/horse_power"
+            android:inputType="number"
+            android:autofillHints="Must write the car plate code" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+
+</LinearLayout>
