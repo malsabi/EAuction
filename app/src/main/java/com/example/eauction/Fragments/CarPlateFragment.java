@@ -5,26 +5,30 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-
+import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
-
 import com.example.eauction.R;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import fr.ganfra.materialspinner.MaterialSpinner;
 
-public class CarPlateFragment extends Fragment {
+public class CarPlateFragment extends Fragment
+{
+    @BindView(R.id.EtCarPlateNumber)
+    public EditText CarPlateNumber;
+
+    @BindView(R.id.EtCarPlateCode)
+    public EditText CarPlateCode;
 
     @BindView(R.id.SpinnerCountry)
-    MaterialSpinner SpinnerCountry;
+    public MaterialSpinner SpinnerCountry;
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
+    {
         View view = inflater.inflate(R.layout.fragment_carplate,container,false);
         ButterKnife.bind(this, view);
         String[] ITEMS = {"Abu Dhabi","Ajman", "Dubai","Fujairah","Ras Al Khaimah","Sharjah","Umm Al Quwain"};
@@ -32,8 +36,6 @@ public class CarPlateFragment extends Fragment {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         SpinnerCountry.setAdapter(adapter);
         SpinnerCountry.setSelection(0); //Default Position
-
         return view;
     }
-
 }

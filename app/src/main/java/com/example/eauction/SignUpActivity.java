@@ -187,30 +187,29 @@ public class SignUpActivity extends AppCompatActivity
         UserObj.setSsn(SSNEditText.getText().toString());
         UserObj.setActive("Offline");
 
-        AppInstance.GetFireStoreInstance().RegisterUser(new RegisterUserCallback()
+        AppInstance.GetFireStoreInstance().RegisterUser(Result ->
         {
-            @Override
-            public void onCallback(FireStoreResult Result)
+            if (Result.isSuccess())
             {
-                if (Result.isSuccess()) {
-                    Toast.makeText(SignUpActivity.this, Result.getMessage(), Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(SignUpActivity.this, LoginActivity.class));
-                    finish();
+                Toast.makeText(SignUpActivity.this, Result.getMessage(), Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(SignUpActivity.this, LoginActivity.class));
+                finish();
+            }
+            else
+            {
+                int resID = getResources().getIdentifier(Result.getTitle(), "id", getPackageName());
+                if (resID != 0)
+                {
+                    EditText InvalidControl = findViewById(resID);
+                    InvalidControl.setError(Result.getMessage());
                 }
                 else
-                    {
-                    int resID = getResources().getIdentifier(Result.getTitle(), "id", getPackageName());
-                    if (resID != 0) {
-                        EditText InvalidControl = findViewById(resID);
-                        InvalidControl.setError(Result.getMessage());
-                    } else
-                        {
-                        Toast.makeText(SignUpActivity.this, Result.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
+                {
+                    Toast.makeText(SignUpActivity.this, Result.getMessage(), Toast.LENGTH_SHORT).show();
                 }
-                Log.d("TAG", "Finished from registerUser");
-                SignUpButton.stopAnimation(TransitionButton.StopAnimationStyle.SHAKE, null);
             }
+            Log.d("TAG", "Finished from registerUser");
+            SignUpButton.stopAnimation(TransitionButton.StopAnimationStyle.SHAKE, null);
         }, UserObj);
     }
 }

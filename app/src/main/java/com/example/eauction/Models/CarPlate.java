@@ -2,19 +2,19 @@ package com.example.eauction.Models;
 
 public class CarPlate extends Telemetry
 {
-    private int plateNumber;
-    private int plateCode;
+    private String plateNumber;
+    private String plateCode;
     private String emirate;
 
     //region Constructors
     public CarPlate()
     {
         super();
-        plateNumber = -1;
-        plateCode = -1;
+        plateNumber = "";
+        plateCode = "";
         emirate = "";
     }
-    public CarPlate(int plateNumber, int plateCode, String emirate)
+    public CarPlate(String plateNumber, String plateCode, String emirate)
     {
         super();
         this.plateNumber = plateNumber;
@@ -23,11 +23,11 @@ public class CarPlate extends Telemetry
     }
     //endregion
     //region Setters
-    public void setPlateNumber(int plateNumber)
+    public void setPlateNumber(String plateNumber)
     {
         this.plateNumber = plateNumber;
     }
-    public void setPlateCode(int plateCode)
+    public void setPlateCode(String plateCode)
     {
         this.plateCode = plateCode;
     }
@@ -37,11 +37,11 @@ public class CarPlate extends Telemetry
     }
     //endregion
     //region Getters
-    public int getPlateNumber()
+    public String getPlateNumber()
     {
         return plateNumber;
     }
-    public int getPlateCode()
+    public String getPlateCode()
     {
         return plateCode;
     }

@@ -3,6 +3,7 @@ package com.example.eauction.DataBase;
 import android.util.Log;
 
 import com.example.eauction.Cryptograpgy.Hashing;
+import com.example.eauction.Interfaces.SetUserOwnedTelemetryCallback;
 import com.example.eauction.Interfaces.RegisterUserCallback;
 import com.example.eauction.Interfaces.SignInUserCallback;
 import com.example.eauction.Interfaces.SignOutUserCallback;
@@ -175,14 +176,14 @@ public class FireStoreManager extends FireStoreHelpers
         }, "Offline", UserObj.getEmail());
     }
 
+    public void AddAuction(SetUserOwnedTelemetryCallback AddAuctionCallback, Telemetry TelemetryObj, User UserObj)
+    {
+        FireStoreResult Result = new FireStoreResult();
+    }
 
     public List<Telemetry> GetActiveAuctions()
     {
         return null;
-    }
-    public FireStoreResult AddAuction(Telemetry TelemetryObj)
-    {
-        return new FireStoreResult();
     }
     public FireStoreResult UpdateAuction(Telemetry TelemetryObj)
     {

@@ -5,13 +5,17 @@ import android.util.Log;
 import com.example.eauction.Interfaces.GetFieldUserCallback;
 import com.example.eauction.Interfaces.GetUserInformationCallback;
 import com.example.eauction.Interfaces.SetUserIsActiveCallback;
+import com.example.eauction.Interfaces.SetUserOwnedTelemetryCallback;
+import com.example.eauction.Models.FireStoreResult;
+import com.example.eauction.Models.Telemetry;
 import com.example.eauction.Models.User;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.List;
 
 public class FireStoreHelpers
 {
     private FirebaseFirestore DB;
-
 
     public FireStoreHelpers()
     {
@@ -34,11 +38,13 @@ public class FireStoreHelpers
             }
             else
             {
+                Log.d("InsertActivity", "Not Existed");
                 GetInformationCallback.onCallback(null);
             }
         })
         .addOnFailureListener(d ->
         {
+            Log.d("InsertActivity", "Error: " + d.getMessage());
             GetInformationCallback.onCallback(null);
         });
     }
@@ -52,7 +58,6 @@ public class FireStoreHelpers
         })
         .addOnFailureListener(d ->
         {
-            Log.d("FAILED", d.getMessage());
             IsActiveCallback.onCallback(false);
         });
     }
@@ -76,6 +81,19 @@ public class FireStoreHelpers
         .addOnFailureListener(d ->
         {
             GetFieldCallback.onCallback(null);
+        });
+    }
+
+    public void SetUserOwnedTelemetry(final SetUserOwnedTelemetryCallback Callback, List<Telemetry> OwnedTelemetry, String Email)
+    {
+        DB.collection("USERS").document(Email).update("ownedTelemetry", OwnedTelemetry)
+        .addOnSuccessListener(d ->
+        {
+            Callback.onCallback(new FireStoreResult("", "", true));
+        })
+        .addOnFailureListener(d ->
+        {
+            Callback.onCallback(new FireStoreResult("", d.getMessage(), false));
         });
     }
 }
