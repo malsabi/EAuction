@@ -6,7 +6,7 @@ public class TelemetryValidation
     public ValidationResult CarPlateValidation(CarPlate CarPlateObj)
     {
         ValidationResult Result = new ValidationResult();
-        if (CarPlateObj.getPlateCode() < 0 || CarPlateObj.getPlateCode() > 5)
+        if (Integer.parseInt(CarPlateObj.getPlateCode())< 0 || Integer.parseInt(CarPlateObj.getPlateCode()) > 5)
         {
             Result.setTitle("PlateCodeText");
             Result.setMessage("PlateCode should be between 1 and 5");
