@@ -48,7 +48,12 @@ public class InsertActivity extends AppCompatActivity
     TransitionButton AddTelemetryButton;
 
     private App AppInstance;
-    private final CarPlateFragment CarPlateObj = new CarPlateFragment(); //Fragment
+
+    private final CarPlateFragment CarPlateObj = new CarPlateFragment();           //Fragment
+    private final CarFragment CarObj = new CarFragment();                          //Fragment
+    private final LandmarkFragment LandmarkObj = new LandmarkFragment();           //Fragment
+    private final VIPNumberFragment VIPNumberObj = new VIPNumberFragment();        //Fragment
+    private final GeneralItemFragment GeneralItemObj = new GeneralItemFragment();  //Fragment
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -59,11 +64,6 @@ public class InsertActivity extends AppCompatActivity
 
 
         AppInstance = (App)getApplication();
-        AppInstance.GetFireStoreInstance().GetUserInformation(UserObj ->
-        {
-            Log.d("Hady", "Telemetries Count" + UserObj.getOwnedTelemetry().size());
-        }, "h5JGBrQTGorO7q6IaFMfu5cSqqB6XTp1aybOD11spnQ=");
-
 
         String[] ITEMS = {"Car Plate","Car", "Landmark","VIP Phone Number","General Item"};
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, ITEMS);
@@ -83,16 +83,16 @@ public class InsertActivity extends AppCompatActivity
                         getSupportFragmentManager().beginTransaction().replace(R.id.TeleFragmentContainer, CarPlateObj).commit();
                         break;
                     case 1:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.TeleFragmentContainer, new CarFragment()).commit();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.TeleFragmentContainer, CarObj).commit();
                         break;
                     case 2:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.TeleFragmentContainer, new LandmarkFragment()).commit();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.TeleFragmentContainer, LandmarkObj).commit();
                         break;
                     case 3:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.TeleFragmentContainer, new VIPNumberFragment()).commit();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.TeleFragmentContainer, VIPNumberObj).commit();
                         break;
                     case 4:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.TeleFragmentContainer, new GeneralItemFragment()).commit();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.TeleFragmentContainer, GeneralItemObj).commit();
                         break;
                 }
             }
@@ -134,6 +134,14 @@ public class InsertActivity extends AppCompatActivity
         {
             HandleCarPlate();
         }
+        else if (Spinner.getSelectedItemPosition() == 1)
+        {
+            //HandleCar();
+        }
+        else if (Spinner.getSelectedItemPosition() == 2)
+        {
+            //HandleLandMark();
+        }
         AddTelemetryButton.stopAnimation(TransitionButton.StopAnimationStyle.SHAKE, null);
     }
 
@@ -172,11 +180,11 @@ public class InsertActivity extends AppCompatActivity
                         UserObj.setOwnedTelemetry(new ArrayList<Telemetry>());
                     }
                     //Get the owned telemetries that the user have
-                    List<Telemetry> OwnedTelemetry = UserObj.getOwnedTelemetry();
+                    List<Telemetry> TempList = UserObj.getOwnedTelemetry();
                     //Add the Telemetry Object to the Owned Telemetry List.
-                    OwnedTelemetry.add(CarPlateModel);
+                    TempList.add(CarPlateModel);
                     //Update the Owned Telemetry List.
-                    UserObj.setOwnedTelemetry(OwnedTelemetry);
+                    UserObj.setOwnedTelemetry(TempList);
                     //Update the Owned Telemetry in the fire store data base.
                     AppInstance.GetFireStoreInstance().SetUserOwnedTelemetry(SetResult ->
                     {

@@ -11,6 +11,7 @@ public class Telemetry
     private String auctionEnd;
     private String details;
     private String iD;
+    private String image;
 
     //region Constructor
     public Telemetry()
@@ -22,6 +23,7 @@ public class Telemetry
         auctionEnd = "";
         details = "";
         iD = "";
+        image = "";
     }
     //endregion
     //region Setters
@@ -50,6 +52,7 @@ public class Telemetry
         this.details = details;
     }
     public void setID(String iD) {this.iD = iD;}
+    public void setImage(String image) {this.image = image; }
     //endregion
     //region Getters
     public StatusEnum getStatus()
@@ -80,5 +83,6 @@ public class Telemetry
     {
         return iD;
     }
+    public String getImage() {return  image; }
     //endregion
 }
