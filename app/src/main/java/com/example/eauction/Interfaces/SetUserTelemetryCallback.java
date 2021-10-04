@@ -2,7 +2,7 @@ package com.example.eauction.Interfaces;
 
 import com.example.eauction.Models.FireStoreResult;
 
-public interface SetUserOwnedTelemetryCallback
+public interface SetUserTelemetryCallback
 {
     void onCallback(FireStoreResult Result);
 }

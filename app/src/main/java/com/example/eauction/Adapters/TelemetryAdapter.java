@@ -11,6 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.eauction.Helpers.TelemetryHelper;
 import com.example.eauction.Models.Car;
 import com.example.eauction.Models.CarPlate;
 import com.example.eauction.Models.General;
@@ -37,7 +38,7 @@ public class TelemetryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     public TelemetryAdapter(ArrayList<Telemetry> Telemetries){
         this.Telemetries = Telemetries;
-        Log.i("TelCount",Telemetries.size()+"");
+        Log.i("TelCount",Telemetries.size() + "");
     }
 
     @NonNull
@@ -72,9 +73,10 @@ public class TelemetryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-
-        if(Telemetries.get(position) instanceof  Car){
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position)
+    {
+        if(Telemetries.get(position) instanceof  Car)
+        {
             CarViewHolder carHolder = (CarViewHolder)holder;
             Car car = (Car)Telemetries.get(position);
 
@@ -83,10 +85,10 @@ public class TelemetryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             carHolder.cvCarMilage.setText(String.valueOf(car.getMileage()));
             carHolder.cvHorsePower.setText(String.valueOf(car.getHorsePower()));
             carHolder.cvCarDetails.setText(car.getDetails());
-
-            //TODO SetImage
+            carHolder.cvCarImage.setImageBitmap(TelemetryHelper.Base64ToImage(car.getImage()));
         }
-        else if(Telemetries.get(position) instanceof  CarPlate){
+        else if(Telemetries.get(position) instanceof  CarPlate)
+        {
             CarPlateViewHolder carPlateHolder = (CarPlateViewHolder)holder;
             CarPlate carPlate = (CarPlate) Telemetries.get(position);
 
@@ -94,20 +96,20 @@ public class TelemetryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             carPlateHolder.cvPlateDetails.setText(carPlate.getDetails());
             carPlateHolder.cvPlateNumber.setText(carPlate.getPlateNumber());
             carPlateHolder.cvEmirate.setText(carPlate.getEmirate());
-
-            //TODO SetImage
+            carPlateHolder.cvCarPlate.setImageBitmap(TelemetryHelper.Base64ToImage(carPlate.getImage()));
         }
-        else if(Telemetries.get(position) instanceof  VipPhoneNumber){
+        else if(Telemetries.get(position) instanceof  VipPhoneNumber)
+        {
             PhoneNumberViewHolder vipPhoneHolder = (PhoneNumberViewHolder) holder;
             VipPhoneNumber vipPhoneNumber = (VipPhoneNumber) Telemetries.get(position);
 
             vipPhoneHolder.cvPhoneNumber.setText(vipPhoneNumber.getPhoneNumber());
             vipPhoneHolder.cvCompanyName.setText(vipPhoneNumber.getCompany());
             vipPhoneHolder.cvCompanyDetails.setText(vipPhoneNumber.getDetails());
-
-            //TODO SetImage
+            vipPhoneHolder.cvPhoneNumberImg.setImageBitmap(TelemetryHelper.Base64ToImage(vipPhoneNumber.getImage()));
         }
-        else if(Telemetries.get(position) instanceof  Landmark){
+        else if(Telemetries.get(position) instanceof  Landmark)
+        {
             LandmarkViewHolder landMarkHolder = (LandmarkViewHolder)holder;
             Landmark landmark = (Landmark) Telemetries.get(position);
 
@@ -115,17 +117,16 @@ public class TelemetryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             landMarkHolder.cvLandmarkType.setText(landmark.getType());
             landMarkHolder.cvLandmarkLocation.setText(landmark.getLocation());
             landMarkHolder.cvLandmarkArea.setText(String.valueOf(landmark.getArea()));
-
-            //TODO SetImage
+            landMarkHolder.cvLandmarkImg.setImageBitmap(TelemetryHelper.Base64ToImage(landmark.getImage()));
         }
-        else{
+        else
+        {
             GeneralViewHolder carPlateHolder = (GeneralViewHolder)holder;
             General general = (General) Telemetries.get(position);
 
             carPlateHolder.cvItemName.setText(general.getName());
             carPlateHolder.cvDetails.setText(general.getDetails());
-
-            //TODO SetImage
+            carPlateHolder.cvItemGeneral.setImageBitmap(TelemetryHelper.Base64ToImage(general.getImage()));
         }
     }
 

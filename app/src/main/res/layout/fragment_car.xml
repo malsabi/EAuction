@@ -27,7 +27,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/EtMilageFloatLabel"
+        android:id="@+id/EtMileageFloatLabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -36,7 +36,7 @@
         >
 
         <EditText
-            android:id="@+id/EtMilage"
+            android:id="@+id/EtCarMileage"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@android:color/transparent"
@@ -78,7 +78,7 @@
         >
 
         <EditText
-            android:id="@+id/EtHorsePower"
+            android:id="@+id/EtCarHorsePower"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@android:color/transparent"

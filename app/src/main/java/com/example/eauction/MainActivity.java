@@ -51,6 +51,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private App AppInstance;
     private User UserObj;
 
+    private final MyPropertiesFragment MyProperties = new MyPropertiesFragment();
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -84,18 +86,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void GetUserInformation()
     {
+        PreferenceUtils.ClearPreferences(this);
         if (PreferenceUtils.getEmail(this) != null && PreferenceUtils.getPassword(this) != null)
         {
             Log.d("UserObj", "MSG: " + PreferenceUtils.getEmail(this));
             AppInstance.GetFireStoreInstance().GetUserInformation(UserObj ->
             {
                 this.UserObj = UserObj;
+                MyProperties.SetUser(UserObj);
             }, PreferenceUtils.getEmail(this));
         }
         else
         {
             Gson gson = new Gson();
             UserObj = gson.fromJson(getIntent().getStringExtra("UserObject"), User.class);
+            MyProperties.SetUser(UserObj);
         }
     }
 
@@ -141,7 +146,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new AuctionsFragment()).commit();
                 break;
             case R.id.dm_myproperties:
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MyPropertiesFragment()).commit();
+
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, MyProperties).commit();
                 break;
             case R.id.dm_aboutus:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new AboutUsFragment()).commit();

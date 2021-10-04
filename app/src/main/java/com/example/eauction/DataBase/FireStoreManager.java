@@ -3,7 +3,7 @@ package com.example.eauction.DataBase;
 import android.util.Log;
 
 import com.example.eauction.Cryptograpgy.Hashing;
-import com.example.eauction.Interfaces.SetUserOwnedTelemetryCallback;
+import com.example.eauction.Interfaces.SetUserTelemetryCallback;
 import com.example.eauction.Interfaces.RegisterUserCallback;
 import com.example.eauction.Interfaces.SignInUserCallback;
 import com.example.eauction.Interfaces.SignOutUserCallback;
@@ -91,7 +91,7 @@ public class FireStoreManager extends FireStoreHelpers
                     UserObj = d.toObject(User.class);
                     if (UserObj != null)
                     {
-                        if (UserObj.getActive().equals("Online"))
+                        if (UserObj.getIsActive().equals("Online"))
                         {
                             Log.d("TAG", "This account is already signed in");
                             Result.setSuccess(false);
@@ -176,7 +176,7 @@ public class FireStoreManager extends FireStoreHelpers
         }, "Offline", UserObj.getEmail());
     }
 
-    public void AddAuction(SetUserOwnedTelemetryCallback AddAuctionCallback, Telemetry TelemetryObj, User UserObj)
+    public void AddAuction(SetUserTelemetryCallback AddAuctionCallback, Telemetry TelemetryObj, User UserObj)
     {
         FireStoreResult Result = new FireStoreResult();
     }

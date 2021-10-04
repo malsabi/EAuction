@@ -19,18 +19,22 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import fr.ganfra.materialspinner.MaterialSpinner;
 
-public class VIPNumberFragment extends Fragment {
+public class VIPNumberFragment extends Fragment
+{
 
     @BindView(R.id.SpinnerPhoneCompany)
-    MaterialSpinner SpinnerPhoneCompany;
+    public MaterialSpinner SpinnerPhoneCompany;
 
     @BindView(R.id.EtPhoneNumberTel)
-    EditText EtPhoneNumberTel;
+    public EditText PhoneNumber;
 
     private String LastChar = " ";
+
+
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
+    {
         View view = inflater.inflate(R.layout.fragment_vipnumber,container,false);
         ButterKnife.bind(this, view);
         String[] ITEMS = {"Etisalat","Du"};
@@ -39,28 +43,27 @@ public class VIPNumberFragment extends Fragment {
         SpinnerPhoneCompany.setAdapter(adapter);
         SpinnerPhoneCompany.setSelection(0); //Default Position
 
-
         //region PhoneNumber TextWatcher
-        EtPhoneNumberTel.addTextChangedListener(new TextWatcher()
+        PhoneNumber.addTextChangedListener(new TextWatcher()
         {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after)
             {
-                int digits = EtPhoneNumberTel.getText().toString().length();
+                int digits = PhoneNumber.getText().toString().length();
                 if (digits > 1)
                 {
-                    LastChar = EtPhoneNumberTel.getText().toString().substring(digits-1);
+                    LastChar = PhoneNumber.getText().toString().substring(digits-1);
                 }
             }
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count)
             {
-                int digits = EtPhoneNumberTel.getText().toString().length();
+                int digits = PhoneNumber.getText().toString().length();
                 if (!LastChar.equals("-"))
                 {
                     if (digits == 3 || digits == 7)
                     {
-                        EtPhoneNumberTel.append("-");
+                        PhoneNumber.append("-");
                     }
                 }
             }
@@ -70,8 +73,6 @@ public class VIPNumberFragment extends Fragment {
             }
         });
         //endregion
-
         return view;
     }
-
 }

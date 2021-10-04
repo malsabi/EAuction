@@ -1,5 +1,6 @@
 package com.example.eauction.Models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class User
@@ -14,7 +15,11 @@ public class User
     private String nationality;
     private String ssn;
     private String profilePicture;
-    private List<Telemetry> ownedTelemetry;
+    private ArrayList<Car> ownedCarTelemetry;
+    private ArrayList<CarPlate> ownedCarPlateTelemetry;
+    private ArrayList<VipPhoneNumber> ownedVipPhoneTelemetry;
+    private ArrayList<Landmark> ownedLandmarkTelemetry;
+    private ArrayList<General> ownedGeneralTelemetry;
     private String isActive;
 
     //region Constructors
@@ -30,12 +35,14 @@ public class User
         this.nationality = "";
         this.ssn = "";
         this.profilePicture = "";
-        this.ownedTelemetry = null;
+        this.ownedCarTelemetry = null;
+        this.ownedCarPlateTelemetry = null;
+        this.ownedVipPhoneTelemetry = null;
+        this.ownedLandmarkTelemetry = null;
+        this.ownedGeneralTelemetry = null;
         this.isActive = "Offline";
     }
-
-    public User(String firstName, String lastName, String email, String phoneNumber, String password, String date, String gender, String nationality, String ssn, String profilePicture, List<Telemetry> ownedTelemetry, String isActive)
-    {
+    public User(String firstName, String lastName, String email, String phoneNumber, String password, String date, String gender, String nationality, String ssn, String profilePicture, ArrayList<Car> ownedCarTelemetry, ArrayList<CarPlate> ownedCarePlateTelemetry, ArrayList<VipPhoneNumber> ownedVipPhoneTelemetry, ArrayList<Landmark> ownedLandmarkTelemetry, ArrayList<General> ownedGeneralTelemetry, String isActive) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -46,7 +53,11 @@ public class User
         this.nationality = nationality;
         this.ssn = ssn;
         this.profilePicture = profilePicture;
-        this.ownedTelemetry = ownedTelemetry;
+        this.ownedCarTelemetry = ownedCarTelemetry;
+        this.ownedCarPlateTelemetry = ownedCarePlateTelemetry;
+        this.ownedVipPhoneTelemetry = ownedVipPhoneTelemetry;
+        this.ownedLandmarkTelemetry = ownedLandmarkTelemetry;
+        this.ownedGeneralTelemetry = ownedGeneralTelemetry;
         this.isActive = isActive;
     }
     //endregion
@@ -91,14 +102,12 @@ public class User
     {
         this.profilePicture = profilePicture;
     }
-    public void setOwnedTelemetry(List<Telemetry> ownedTelemetry)
-    {
-        this.ownedTelemetry = ownedTelemetry;
-    }
-    public void setActive(String active)
-    {
-        isActive = active;
-    }
+    public void setOwnedCarTelemetry(ArrayList<Car> ownedCarTelemetry) { this.ownedCarTelemetry = ownedCarTelemetry; }
+    public void setOwnedCarPlateTelemetry(ArrayList<CarPlate> ownedCarePlateTelemetry) { this.ownedCarPlateTelemetry = ownedCarePlateTelemetry; }
+    public void setOwnedVipPhoneTelemetry(ArrayList<VipPhoneNumber> ownedVipPhoneTelemetry) { this.ownedVipPhoneTelemetry = ownedVipPhoneTelemetry; }
+    public void setOwnedLandmarkTelemetry(ArrayList<Landmark> ownedLandmarkTelemetry) { this.ownedLandmarkTelemetry = ownedLandmarkTelemetry; }
+    public void setOwnedGeneralTelemetry(ArrayList<General> ownedGeneralTelemetry) { this.ownedGeneralTelemetry = ownedGeneralTelemetry; }
+    public void setIsActive(String isActive) { this.isActive = isActive; }
     //endregion
     //region Getters
     public String getFirstName()
@@ -141,13 +150,11 @@ public class User
     {
         return profilePicture;
     }
-    public List<Telemetry> getOwnedTelemetry()
-    {
-        return ownedTelemetry;
-    }
-    public String getActive()
-    {
-        return isActive;
-    }
+    public ArrayList<Car> getOwnedCarTelemetry() { return ownedCarTelemetry; }
+    public ArrayList<CarPlate> getOwnedCarPlateTelemetry() { return ownedCarPlateTelemetry; }
+    public ArrayList<VipPhoneNumber> getOwnedVipPhoneTelemetry() { return ownedVipPhoneTelemetry; }
+    public ArrayList<Landmark> getOwnedLandmarkTelemetry() { return ownedLandmarkTelemetry; }
+    public ArrayList<General> getOwnedGeneralTelemetry() { return ownedGeneralTelemetry; }
+    public String getIsActive() { return isActive; }
     //endregion
 }

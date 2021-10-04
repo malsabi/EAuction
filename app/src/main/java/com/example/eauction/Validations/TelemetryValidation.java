@@ -1,4 +1,5 @@
 package com.example.eauction.Validations;
+
 import com.example.eauction.Models.*;
 
 public class TelemetryValidation
@@ -11,6 +12,10 @@ public class TelemetryValidation
     private final String[] RasAlKhaimahCodes = {"A", "C", "D", "I", "K", "M", "N", "S", "V", "Y"};
     private final String[] SharjahCodes = {"1", "2", "3"};
     private final String[] UmmAlQuwainCodes = {"A", "B", "C", "D", "E", "F", "G", "H", "I", "X"};
+
+    //Codes used in VIP Phone Number validation
+    private final String[] EtisalatCodes = {"050", "054", "056"};
+    private final String[] DuCodes =  {"055", "052", "058"};
 
     public ValidationResult CarPlateValidation(CarPlate CarPlateObj)
     {
@@ -145,19 +150,181 @@ public class TelemetryValidation
     }
     public ValidationResult CarValidation(Car CarObj)
     {
-        return new ValidationResult();
+
+        ValidationResult Result = new ValidationResult();
+
+        Result.setMessage("Valid Data");
+        Result.setSuccess(true);
+
+        String Model = CarObj.getModel();
+        int Mileage = CarObj.getMileage();
+        String Name = CarObj.getName();
+        int HorsePower = CarObj.getHorsePower();
+
+        if (Model.length() == 0 || Model.length() > 20)
+        {
+            Result.setTitle("EtCarModel");
+            Result.setMessage("The car model is invalid");
+            Result.setSuccess(false);
+        }
+        else if (Mileage < 0 || Mileage > 200000)
+        {
+            Result.setTitle("EtMileage");
+            Result.setMessage("The Mileage range should between from 0 to 200,000");
+            Result.setSuccess(false);
+        }
+        else if (Name.length() == 0 || Name.length() > 20)
+        {
+            Result.setTitle("EtCarName");
+            Result.setMessage("The car name is invalid");
+            Result.setSuccess(false);
+        }
+        else if (HorsePower < 200 || HorsePower > 5000)
+        {
+            Result.setTitle("EtHorsePower");
+            Result.setMessage("The Horsepower should be between 200 and 5000");
+            Result.setSuccess(false);
+        }
+        return Result;
     }
     public ValidationResult LandmarkValidation(Landmark LandmarkObj)
     {
-        return new ValidationResult();
+        ValidationResult Result = new ValidationResult();
+        Result.setMessage("Valid Data");
+        Result.setSuccess(true);
+
+        String Type = LandmarkObj.getType();
+        String Location = LandmarkObj.getLocation();
+        String Name = LandmarkObj.getName();
+        int Area = LandmarkObj.getArea();
+
+        if (Type.length() < 4 || Type.length() >= 20)
+        {
+            Result.setTitle("EtLandmarkType");
+            Result.setMessage("Type should be in the range of 4 to 20");
+            Result.setSuccess(false);
+        }
+        else if (Location.length() < 4 || Location.length() >= 20)
+        {
+            Result.setTitle("EtLandmarkLocation");
+            Result.setMessage("Location should be in the range of 4 to 20");
+            Result.setSuccess(false);
+        }
+        else if (Name.length() < 4 || Name.length() >= 20)
+        {
+            Result.setTitle("EtLandmarkName");
+            Result.setMessage("Name should be in the range of 4 to 20");
+            Result.setSuccess(false);
+        }
+        else if (Area < 0 || Area > 500)
+        {
+            Result.setTitle("EtLandmarkArea");
+            Result.setMessage("Area should be in the range of 0 to 500");
+            Result.setSuccess(false);
+        }
+        return Result;
     }
     public ValidationResult VipPhoneNumberValidation(VipPhoneNumber VipPhoneNumberObj)
     {
-        return new ValidationResult();
+        ValidationResult Result = new ValidationResult();
+        Result.setMessage("Valid Data");
+        Result.setSuccess(true);
+
+        String PhoneNumber = VipPhoneNumberObj.getPhoneNumber();
+        String CompanyName = VipPhoneNumberObj.getCompany();
+
+        if (PhoneNumber.length() != 12 || !PhoneNumber.contains("-"))
+        {
+            Result.setTitle("EtPhoneNumberTel");
+            Result.setMessage("Please enter a valid phone number");
+            Result.setSuccess(false);
+        }
+        else
+        {
+            String[] PARTS = PhoneNumber.split("-");
+            if (PARTS.length != 3)
+            {
+                Result.setTitle("EtPhoneNumberTel");
+                Result.setMessage("Please enter a full valid phone number");
+                Result.setSuccess(false);
+            }
+            else
+            {
+                String Code = PARTS[0];
+                String Number = PARTS[1] + PARTS[2];
+                if (Code.length() != 3 || Number.length() != 7)
+                {
+                    Result.setTitle("EtPhoneNumberTel");
+                    Result.setMessage("Please enter a correct UAE format phone number");
+                    Result.setSuccess(false);
+                }
+                else
+                {
+                    switch (CompanyName)
+                    {
+                        case "Etisalat":
+                        {
+                            boolean IsFound = false;
+                            for (String EtisalatCode : EtisalatCodes)
+                            {
+                                if (EtisalatCode.equals(Code))
+                                {
+                                    IsFound = true;
+                                    break;
+                                }
+                            }
+                            if (!IsFound)
+                            {
+                                Result.setTitle("EtPhoneNumberTel");
+                                Result.setMessage("Please enter a correct etisalat code");
+                                Result.setSuccess(false);
+                            }
+                        }
+                        break;
+                        case "Du":
+                        {
+                            boolean IsFound = false;
+                            for (String DuCode : DuCodes)
+                            {
+                                if (DuCode.equals(Code))
+                                {
+                                    IsFound = true;
+                                    break;
+                                }
+                            }
+                            if (!IsFound)
+                            {
+                                Result.setTitle("EtPhoneNumberTel");
+                                Result.setMessage("Please enter a correct du code");
+                                Result.setSuccess(false);
+                            }
+                        }
+                        break;
+                        default:
+                            Result.setMessage("Missing Company Name");
+                            Result.setSuccess(false);
+                    }
+                }
+            }
+        }
+        return Result;
     }
     public ValidationResult GeneralValidation(General GeneralObj)
     {
-        return new ValidationResult();
+        ValidationResult Result = new ValidationResult();
+        Result.setMessage("Valid Data");
+        Result.setSuccess(true);
+
+        String Name = GeneralObj.getName();
+
+        if (Name.length() == 0 || Name.length() > 200)
+        {
+            Result.setTitle("");
+            Result.setMessage("Name object should be between 0 and 200");
+            Result.setSuccess(false);
+        }
+
+        return Result;
     }
 
     //region Helpers

@@ -38,4 +38,11 @@ public class PreferenceUtils
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         return prefs.getString(Constants.KEY_PASSWORD, null);
     }
+
+    public static void ClearPreferences(Context context)
+    {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor prefsEditor = prefs.edit();
+        prefsEditor.clear();
+    }
 }
