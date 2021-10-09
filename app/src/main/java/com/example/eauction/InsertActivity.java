@@ -260,9 +260,9 @@ public class InsertActivity extends AppCompatActivity
                     CarModel.setID(UserObj.getEmail()); //Set the Telemetry ID by the user ID which is the email.
 
                     //If its empty create a new list with empty items.
-                    if (UserObj.getOwnedCarPlateTelemetry() == null)
+                    if (UserObj.getOwnedCarTelemetry() == null)
                     {
-                        UserObj.setOwnedCarPlateTelemetry(new ArrayList<CarPlate>());
+                        UserObj.setOwnedCarTelemetry(new ArrayList<Car>());
                     }
                     //Get the owned telemetries that the user have
                     ArrayList<Car> TempList = UserObj.getOwnedCarTelemetry();
@@ -333,9 +333,9 @@ public class InsertActivity extends AppCompatActivity
                     LandmarkModel.setID(UserObj.getEmail()); //Set the Telemetry ID by the user ID which is the email.
 
                     //If its empty create a new list with empty items.
-                    if (UserObj.getOwnedCarPlateTelemetry() == null)
+                    if (UserObj.getOwnedLandmarkTelemetry() == null)
                     {
-                        UserObj.setOwnedCarPlateTelemetry(new ArrayList<CarPlate>());
+                        UserObj.setOwnedLandmarkTelemetry(new ArrayList<Landmark>());
                     }
                     //Get the owned telemetries that the user have
                     ArrayList<Landmark> TempList = UserObj.getOwnedLandmarkTelemetry();
@@ -405,9 +405,9 @@ public class InsertActivity extends AppCompatActivity
                     VIPPhoneModel.setID(UserObj.getEmail()); //Set the Telemetry ID by the user ID which is the email.
 
                     //If its empty create a new list with empty items.
-                    if (UserObj.getOwnedCarPlateTelemetry() == null)
+                    if (UserObj.getOwnedVipPhoneTelemetry() == null)
                     {
-                        UserObj.setOwnedCarPlateTelemetry(new ArrayList<CarPlate>());
+                        UserObj.setOwnedVipPhoneTelemetry(new ArrayList<VipPhoneNumber>());
                     }
                     //Get the owned telemetries that the user have
                     ArrayList<VipPhoneNumber> TempList = UserObj.getOwnedVipPhoneTelemetry();
@@ -475,9 +475,9 @@ public class InsertActivity extends AppCompatActivity
                     GeneralModel.setID(UserObj.getEmail()); //Set the Telemetry ID by the user ID which is the email.
 
                     //If its empty create a new list with empty items.
-                    if (UserObj.getOwnedCarPlateTelemetry() == null)
+                    if (UserObj.getOwnedGeneralTelemetry() == null)
                     {
-                        UserObj.setOwnedCarPlateTelemetry(new ArrayList<CarPlate>());
+                        UserObj.setOwnedGeneralTelemetry(new ArrayList<General>());
                     }
                     //Get the owned telemetries that the user have
                     ArrayList<General> TempList = UserObj.getOwnedGeneralTelemetry();

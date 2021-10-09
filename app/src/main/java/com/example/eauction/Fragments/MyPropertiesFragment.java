@@ -44,10 +44,22 @@ public class MyPropertiesFragment extends Fragment {
         ButterKnife.bind(this,view);
         ArrayList<? extends Telemetry> telemetriesDummy = UserObj.getOwnedCarPlateTelemetry();
         layoutManager = new LinearLayoutManager(getContext());
-        rvAdapter = new TelemetryAdapter((ArrayList<Telemetry>) telemetriesDummy);
+        rvAdapter = new TelemetryAdapter(Merge(UserObj.getOwnedCarPlateTelemetry(), UserObj.getOwnedCarTelemetry(), UserObj.getOwnedLandmarkTelemetry(), UserObj.getOwnedVipPhoneTelemetry(), UserObj.getOwnedGeneralTelemetry()));
         RvTelemetry.setLayoutManager(layoutManager);
         RvTelemetry.setAdapter(rvAdapter);
         return view;
+    }
+    @SafeVarargs
+    private ArrayList<Telemetry> Merge(@NonNull ArrayList<? extends Telemetry>...args)
+    {
+        ArrayList<Telemetry> returnTelemetries = new ArrayList<>();
+        returnTelemetries.add(args[0].get(0));
+        for (ArrayList<? extends Telemetry> arg: args)
+        {
+            if(arg != null && !arg.isEmpty())
+                returnTelemetries.addAll(arg);
+        }
+        return returnTelemetries;
     }
 
     public void SetUser(User UserObj)
