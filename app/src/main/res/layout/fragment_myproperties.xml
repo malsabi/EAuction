@@ -6,13 +6,37 @@
     android:layout_height="match_parent">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:id="@+id/RvTelemetry"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline7"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.9" />
+
+    <com.royrodriguez.transitionbutton.TransitionButton
+        android:id="@+id/BtnAddTelemetryInsertActivity"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/add_telemetry"
+        android:textColor="@android:color/white"
+        app:defaultColor="@color/PrimaryRedColor"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:id="@+id/RvTelemetry"
+        app:layout_constraintTop_toBottomOf="@+id/RvTelemetry"
+        app:loaderColor="@android:color/white"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

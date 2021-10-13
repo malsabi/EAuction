@@ -1,6 +1,8 @@
 package com.example.eauction.Adapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -72,6 +74,7 @@ public class TelemetryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         return holder;
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position)
     {
@@ -80,11 +83,18 @@ public class TelemetryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             CarViewHolder carHolder = (CarViewHolder)holder;
             Car car = (Car)Telemetries.get(position);
 
-            carHolder.cvCarName.setText(car.getName());
-            carHolder.cvCarModel.setText(car.getModel());
-            carHolder.cvCarMilage.setText(String.valueOf(car.getMileage()));
-            carHolder.cvHorsePower.setText(String.valueOf(car.getHorsePower()));
-            carHolder.cvCarDetails.setText(car.getDetails());
+            String carNameLabel = "<b><u>" + "Car name:" + "</u></b> ";
+            String carModelLabel = "<b><u>" + "Car model:" + "</u></b> ";
+            String carMillageLabel = "<b><u>" + "Millage:" + "</u></b> ";
+            String carHorsePowerLabel = "<b><u>" + "Horse power:" + "</u></b> ";
+            String carDetailsLabel = "<b><u>" + "Details:" + "</u></b> ";
+
+
+            carHolder.cvCarName.setText(Html.fromHtml(carNameLabel+car.getName()));
+            carHolder.cvCarModel.setText(Html.fromHtml(carModelLabel+car.getModel()));
+            carHolder.cvCarMilage.setText(Html.fromHtml(carMillageLabel+car.getMileage()));
+            carHolder.cvHorsePower.setText(Html.fromHtml(carHorsePowerLabel+car.getHorsePower()));
+            carHolder.cvCarDetails.setText(Html.fromHtml(carDetailsLabel+car.getDetails()));
             carHolder.cvCarImage.setImageBitmap(TelemetryHelper.Base64ToImage(car.getImage()));
         }
         else if(Telemetries.get(position) instanceof  CarPlate)
@@ -92,10 +102,16 @@ public class TelemetryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             CarPlateViewHolder carPlateHolder = (CarPlateViewHolder)holder;
             CarPlate carPlate = (CarPlate) Telemetries.get(position);
 
-            carPlateHolder.cvPlateCode.setText(carPlate.getPlateCode());
-            carPlateHolder.cvPlateDetails.setText(carPlate.getDetails());
-            carPlateHolder.cvPlateNumber.setText(carPlate.getPlateNumber());
-            carPlateHolder.cvEmirate.setText(carPlate.getEmirate());
+            String carPlateCodeLabel = "<b><u>" + "Plate code:" + "</u></b> ";
+            String carDetailsLabel = "<b><u>" + "Details:" + "</u></b> ";
+            String plateNumberLabel = "<b><u>" + "Plate number:" + "</u></b> ";
+            String emirateLabel = "<b><u>" + "Emirate:" + "</u></b> ";
+
+
+            carPlateHolder.cvPlateCode.setText(Html.fromHtml(carPlateCodeLabel+carPlate.getPlateCode()));
+            carPlateHolder.cvPlateDetails.setText(Html.fromHtml(carDetailsLabel+carPlate.getDetails()));
+            carPlateHolder.cvPlateNumber.setText(Html.fromHtml(plateNumberLabel+carPlate.getPlateNumber()));
+            carPlateHolder.cvEmirate.setText(Html.fromHtml(emirateLabel+carPlate.getEmirate()));
             carPlateHolder.cvCarPlate.setImageBitmap(TelemetryHelper.Base64ToImage(carPlate.getImage()));
         }
         else if(Telemetries.get(position) instanceof  VipPhoneNumber)
@@ -103,9 +119,14 @@ public class TelemetryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             PhoneNumberViewHolder vipPhoneHolder = (PhoneNumberViewHolder) holder;
             VipPhoneNumber vipPhoneNumber = (VipPhoneNumber) Telemetries.get(position);
 
-            vipPhoneHolder.cvPhoneNumber.setText(vipPhoneNumber.getPhoneNumber());
-            vipPhoneHolder.cvCompanyName.setText(vipPhoneNumber.getCompany());
-            vipPhoneHolder.cvCompanyDetails.setText(vipPhoneNumber.getDetails());
+            String cvPhoneNumberLabel = "<b><u>" + "Phone number:" + "</u></b> ";
+            String cvCompanyNameLabel = "<b><u>" + "Company name:" + "</u></b> ";
+            String cvCompanyDetailsLabel = "<b><u>" + "Details:" + "</u></b> ";
+
+
+            vipPhoneHolder.cvPhoneNumber.setText(Html.fromHtml(cvPhoneNumberLabel+vipPhoneNumber.getPhoneNumber()));
+            vipPhoneHolder.cvCompanyName.setText(Html.fromHtml(cvCompanyNameLabel+vipPhoneNumber.getCompany()));
+            vipPhoneHolder.cvCompanyDetails.setText(Html.fromHtml(cvCompanyDetailsLabel+vipPhoneNumber.getDetails()));
             vipPhoneHolder.cvPhoneNumberImg.setImageBitmap(TelemetryHelper.Base64ToImage(vipPhoneNumber.getImage()));
         }
         else if(Telemetries.get(position) instanceof  Landmark)
@@ -113,20 +134,28 @@ public class TelemetryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             LandmarkViewHolder landMarkHolder = (LandmarkViewHolder)holder;
             Landmark landmark = (Landmark) Telemetries.get(position);
 
-            landMarkHolder.cvLandmarkName.setText(landmark.getName());
-            landMarkHolder.cvLandmarkType.setText(landmark.getType());
-            landMarkHolder.cvLandmarkLocation.setText(landmark.getLocation());
-            landMarkHolder.cvLandmarkArea.setText(String.valueOf(landmark.getArea()));
+            String cvLandmarkNameLabel = "<b><u>" + "Landmark name:" + "</u></b> ";
+            String cvLandmarkTypeLabel = "<b><u>" + "Type:" + "</u></b> ";
+            String cvLandmarkLocationLabel = "<b><u>" + "Location:" + "</u></b> ";
+            String cvLandmarkAreaLabel = "<b><u>" + "Area:" + "</u></b> ";
+
+            landMarkHolder.cvLandmarkName.setText(Html.fromHtml(cvLandmarkNameLabel+landmark.getName()));
+            landMarkHolder.cvLandmarkType.setText(Html.fromHtml(cvLandmarkTypeLabel+landmark.getType()));
+            landMarkHolder.cvLandmarkLocation.setText(Html.fromHtml(cvLandmarkLocationLabel+landmark.getLocation()));
+            landMarkHolder.cvLandmarkArea.setText(Html.fromHtml(cvLandmarkAreaLabel+landmark.getArea()));
             landMarkHolder.cvLandmarkImg.setImageBitmap(TelemetryHelper.Base64ToImage(landmark.getImage()));
         }
         else
         {
-            GeneralViewHolder carPlateHolder = (GeneralViewHolder)holder;
+            GeneralViewHolder generalViewHolder = (GeneralViewHolder)holder;
             General general = (General) Telemetries.get(position);
 
-            carPlateHolder.cvItemName.setText(general.getName());
-            carPlateHolder.cvDetails.setText(general.getDetails());
-            carPlateHolder.cvItemGeneral.setImageBitmap(TelemetryHelper.Base64ToImage(general.getImage()));
+            String cvItemNameLabel = "<b><u>" + "Name:" + "</u></b> ";
+            String cvDetailsLabel = "<b><u>" + "Details:" + "</u></b> ";
+
+            generalViewHolder.cvItemName.setText(Html.fromHtml(cvItemNameLabel+general.getName()));
+            generalViewHolder.cvDetails.setText(Html.fromHtml(cvDetailsLabel+general.getDetails()));
+            generalViewHolder.cvItemGeneral.setImageBitmap(TelemetryHelper.Base64ToImage(general.getImage()));
         }
     }
 

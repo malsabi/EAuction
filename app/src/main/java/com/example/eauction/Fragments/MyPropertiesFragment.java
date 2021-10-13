@@ -1,5 +1,6 @@
 package com.example.eauction.Fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,6 +20,7 @@ import com.example.eauction.Models.CarPlate;
 import com.example.eauction.Models.Telemetry;
 import com.example.eauction.Models.User;
 import com.example.eauction.R;
+import com.royrodriguez.transitionbutton.TransitionButton;
 
 import java.util.ArrayList;
 
@@ -34,6 +36,9 @@ public class MyPropertiesFragment extends Fragment {
     private RecyclerView.Adapter rvAdapter;
     private RecyclerView.LayoutManager layoutManager;
 
+    @BindView(R.id.BtnAddTelemetryInsertActivity)
+    TransitionButton BtnAddTelemetryInsertActivity;
+
     private User UserObj;
 
     @Nullable
@@ -47,6 +52,16 @@ public class MyPropertiesFragment extends Fragment {
         rvAdapter = new TelemetryAdapter(Merge(UserObj.getOwnedCarPlateTelemetry(), UserObj.getOwnedCarTelemetry(), UserObj.getOwnedLandmarkTelemetry(), UserObj.getOwnedVipPhoneTelemetry(), UserObj.getOwnedGeneralTelemetry()));
         RvTelemetry.setLayoutManager(layoutManager);
         RvTelemetry.setAdapter(rvAdapter);
+
+        //region EventListener
+        BtnAddTelemetryInsertActivity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getContext(),InsertActivity.class));
+            }
+        });
+        //endregion
+
         return view;
     }
     @SafeVarargs
