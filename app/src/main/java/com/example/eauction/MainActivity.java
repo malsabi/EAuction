@@ -10,11 +10,14 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.eauction.Fragments.AboutUsFragment;
@@ -23,6 +26,7 @@ import com.example.eauction.Fragments.ContactUsFragment;
 import com.example.eauction.Fragments.HomeFragment;
 import com.example.eauction.Fragments.MyPropertiesFragment;
 import com.example.eauction.Fragments.TermsCondFragment;
+import com.example.eauction.Helpers.TelemetryHelper;
 import com.example.eauction.Interfaces.GetUserInformationCallback;
 import com.example.eauction.Models.User;
 import com.example.eauction.Utilities.PreferenceUtils;
@@ -48,6 +52,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @BindView(R.id.nav_view)
     NavigationView navigationView;
 
+    TextView tvNameDrawerMenu;
+    ImageView profile_image;
+
     private App AppInstance;
     private User UserObj;
 
@@ -62,6 +69,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
         setSupportActionBar(toolbar);
         AppInstance = (App)getApplication();
+        View headerLayout = navigationView.getHeaderView(0);
+        tvNameDrawerMenu = (TextView) headerLayout.findViewById(R.id.tvNameDrawerMenu);
+        profile_image = (ImageView) headerLayout.findViewById(R.id.profile_image);
         if(savedInstanceState == null)
         {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
@@ -69,6 +79,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         InitializeBurgerButtonAnimation();
         GetUserInformation();
+
+        //tvNameDrawerMenu.setText("Dummy Name"); //TODO Username from the user object, getting it null and no clue why
+        //profile_image.setImageBitmap(TelemetryHelper.Base64ToImage(UserObj.getProfilePicture())); //Todo just like above
+
         SignOutButton.setOnClickListener(v ->
         {
             OnSignOutClick();
@@ -93,6 +107,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             AppInstance.GetFireStoreInstance().GetUserInformation(UserObj ->
             {
                 this.UserObj = UserObj;
+                tvNameDrawerMenu.setText(UserObj.getFirstName()+" "+UserObj.getLastName());
+                Log.d("Image64", UserObj.getProfilePicture()+"");
+                profile_image.setImageBitmap(TelemetryHelper.Base64ToImage(UserObj.getProfilePicture())); //Todo just like above
                 MyProperties.SetUser(UserObj);
             }, PreferenceUtils.getEmail(this));
         }
@@ -102,6 +119,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             UserObj = gson.fromJson(getIntent().getStringExtra("UserObject"), User.class);
             MyProperties.SetUser(UserObj);
         }
+
     }
 
     private void OnSignOutClick()
