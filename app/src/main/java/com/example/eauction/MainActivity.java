@@ -52,8 +52,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @BindView(R.id.nav_view)
     NavigationView navigationView;
 
-    TextView tvNameDrawerMenu;
-    ImageView profile_image;
+    TextView UsernameEditText;
+    ImageView UserProfileImageView;
 
     private App AppInstance;
     private User UserObj;
@@ -69,9 +69,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
         setSupportActionBar(toolbar);
         AppInstance = (App)getApplication();
+
         View headerLayout = navigationView.getHeaderView(0);
-        tvNameDrawerMenu = (TextView) headerLayout.findViewById(R.id.tvNameDrawerMenu);
-        profile_image = (ImageView) headerLayout.findViewById(R.id.profile_image);
+        UsernameEditText = (TextView) headerLayout.findViewById(R.id.tvNameDrawerMenu);
+        UserProfileImageView = (ImageView) headerLayout.findViewById(R.id.profile_image);
+
         if(savedInstanceState == null)
         {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
@@ -79,9 +81,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         InitializeBurgerButtonAnimation();
         GetUserInformation();
-
-        //tvNameDrawerMenu.setText("Dummy Name"); //TODO Username from the user object, getting it null and no clue why
-        //profile_image.setImageBitmap(TelemetryHelper.Base64ToImage(UserObj.getProfilePicture())); //Todo just like above
 
         SignOutButton.setOnClickListener(v ->
         {
@@ -100,26 +99,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void GetUserInformation()
     {
-        PreferenceUtils.ClearPreferences(this);
         if (PreferenceUtils.getEmail(this) != null && PreferenceUtils.getPassword(this) != null)
         {
             Log.d("UserObj", "MSG: " + PreferenceUtils.getEmail(this));
             AppInstance.GetFireStoreInstance().GetUserInformation(UserObj ->
             {
                 this.UserObj = UserObj;
-                tvNameDrawerMenu.setText(UserObj.getFirstName()+" "+UserObj.getLastName());
-                Log.d("Image64", UserObj.getProfilePicture()+"");
-                profile_image.setImageBitmap(TelemetryHelper.Base64ToImage(UserObj.getProfilePicture())); //Todo just like above
+                Log.d("UserObj", UserObj.getProfilePicture() + "");
+                String FullUserName = UserObj.getFirstName() + " " + UserObj.getLastName();
+                UsernameEditText.setText(FullUserName);
+                UserProfileImageView.setImageBitmap(TelemetryHelper.Base64ToImage(UserObj.getProfilePicture()));
+                Log.d("UserObj", "Successfully set the text and image");
                 MyProperties.SetUser(UserObj);
+                Log.d("UserObj", "Successfully set the MyProperties");
             }, PreferenceUtils.getEmail(this));
         }
-        else
-        {
-            Gson gson = new Gson();
-            UserObj = gson.fromJson(getIntent().getStringExtra("UserObject"), User.class);
-            MyProperties.SetUser(UserObj);
-        }
-
     }
 
     private void OnSignOutClick()
@@ -164,7 +158,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new AuctionsFragment()).commit();
                 break;
             case R.id.dm_myproperties:
-
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, MyProperties).commit();
                 break;
             case R.id.dm_aboutus:

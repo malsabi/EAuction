@@ -6,9 +6,6 @@ import android.preference.PreferenceManager;
 
 public class PreferenceUtils
 {
-    public PreferenceUtils()
-    {
-    }
     public static boolean saveEmail(String email, Context context)
     {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);

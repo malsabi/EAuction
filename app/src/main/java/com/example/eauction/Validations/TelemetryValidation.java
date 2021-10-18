@@ -7,9 +7,9 @@ public class TelemetryValidation
     //Codes used in car plates for each emirate used in Validation
     private final String[] AbuDhabiCodes = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "17", "50"};
     private final String[] AjmanCodes = {"A", "B", "C", "D", "E"};
-    private final String[] DubaiCodes = {"A", "AA"};
+    private final String[] DubaiCodes = {"A", "AA", "B", "N", "X", "J", ""};
     private final String[] FujairahCodes = {"A", "B", "C", "D", "E", "F", "G", "K", "M", "P", "R", "S", "T"};
-    private final String[] RasAlKhaimahCodes = {"A", "C", "D", "I", "K", "M", "N", "S", "V", "Y"};
+    private final String[] RasAlKhaimahCodes = {"A", "B", "C", "D", "I", "K", "M", "N", "S", "V", "Y"};
     private final String[] SharjahCodes = {"1", "2", "3"};
     private final String[] UmmAlQuwainCodes = {"A", "B", "C", "D", "E", "F", "G", "H", "I", "X"};
 

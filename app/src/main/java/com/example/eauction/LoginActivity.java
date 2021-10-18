@@ -5,18 +5,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.eauction.Interfaces.GetUserInformationCallback;
 import com.example.eauction.Interfaces.SignInUserCallback;
-import com.example.eauction.Models.FireStoreResult;
 import com.example.eauction.Models.SignIn;
-import com.example.eauction.Models.User;
 import com.example.eauction.Utilities.PreferenceUtils;
-import com.google.gson.Gson;
 import com.royrodriguez.transitionbutton.TransitionButton;
 
 import butterknife.BindView;
@@ -80,16 +75,9 @@ public class LoginActivity extends AppCompatActivity
             if (Result.isSuccess())
             {
                 Toast.makeText(LoginActivity.this, Result.getMessage(), Toast.LENGTH_SHORT).show();
-
                 PreferenceUtils.saveEmail(UserObj.getEmail(), this);
                 PreferenceUtils.savePassword(UserObj.getPassword(), this);
-
-                Gson gson = new Gson();
-                String myJson = gson.toJson(UserObj);
-                Log.d("JSON", myJson);
                 Intent I = new Intent(LoginActivity.this, MainActivity.class);
-                I.putExtra("UserObject", myJson);
-
                 startActivity(I);
                 finish();
             }

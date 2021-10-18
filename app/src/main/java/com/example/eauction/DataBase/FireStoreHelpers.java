@@ -53,7 +53,7 @@ public class FireStoreHelpers
 
     public void SetUserIsActive(final SetUserIsActiveCallback IsActiveCallback, String IsActive, String Email)
     {
-        DB.collection("USERS").document(Email).update("active", IsActive)
+        DB.collection("USERS").document(Email).update("isActive", IsActive)
         .addOnSuccessListener(d ->
         {
             IsActiveCallback.onCallback(true);
