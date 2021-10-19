@@ -2,6 +2,7 @@ package com.example.eauction.DataBase;
 
 import android.util.Log;
 
+import com.example.eauction.Cryptograpgy.FirestoreEncoder;
 import com.example.eauction.Cryptograpgy.Hashing;
 import com.example.eauction.Interfaces.SetUserTelemetryCallback;
 import com.example.eauction.Interfaces.RegisterUserCallback;
@@ -40,8 +41,8 @@ public class FireStoreManager extends FireStoreHelpers
         }
         else
         {
-            UserObj.setEmail(Hashing.SHA256(UserObj.getEmail()));
-            UserObj.setPassword(Hashing.SHA256(UserObj.getPassword()));
+            UserObj.setEmail(FirestoreEncoder.EncodeForFirebaseKey(Hashing.SHA256(UserObj.getEmail())));
+            UserObj.setPassword(FirestoreEncoder.EncodeForFirebaseKey(Hashing.SHA256(UserObj.getPassword())));
             Log.d("TAG", "Attempting to make set request");
             DB.collection("USERS").document(UserObj.getEmail()).set(UserObj)
             .addOnSuccessListener(d ->
@@ -80,8 +81,8 @@ public class FireStoreManager extends FireStoreHelpers
         else
         {
             Log.d("TAG", "Attempting to make get request");
-            SignInObj.setEmail(Hashing.SHA256(SignInObj.getEmail()));
-            SignInObj.setPassword(Hashing.SHA256(SignInObj.getPassword()));
+            SignInObj.setEmail(FirestoreEncoder.EncodeForFirebaseKey(Hashing.SHA256(SignInObj.getEmail())));
+            SignInObj.setPassword(FirestoreEncoder.EncodeForFirebaseKey(Hashing.SHA256(SignInObj.getPassword())));
             DB.collection("USERS").document(SignInObj.getEmail()).get()
             .addOnSuccessListener(d ->
             {
