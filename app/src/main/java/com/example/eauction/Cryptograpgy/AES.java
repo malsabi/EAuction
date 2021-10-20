@@ -1,9 +1,7 @@
 package com.example.eauction.Cryptograpgy;
 import android.annotation.SuppressLint;
-
 import java.security.Key;
 import java.util.Base64;
-
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 
