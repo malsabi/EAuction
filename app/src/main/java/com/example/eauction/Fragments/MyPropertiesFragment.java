@@ -68,7 +68,6 @@ public class MyPropertiesFragment extends Fragment {
     private ArrayList<Telemetry> Merge(@NonNull ArrayList<? extends Telemetry>...args)
     {
         ArrayList<Telemetry> returnTelemetries = new ArrayList<>();
-        returnTelemetries.add(args[0].get(0));
         for (ArrayList<? extends Telemetry> arg: args)
         {
             if(arg != null && !arg.isEmpty())
