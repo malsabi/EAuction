@@ -1,11 +1,14 @@
 package com.example.eauction.Fragments;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,7 +17,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eauction.Adapters.TelemetryAdapter;
-import com.example.eauction.DummyData.DummyData;
 import com.example.eauction.InsertActivity;
 import com.example.eauction.Models.CarPlate;
 import com.example.eauction.Models.Telemetry;
@@ -26,14 +28,13 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import fr.ganfra.materialspinner.MaterialSpinner;
 
 public class MyPropertiesFragment extends Fragment {
 
     @BindView(R.id.RvTelemetry)
     public RecyclerView RvTelemetry;
 
-    private RecyclerView.Adapter rvAdapter;
+    private TelemetryAdapter rvAdapter;
     private RecyclerView.LayoutManager layoutManager;
 
     @BindView(R.id.BtnAddTelemetryInsertActivity)
@@ -47,11 +48,43 @@ public class MyPropertiesFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_myproperties,container,false);
         ButterKnife.bind(this,view);
-        ArrayList<? extends Telemetry> telemetriesDummy = UserObj.getOwnedCarPlateTelemetry();
         layoutManager = new LinearLayoutManager(getContext());
-        rvAdapter = new TelemetryAdapter(Merge(UserObj.getOwnedCarPlateTelemetry(), UserObj.getOwnedCarTelemetry(), UserObj.getOwnedLandmarkTelemetry(), UserObj.getOwnedVipPhoneTelemetry(), UserObj.getOwnedGeneralTelemetry()));
+        ArrayList<Telemetry> userTelemertries = Merge(UserObj.getOwnedCarPlateTelemetry(), UserObj.getOwnedCarTelemetry(), UserObj.getOwnedLandmarkTelemetry(), UserObj.getOwnedVipPhoneTelemetry(), UserObj.getOwnedGeneralTelemetry());
+        rvAdapter = new TelemetryAdapter(userTelemertries);
         RvTelemetry.setLayoutManager(layoutManager);
         RvTelemetry.setAdapter(rvAdapter);
+
+        rvAdapter.setOnItemClickListener(new TelemetryAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                Telemetry selectedTelemery = userTelemertries.get(position); //Item Selected //Todo Sabi Update this telemetery based on the logic you need
+
+//                if(selectedTelemery instanceof CarPlate){
+//                    //Do stuff
+//                }
+
+                //region Dialog Settings
+                final Dialog dialog = new Dialog(getContext());
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setCancelable(true);
+                dialog.setContentView(R.layout.auction_dialog);
+                EditText EtBasePrice = dialog.findViewById(R.id.EtBasePrice);
+                TransitionButton BtnSubmitAuction = dialog.findViewById(R.id.BtnSubmitAuction);
+                //endregion
+
+                dialog.show();
+                BtnSubmitAuction.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        double basePrice = Double.parseDouble(EtBasePrice.getText().toString()); //TODO Sabi Apply the logic you need for the baseprice then update object and set it as auctioned
+                        Toast.makeText(getContext(), basePrice+"", Toast.LENGTH_SHORT).show();
+                        selectedTelemery.setBasePrice(basePrice);
+                        dialog.hide();
+                    }
+                });
+
+            }
+        });
 
         //region EventListener
         BtnAddTelemetryInsertActivity.setOnClickListener(new View.OnClickListener() {
@@ -80,4 +113,5 @@ public class MyPropertiesFragment extends Fragment {
     {
         this.UserObj = UserObj;
     }
+
 }

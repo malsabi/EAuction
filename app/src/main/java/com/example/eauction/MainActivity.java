@@ -1,24 +1,23 @@
 package com.example.eauction;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-
-import android.app.Activity;
-import android.app.Application;
 import android.content.Intent;
-import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.eauction.Fragments.AboutUsFragment;
 import com.example.eauction.Fragments.AuctionsFragment;
@@ -27,12 +26,9 @@ import com.example.eauction.Fragments.HomeFragment;
 import com.example.eauction.Fragments.MyPropertiesFragment;
 import com.example.eauction.Fragments.TermsCondFragment;
 import com.example.eauction.Helpers.TelemetryHelper;
-import com.example.eauction.Interfaces.GetUserInformationCallback;
 import com.example.eauction.Models.User;
 import com.example.eauction.Utilities.PreferenceUtils;
 import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.FirebaseApp;
-import com.google.gson.Gson;
 import com.royrodriguez.transitionbutton.TransitionButton;
 
 import butterknife.BindView;
@@ -55,6 +51,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     TextView UsernameEditText;
     ImageView UserProfileImageView;
 
+
+
     private App AppInstance;
     private User UserObj;
 
@@ -73,6 +71,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         View headerLayout = navigationView.getHeaderView(0);
         UsernameEditText = (TextView) headerLayout.findViewById(R.id.tvNameDrawerMenu);
         UserProfileImageView = (ImageView) headerLayout.findViewById(R.id.profile_image);
+
+        UserProfileImageView.setOnClickListener(view -> TakeImageFromGallery());
+
 
         if(savedInstanceState == null)
         {
@@ -131,6 +132,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }, UserObj);
     }
 
+    private void TakeImageFromGallery()
+    {
+        Intent pickImage = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(pickImage, 1);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1)
+        {
+            if (resultCode == RESULT_OK)
+            {
+                assert data != null;
+                Uri selectedImageUri = data.getData();
+                UserProfileImageView.setImageURI(selectedImageUri);
+                //TODO Sabi Update image in the server
+            }
+        }
+    }
 
     //region NavigationView Methods
     @Override

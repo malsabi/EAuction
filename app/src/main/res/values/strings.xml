@@ -41,6 +41,12 @@
     <string name="area">Area</string>
     <string name="extra_details">Extra Details</string>
     <string name="add_telemetry">Add Telemetry</string>
+    <string name="base_price">Base Price</string>
+    <string name="submit">Submit</string>
+    <string name="please_set_the_base_price"><b><u>Please set the base price:</u></b></string>
+    <string name="carBold"><b>Car</b></string>
+    <string name="Landmark"><b>Landmark</b></string>
+    <string name="service">Service</string>
 
 
 </resources>

@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -37,6 +38,15 @@ public class TelemetryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     public static final int LANDMARK_TEL = 5;
 
     private ArrayList<Telemetry> Telemetries;
+    private OnItemClickListener mListener;
+
+    public interface OnItemClickListener{
+        void onItemClick(int position);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener){
+        mListener = listener;
+    }
 
     public TelemetryAdapter(ArrayList<Telemetry> Telemetries){
         this.Telemetries = Telemetries;
@@ -52,23 +62,23 @@ public class TelemetryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         Context context = parent.getContext();
         if(viewType == CAR_TEL){
             v = LayoutInflater.from(context).inflate(R.layout.card_car, parent, false);
-            holder = new CarViewHolder(v);
+            holder = new CarViewHolder(v, mListener);
         }
         else if(viewType == CARPLATE_TEL){
             v = LayoutInflater.from(context).inflate(R.layout.card_carplate, parent, false);
-            holder = new CarPlateViewHolder(v);
+            holder = new CarPlateViewHolder(v, mListener);
         }
         else if(viewType == VIPNUMBER_TEL){
             v = LayoutInflater.from(context).inflate(R.layout.card_vipphonenumber, parent, false);
-            holder = new PhoneNumberViewHolder(v);
+            holder = new PhoneNumberViewHolder(v, mListener);
         }
         else if(viewType == LANDMARK_TEL){
             v = LayoutInflater.from(context).inflate(R.layout.card_landmark, parent, false);
-            holder = new LandmarkViewHolder(v);
+            holder = new LandmarkViewHolder(v, mListener);
         }
         else{
             v = LayoutInflater.from(context).inflate(R.layout.card_general, parent, false);
-            holder = new GeneralViewHolder(v);
+            holder = new GeneralViewHolder(v, mListener);
         }
 
         return holder;
@@ -96,6 +106,7 @@ public class TelemetryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             carHolder.cvHorsePower.setText(Html.fromHtml(carHorsePowerLabel+car.getHorsePower()));
             carHolder.cvCarDetails.setText(Html.fromHtml(carDetailsLabel+car.getDetails()));
             carHolder.cvCarImage.setImageBitmap(TelemetryHelper.Base64ToImage(car.getImage()));
+            addCurrent_addBasePrice((LinearLayout) carHolder.cvCarDetails.getParent(),car);
         }
         else if(Telemetries.get(position) instanceof  CarPlate)
         {
@@ -113,6 +124,7 @@ public class TelemetryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             carPlateHolder.cvPlateNumber.setText(Html.fromHtml(plateNumberLabel+carPlate.getPlateNumber()));
             carPlateHolder.cvEmirate.setText(Html.fromHtml(emirateLabel+carPlate.getEmirate()));
             carPlateHolder.cvCarPlate.setImageBitmap(TelemetryHelper.Base64ToImage(carPlate.getImage()));
+            addCurrent_addBasePrice((LinearLayout) carPlateHolder.cvCarPlate.getParent(),carPlate);
         }
         else if(Telemetries.get(position) instanceof  VipPhoneNumber)
         {
@@ -128,6 +140,7 @@ public class TelemetryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             vipPhoneHolder.cvCompanyName.setText(Html.fromHtml(cvCompanyNameLabel+vipPhoneNumber.getCompany()));
             vipPhoneHolder.cvCompanyDetails.setText(Html.fromHtml(cvCompanyDetailsLabel+vipPhoneNumber.getDetails()));
             vipPhoneHolder.cvPhoneNumberImg.setImageBitmap(TelemetryHelper.Base64ToImage(vipPhoneNumber.getImage()));
+            addCurrent_addBasePrice((LinearLayout) vipPhoneHolder.cvPhoneNumberImg.getParent(),vipPhoneNumber);
         }
         else if(Telemetries.get(position) instanceof  Landmark)
         {
@@ -144,6 +157,7 @@ public class TelemetryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             landMarkHolder.cvLandmarkLocation.setText(Html.fromHtml(cvLandmarkLocationLabel+landmark.getLocation()));
             landMarkHolder.cvLandmarkArea.setText(Html.fromHtml(cvLandmarkAreaLabel+landmark.getArea()));
             landMarkHolder.cvLandmarkImg.setImageBitmap(TelemetryHelper.Base64ToImage(landmark.getImage()));
+            addCurrent_addBasePrice((LinearLayout) landMarkHolder.cvLandmarkArea.getParent(),landmark);
         }
         else
         {
@@ -156,6 +170,7 @@ public class TelemetryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             generalViewHolder.cvItemName.setText(Html.fromHtml(cvItemNameLabel+general.getName()));
             generalViewHolder.cvDetails.setText(Html.fromHtml(cvDetailsLabel+general.getDetails()));
             generalViewHolder.cvItemGeneral.setImageBitmap(TelemetryHelper.Base64ToImage(general.getImage()));
+            addCurrent_addBasePrice((LinearLayout) generalViewHolder.cvItemGeneral.getParent(),general);
         }
     }
 
@@ -199,9 +214,21 @@ public class TelemetryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         @BindView(R.id.cvCarDetails)
         public TextView cvCarDetails;
 
-        public CarViewHolder(@NonNull View itemView) {
+        public CarViewHolder(@NonNull View itemView, OnItemClickListener listener) {
             super(itemView);
             ButterKnife.bind(this,itemView);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(listener != null){
+                        int position = getAdapterPosition();
+                        if(position != RecyclerView.NO_POSITION){
+                            listener.onItemClick(position);
+                        }
+                    }
+                }
+            });
         }
     }
 
@@ -222,9 +249,20 @@ public class TelemetryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         @BindView(R.id.cvPlateDetails)
         public TextView cvPlateDetails;
 
-        public CarPlateViewHolder(@NonNull View itemView) {
+        public CarPlateViewHolder(@NonNull View itemView, OnItemClickListener listener) {
             super(itemView);
             ButterKnife.bind(this,itemView);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(listener != null){
+                        int position = getAdapterPosition();
+                        if(position != RecyclerView.NO_POSITION){
+                            listener.onItemClick(position);
+                        }
+                    }
+                }
+            });
         }
     }
 
@@ -245,9 +283,20 @@ public class TelemetryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         @BindView(R.id.cvLandmarkArea)
         public TextView cvLandmarkArea;
 
-        public LandmarkViewHolder(@NonNull View itemView) {
+        public LandmarkViewHolder(@NonNull View itemView, OnItemClickListener listener) {
             super(itemView);
             ButterKnife.bind(this,itemView);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(listener != null){
+                        int position = getAdapterPosition();
+                        if(position != RecyclerView.NO_POSITION){
+                            listener.onItemClick(position);
+                        }
+                    }
+                }
+            });
         }
     }
 
@@ -265,9 +314,20 @@ public class TelemetryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         @BindView(R.id.cvCompanyDetails)
         public TextView cvCompanyDetails;
 
-        public PhoneNumberViewHolder(@NonNull View itemView) {
+        public PhoneNumberViewHolder(@NonNull View itemView, OnItemClickListener listener) {
             super(itemView);
             ButterKnife.bind(this,itemView);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(listener != null){
+                        int position = getAdapterPosition();
+                        if(position != RecyclerView.NO_POSITION){
+                            listener.onItemClick(position);
+                        }
+                    }
+                }
+            });
         }
     }
 
@@ -282,9 +342,46 @@ public class TelemetryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         @BindView(R.id.cvDetails)
         public TextView cvDetails;
 
-        public GeneralViewHolder(@NonNull View itemView) {
+        public GeneralViewHolder(@NonNull View itemView, OnItemClickListener listener) {
             super(itemView);
             ButterKnife.bind(this,itemView);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(listener != null){
+                        int position = getAdapterPosition();
+                        if(position != RecyclerView.NO_POSITION){
+                            listener.onItemClick(position);
+                        }
+                    }
+                }
+            });
+        }
+    }
+
+    private void addCurrent_addBasePrice(LinearLayout linearLayout,Telemetry telemetry){
+        String currentBid = "<b><u>" + "Current Bid:" + "</u></b> "+telemetry.getCurrentBid();
+        String basePrice = "<b><u>" + "Base Price:" + "</u></b> "+telemetry.getBasePrice();
+
+        if(telemetry.getBasePrice() != 0 && telemetry.getCurrentBid() != 0){
+            TextView currentBidTV = new TextView(linearLayout.getContext());
+            TextView basePriceTV = new TextView(linearLayout.getContext());
+            currentBidTV.setPadding(8,0,0,0);
+            basePriceTV.setPadding(8,0,0,0);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+            );
+            params.setMargins(0, 0, 0, 16);
+
+
+            currentBidTV.setText(Html.fromHtml(currentBid));
+            basePriceTV.setText(Html.fromHtml(basePrice));
+            currentBidTV.setLayoutParams(params);
+            basePriceTV.setLayoutParams(params);
+
+            linearLayout.addView(currentBidTV);
+            linearLayout.addView(basePriceTV);
         }
     }
 }
