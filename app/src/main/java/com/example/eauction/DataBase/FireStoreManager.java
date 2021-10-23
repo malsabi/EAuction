@@ -246,6 +246,21 @@ public class FireStoreManager extends FireStoreHelpers
         });
     }
 
+    public void AddCarAuction(SetUserTelemetryCallback AddCarCallback, Car CarTelemetry)
+    {
+        DocumentReference CarPlateDocument = DB.collection("AUCTIONS").document("CAR");
+        //Atomically add a new region to the "regions" array field.
+        CarPlateDocument.update("CarTelemetries", FieldValue.arrayUnion(CarTelemetry))
+        .addOnSuccessListener(d ->
+        {
+            AddCarCallback.onCallback(new FireStoreResult("", "", true));
+        })
+        .addOnFailureListener(d ->
+        {
+            AddCarCallback.onCallback(new FireStoreResult("", d.getMessage(), false));
+        });
+    }
+
     public void GetCarAuctions(GetCarAuctionsCallback Callback)
     {
         ArrayList<Car> Cars = new ArrayList<>();
@@ -271,6 +286,21 @@ public class FireStoreManager extends FireStoreHelpers
         });
     }
 
+    public void AddLandmarkAuction(SetUserTelemetryCallback AddLandmarkCallback, Landmark LandmarkTelemetry)
+    {
+        DocumentReference CarPlateDocument = DB.collection("AUCTIONS").document("LANDMARK");
+        //Atomically add a new region to the "regions" array field.
+        CarPlateDocument.update("LandmarkTelemetries", FieldValue.arrayUnion(LandmarkTelemetry))
+        .addOnSuccessListener(d ->
+        {
+            AddLandmarkCallback.onCallback(new FireStoreResult("", "", true));
+        })
+        .addOnFailureListener(d ->
+        {
+            AddLandmarkCallback.onCallback(new FireStoreResult("", d.getMessage(), false));
+        });
+    }
+
     public void GetLandmarkAuctions(GetLandmarkAuctionsCallback Callback)
     {
         ArrayList<Landmark> Landmarks = new ArrayList<>();
@@ -290,6 +320,21 @@ public class FireStoreManager extends FireStoreHelpers
                 }
                 Callback.onCallback(Landmarks);
             }
+        });
+    }
+
+    public void AddVIPPhoneNumberAuction(SetUserTelemetryCallback AddVIPPhoneNumberCallback, VipPhoneNumber VipPhoneNumberTelemetry)
+    {
+        DocumentReference CarPlateDocument = DB.collection("AUCTIONS").document("VIPPHONE");
+        //Atomically add a new region to the "regions" array field.
+        CarPlateDocument.update("VIPPhoneTelemetries", FieldValue.arrayUnion(VipPhoneNumberTelemetry))
+        .addOnSuccessListener(d ->
+        {
+            AddVIPPhoneNumberCallback.onCallback(new FireStoreResult("", "", true));
+        })
+        .addOnFailureListener(d ->
+        {
+            AddVIPPhoneNumberCallback.onCallback(new FireStoreResult("", d.getMessage(), false));
         });
     }
 
@@ -315,6 +360,21 @@ public class FireStoreManager extends FireStoreHelpers
         });
     }
 
+    public void AddGeneralAuction(SetUserTelemetryCallback AddGeneralCallback, General GeneralTelemetry)
+    {
+        DocumentReference CarPlateDocument = DB.collection("AUCTIONS").document("GENERAL");
+        //Atomically add a new region to the "regions" array field.
+        CarPlateDocument.update("GeneralTelemetries", FieldValue.arrayUnion(GeneralTelemetry))
+        .addOnSuccessListener(d ->
+        {
+            AddGeneralCallback.onCallback(new FireStoreResult("", "", true));
+        })
+        .addOnFailureListener(d ->
+        {
+            AddGeneralCallback.onCallback(new FireStoreResult("", d.getMessage(), false));
+        });
+    }
+
     public void GetGeneralAuctions(GetGeneralAuctionsCallback Callback)
     {
         ArrayList<General> Generals = new ArrayList<>();
@@ -334,6 +394,21 @@ public class FireStoreManager extends FireStoreHelpers
                 }
                 Callback.onCallback(Generals);
             }
+        });
+    }
+
+    public void AddServiceAuction(SetUserTelemetryCallback AddServiceCallback, Service ServiceTelemetry)
+    {
+        DocumentReference CarPlateDocument = DB.collection("AUCTIONS").document("SERVICE");
+        //Atomically add a new region to the "regions" array field.
+        CarPlateDocument.update("ServiceTelemetries", FieldValue.arrayUnion(ServiceTelemetry))
+        .addOnSuccessListener(d ->
+        {
+            AddServiceCallback.onCallback(new FireStoreResult("", "", true));
+        })
+        .addOnFailureListener(d ->
+        {
+            AddServiceCallback.onCallback(new FireStoreResult("", d.getMessage(), false));
         });
     }
 

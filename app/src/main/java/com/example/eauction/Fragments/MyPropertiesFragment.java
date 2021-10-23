@@ -106,7 +106,7 @@ public class MyPropertiesFragment extends Fragment
 
                     BtnSubmitAuction.setOnClickListener(view ->
                     {
-                        //TODO Apply the logic you need for the baseprice then update object and set it as auctioned
+                        //TODO Apply the logic you need for the baseprice then update object and set it as auctioned (done)
                         double UserBasePrice = Double.parseDouble(EtBasePrice.getText().toString());
                         if (UserBasePrice <= 0)
                         {
@@ -182,6 +182,17 @@ public class MyPropertiesFragment extends Fragment
                 {
                     if (Result)
                     {
+                        AppInstance.GetFireStoreInstance().AddCarAuction(AddAuctionResult ->
+                        {
+                            if (AddAuctionResult.isSuccess())
+                            {
+                                Log.d("UserObjProperties", "Successfully added the auction into the global auction collection");
+                            }
+                            else
+                            {
+                                Log.d("UserObjProperties", "Failed to add the auction into the global auction collection");
+                            }
+                        }, (Car)SelectedTelemetry);
                     }
                 }, UserObj);
             }
@@ -193,6 +204,17 @@ public class MyPropertiesFragment extends Fragment
                 {
                     if (Result)
                     {
+                        AppInstance.GetFireStoreInstance().AddLandmarkAuction(AddAuctionResult ->
+                        {
+                            if (AddAuctionResult.isSuccess())
+                            {
+                                Log.d("UserObjProperties", "Successfully added the auction into the global auction collection");
+                            }
+                            else
+                            {
+                                Log.d("UserObjProperties", "Failed to add the auction into the global auction collection");
+                            }
+                        }, (Landmark) SelectedTelemetry);
                     }
                 }, UserObj);
             }
@@ -204,7 +226,17 @@ public class MyPropertiesFragment extends Fragment
                 {
                     if (Result)
                     {
-                        Log.d("UserObjProperties", "SetUserInformation Updated successfully");
+                        AppInstance.GetFireStoreInstance().AddVIPPhoneNumberAuction(AddAuctionResult ->
+                        {
+                            if (AddAuctionResult.isSuccess())
+                            {
+                                Log.d("UserObjProperties", "Successfully added the auction into the global auction collection");
+                            }
+                            else
+                            {
+                                Log.d("UserObjProperties", "Failed to add the auction into the global auction collection");
+                            }
+                        }, (VipPhoneNumber) SelectedTelemetry);
                     }
                 }, UserObj);
             }
@@ -216,6 +248,17 @@ public class MyPropertiesFragment extends Fragment
                 {
                     if (Result)
                     {
+                        AppInstance.GetFireStoreInstance().AddGeneralAuction(AddAuctionResult ->
+                        {
+                            if (AddAuctionResult.isSuccess())
+                            {
+                                Log.d("UserObjProperties", "Successfully added the auction into the global auction collection");
+                            }
+                            else
+                            {
+                                Log.d("UserObjProperties", "Failed to add the auction into the global auction collection");
+                            }
+                        }, (General) SelectedTelemetry);
                     }
                 }, UserObj);
             }
@@ -227,6 +270,17 @@ public class MyPropertiesFragment extends Fragment
                 {
                     if (Result)
                     {
+                        AppInstance.GetFireStoreInstance().AddServiceAuction(AddAuctionResult ->
+                        {
+                            if (AddAuctionResult.isSuccess())
+                            {
+                                Log.d("UserObjProperties", "Successfully added the auction into the global auction collection");
+                            }
+                            else
+                            {
+                                Log.d("UserObjProperties", "Failed to add the auction into the global auction collection");
+                            }
+                        }, (Service) SelectedTelemetry);
                     }
                 }, UserObj);
             }
