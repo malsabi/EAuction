@@ -29,4 +29,9 @@ public class General extends Telemetry
         return name;
     }
     //endregion
+
+    public boolean IsEqual(General G)
+    {
+        return name.equals(G.getName()) && getDetails().equals(G.getDetails());
+    }
 }

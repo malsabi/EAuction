@@ -62,4 +62,9 @@ public class Landmark extends Telemetry
         return area;
     }
     //endregion
+
+    public boolean IsEqual(Landmark LM)
+    {
+        return type.equals(LM.getType()) && location.equals(LM.getLocation()) && name.equals(LM.getName()) && area == LM.getArea() && getDetails().equals(LM.getDetails());
+    }
 }

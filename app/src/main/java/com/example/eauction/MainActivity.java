@@ -51,12 +51,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     TextView UsernameEditText;
     ImageView UserProfileImageView;
 
-
-
     private App AppInstance;
     private User UserObj;
-
-    private final MyPropertiesFragment MyProperties = new MyPropertiesFragment();
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -66,14 +62,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         ButterKnife.bind(this);
         navigationView.setNavigationItemSelectedListener(this);
         setSupportActionBar(toolbar);
+
         AppInstance = (App)getApplication();
 
+        //region Username and ProfilePicture Events
         View headerLayout = navigationView.getHeaderView(0);
         UsernameEditText = (TextView) headerLayout.findViewById(R.id.tvNameDrawerMenu);
         UserProfileImageView = (ImageView) headerLayout.findViewById(R.id.profile_image);
-
         UserProfileImageView.setOnClickListener(view -> TakeImageFromGallery());
-
+        //endregion
 
         if(savedInstanceState == null)
         {
@@ -102,17 +99,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     {
         if (PreferenceUtils.getEmail(this) != null && PreferenceUtils.getPassword(this) != null)
         {
-            Log.d("UserObj", "MSG: " + PreferenceUtils.getEmail(this));
+            Log.d("UserObjMainActivity", "MSG: " + PreferenceUtils.getEmail(this));
             AppInstance.GetFireStoreInstance().GetUserInformation(UserObj ->
             {
                 this.UserObj = UserObj;
-                Log.d("UserObj", UserObj.getProfilePicture() + "");
+                Log.d("UserObjMainActivity", UserObj.getProfilePicture() + "");
                 String FullUserName = UserObj.getFirstName() + " " + UserObj.getLastName();
                 UsernameEditText.setText(FullUserName);
                 UserProfileImageView.setImageBitmap(TelemetryHelper.Base64ToImage(UserObj.getProfilePicture()));
-                Log.d("UserObj", "Successfully set the text and image");
-                MyProperties.SetUser(UserObj);
-                Log.d("UserObj", "Successfully set the MyProperties");
+                Log.d("UserObjMainActivity", "Successfully set the text and image");
             }, PreferenceUtils.getEmail(this));
         }
     }
@@ -149,7 +144,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 assert data != null;
                 Uri selectedImageUri = data.getData();
                 UserProfileImageView.setImageURI(selectedImageUri);
-                //TODO Sabi Update image in the server
+                //TODO Update image in the server (done)
+                AppInstance.GetFireStoreInstance().SetUserImage(UserObj.getEmail(), TelemetryHelper.ImageToBase64(UserProfileImageView.getDrawable()));
             }
         }
     }
@@ -180,7 +176,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new AuctionsFragment()).commit();
                 break;
             case R.id.dm_myproperties:
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, MyProperties).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MyPropertiesFragment()).commit();
                 break;
             case R.id.dm_aboutus:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new AboutUsFragment()).commit();

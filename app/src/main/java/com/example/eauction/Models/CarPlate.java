@@ -50,4 +50,9 @@ public class CarPlate extends Telemetry
         return emirate;
     }
     //endregion
+
+    public boolean IsEqual(CarPlate CP)
+    {
+        return plateNumber.equals(CP.getPlateNumber()) && plateCode.equals(CP.getPlateCode()) && emirate.equals(CP.getEmirate()) && getDetails().equals(CP.getDetails());
+    }
 }

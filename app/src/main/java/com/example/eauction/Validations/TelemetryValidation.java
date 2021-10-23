@@ -100,7 +100,7 @@ public class TelemetryValidation
                     Result.setMessage("Please make sure to enter a valid plate number");
                     Result.setSuccess(false);
                 }
-                else if (!IsCodeValid("Ras Al Khaima", Code))
+                else if (!IsCodeValid("Ras Al Khaimah", Code))
                 {
                     Result.setTitle("EtCarPlateCode");
                     Result.setMessage("Please make sure to enter a valid code");
@@ -198,25 +198,25 @@ public class TelemetryValidation
         String Name = LandmarkObj.getName();
         int Area = LandmarkObj.getArea();
 
-        if (Type.length() < 4 || Type.length() >= 20)
+        if (Type.length() < 4 || Type.length() >= 50)
         {
             Result.setTitle("EtLandmarkType");
             Result.setMessage("Type should be in the range of 4 to 20");
             Result.setSuccess(false);
         }
-        else if (Location.length() < 4 || Location.length() >= 20)
+        else if (Location.length() < 4 || Location.length() >= 50)
         {
             Result.setTitle("EtLandmarkLocation");
             Result.setMessage("Location should be in the range of 4 to 20");
             Result.setSuccess(false);
         }
-        else if (Name.length() < 4 || Name.length() >= 20)
+        else if (Name.length() < 4 || Name.length() >= 50)
         {
             Result.setTitle("EtLandmarkName");
             Result.setMessage("Name should be in the range of 4 to 20");
             Result.setSuccess(false);
         }
-        else if (Area < 0 || Area > 500)
+        else if (Area < 0 || Area > 1000)
         {
             Result.setTitle("EtLandmarkArea");
             Result.setMessage("Area should be in the range of 0 to 500");

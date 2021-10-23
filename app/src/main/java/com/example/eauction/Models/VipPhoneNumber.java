@@ -41,4 +41,9 @@ public class VipPhoneNumber extends Telemetry
         return company;
     }
     //endregion
+
+    public boolean IsEqual(VipPhoneNumber V)
+    {
+        return phoneNumber.equals(V.getPhoneNumber()) && company.equals(V.getPhoneNumber()) && getDetails().equals(V.getDetails());
+    }
 }

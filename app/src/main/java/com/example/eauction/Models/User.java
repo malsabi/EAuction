@@ -20,6 +20,7 @@ public class User
     private ArrayList<VipPhoneNumber> ownedVipPhoneTelemetry;
     private ArrayList<Landmark> ownedLandmarkTelemetry;
     private ArrayList<General> ownedGeneralTelemetry;
+    private ArrayList<Service> ownedServiceTelemetry;
     private String isActive;
 
     //region Constructors
@@ -40,9 +41,10 @@ public class User
         this.ownedVipPhoneTelemetry = null;
         this.ownedLandmarkTelemetry = null;
         this.ownedGeneralTelemetry = null;
+        this.ownedServiceTelemetry = null;
         this.isActive = "Offline";
     }
-    public User(String firstName, String lastName, String email, String phoneNumber, String password, String date, String gender, String nationality, String ssn, String profilePicture, ArrayList<Car> ownedCarTelemetry, ArrayList<CarPlate> ownedCarePlateTelemetry, ArrayList<VipPhoneNumber> ownedVipPhoneTelemetry, ArrayList<Landmark> ownedLandmarkTelemetry, ArrayList<General> ownedGeneralTelemetry, String isActive) {
+    public User(String firstName, String lastName, String email, String phoneNumber, String password, String date, String gender, String nationality, String ssn, String profilePicture, ArrayList<Car> ownedCarTelemetry, ArrayList<CarPlate> ownedCarePlateTelemetry, ArrayList<VipPhoneNumber> ownedVipPhoneTelemetry, ArrayList<Landmark> ownedLandmarkTelemetry, ArrayList<General> ownedGeneralTelemetry,  ArrayList<Service> ownedServiceTelemetry, String isActive) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -58,6 +60,7 @@ public class User
         this.ownedVipPhoneTelemetry = ownedVipPhoneTelemetry;
         this.ownedLandmarkTelemetry = ownedLandmarkTelemetry;
         this.ownedGeneralTelemetry = ownedGeneralTelemetry;
+        this.ownedServiceTelemetry = ownedServiceTelemetry;
         this.isActive = isActive;
     }
     //endregion
@@ -107,6 +110,7 @@ public class User
     public void setOwnedVipPhoneTelemetry(ArrayList<VipPhoneNumber> ownedVipPhoneTelemetry) { this.ownedVipPhoneTelemetry = ownedVipPhoneTelemetry; }
     public void setOwnedLandmarkTelemetry(ArrayList<Landmark> ownedLandmarkTelemetry) { this.ownedLandmarkTelemetry = ownedLandmarkTelemetry; }
     public void setOwnedGeneralTelemetry(ArrayList<General> ownedGeneralTelemetry) { this.ownedGeneralTelemetry = ownedGeneralTelemetry; }
+    public void setOwnedServiceTelemetry(ArrayList<Service> ownedServiceTelemetry) { this.ownedServiceTelemetry = ownedServiceTelemetry; }
     public void setIsActive(String isActive) { this.isActive = isActive; }
     //endregion
     //region Getters
@@ -155,6 +159,7 @@ public class User
     public ArrayList<VipPhoneNumber> getOwnedVipPhoneTelemetry() { return ownedVipPhoneTelemetry; }
     public ArrayList<Landmark> getOwnedLandmarkTelemetry() { return ownedLandmarkTelemetry; }
     public ArrayList<General> getOwnedGeneralTelemetry() { return ownedGeneralTelemetry; }
+    public ArrayList<Service> getOwnedServiceTelemetry() { return ownedServiceTelemetry; }
     public String getIsActive() { return isActive; }
     //endregion
 }

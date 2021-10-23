@@ -62,4 +62,9 @@ public class Car extends Telemetry
         return mileage;
     }
     //endregion
+
+    public boolean IsEqual(Car C)
+    {
+        return name.equals(C.getName()) && model.equals(C.getModel()) && horsePower == C.getHorsePower() && mileage == C.getMileage() && getDetails().equals(C.getDetails());
+    }
 }

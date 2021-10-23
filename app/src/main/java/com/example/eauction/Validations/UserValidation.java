@@ -67,7 +67,6 @@ public class UserValidation
         }
         return Result;
     }
-
     public ValidationResult ValidateSignIn(SignIn SignInObj)
     {
         ValidationResult Result = new ValidationResult();
@@ -99,7 +98,7 @@ public class UserValidation
             Result.setSuccess(false);
             Result.setMessage("First name should be at least 3 or more letters");
         }
-        else if (FirstName.length() > 15)
+        else if (FirstName.length() > 30)
         {
             Result.setSuccess(false);
             Result.setMessage("First name should be less than 15 letters");
@@ -118,7 +117,6 @@ public class UserValidation
         }
         return Result;
     }
-
     public ValidationResult LastNameValidation(String LastName)
     {
         ValidationResult Result = new ValidationResult();
@@ -147,7 +145,6 @@ public class UserValidation
         }
         return Result;
     }
-
     public ValidationResult EmailValidation(String Email)
     {
         ValidationResult Result = new ValidationResult();
@@ -193,12 +190,12 @@ public class UserValidation
         Result.setSuccess(true);
         Result.setMessage("Valid password");
 
-        if (Password.length() > 20)
+        if (Password.length() > 40)
         {
             Result.setSuccess(false);
             Result.setMessage("Password should not exceed 20 characters");
         }
-        else if (Password.length() <= 5)
+        else if (Password.length() < 5)
         {
             Result.setSuccess(false);
             Result.setMessage("Password should contain at least 6 or more characters");
@@ -267,7 +264,14 @@ public class UserValidation
     //region "Private Methods"
     private boolean IsDigit(char ch)
     {
-        return (ch >= '0' && ch <= '9');
+        if (ch >= '0' && ch <= '9')
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
     private boolean IsLetter(char ch)
     {
@@ -283,15 +287,22 @@ public class UserValidation
     }
     public boolean IsValidEmailAddress(String emailAddress)
     {
-        Pattern regexPattern = Pattern.compile("^[(a-zA-Z-0-9-\\_\\+\\.)]+@[(a-z-A-z)]+\\.[(a-zA-z)]{2,3}$");
-        Matcher regMatcher = regexPattern.matcher(emailAddress);
-        if(regMatcher.matches())
+        if (emailAddress.length() > 100)
         {
-            return true;
+            return false;
         }
         else
         {
-            return false;
+            Pattern regexPattern = Pattern.compile("^[(a-zA-Z-0-9-\\_\\+\\.)]+@[(a-z-A-z)]+\\.[(a-zA-z)]{2,3}$");
+            Matcher regMatcher = regexPattern.matcher(emailAddress);
+            if(regMatcher.matches())
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
     private boolean IsValidDate(String date)

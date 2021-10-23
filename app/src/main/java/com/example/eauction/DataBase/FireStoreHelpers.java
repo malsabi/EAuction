@@ -3,6 +3,7 @@ package com.example.eauction.DataBase;
 import android.util.Log;
 import com.example.eauction.Interfaces.GetFieldUserCallback;
 import com.example.eauction.Interfaces.GetUserInformationCallback;
+import com.example.eauction.Interfaces.SetUserInformationCallback;
 import com.example.eauction.Interfaces.SetUserIsActiveCallback;
 import com.example.eauction.Interfaces.SetUserTelemetryCallback;
 import com.example.eauction.Models.Car;
@@ -48,6 +49,19 @@ public class FireStoreHelpers
         {
             Log.d("InsertActivity", "Error: " + d.getMessage());
             GetInformationCallback.onCallback(null);
+        });
+    }
+
+    public void SetUserInformation(final SetUserInformationCallback SetInformationCallback, User UserObj)
+    {
+        DB.collection("USERS").document(UserObj.getEmail()).set(UserObj)
+       .addOnSuccessListener(d ->
+        {
+            SetInformationCallback.onCallback(true);
+        })
+        .addOnFailureListener(d ->
+        {
+            SetInformationCallback.onCallback(false);
         });
     }
 
@@ -147,5 +161,10 @@ public class FireStoreHelpers
         {
             Callback.onCallback(new FireStoreResult("", d.getMessage(), false));
         });
+    }
+
+    public void SetUserImage(String Email, String Image)
+    {
+        DB.collection("USERS").document(Email).update("profilePicture", Image);
     }
 }

@@ -2,20 +2,40 @@ package com.example.eauction.DataBase;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import com.example.eauction.Cryptograpgy.FirestoreEncoder;
 import com.example.eauction.Cryptograpgy.Hashing;
+import com.example.eauction.Interfaces.GetCarPlateAuctionsCallback;
+import com.example.eauction.Interfaces.GetUserTelemetryCallback;
 import com.example.eauction.Interfaces.SetUserTelemetryCallback;
 import com.example.eauction.Interfaces.RegisterUserCallback;
 import com.example.eauction.Interfaces.SignInUserCallback;
 import com.example.eauction.Interfaces.SignOutUserCallback;
+import com.example.eauction.Models.CarPlate;
 import com.example.eauction.Models.FireStoreResult;
 import com.example.eauction.Models.SignIn;
 import com.example.eauction.Models.Telemetry;
 import com.example.eauction.Models.User;
 import com.example.eauction.Models.ValidationResult;
 import com.example.eauction.Validations.UserValidation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
+import com.google.firebase.firestore.Source;
+import com.squareup.okhttp.internal.DiskLruCache;
+
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 public class FireStoreManager extends FireStoreHelpers
 {
@@ -177,9 +197,35 @@ public class FireStoreManager extends FireStoreHelpers
         }, "Offline", UserObj.getEmail());
     }
 
-    public void AddAuction(SetUserTelemetryCallback AddAuctionCallback, Telemetry TelemetryObj, User UserObj)
+    public void AddCarPlateAuction(SetUserTelemetryCallback AddCarPlateCallback, CarPlate CarPlateTelemetry)
     {
-        FireStoreResult Result = new FireStoreResult();
+        DocumentReference CarPlateDocument = DB.collection("AUCTIONS").document("CARPLATE");
+        //Atomically add a new region to the "regions" array field.
+        CarPlateDocument.update("CarPlateTelemetries", FieldValue.arrayUnion(CarPlateTelemetry))
+        .addOnSuccessListener(d ->
+        {
+            AddCarPlateCallback.onCallback(new FireStoreResult("", "", true));
+        })
+        .addOnFailureListener(d ->
+        {
+            AddCarPlateCallback.onCallback(new FireStoreResult("", d.getMessage(), false));
+        });
+    }
+
+    public void GetCarPlateAuctions(GetCarPlateAuctionsCallback Callback)
+    {
+
+        DB.collection("AUCTIONS").document("CARPLATE").get()
+        .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
+        {
+           @Override
+           public void onComplete(@NonNull Task<DocumentSnapshot> task)
+           {
+               DocumentSnapshot document = task.getResult();
+               List<CarPlate> CarPlates = (List<CarPlate>) document.get("CarPlateTelemetries");
+               Callback.onCallback((ArrayList<CarPlate>)CarPlates);
+           }
+        });
     }
 
     public List<Telemetry> GetActiveAuctions()

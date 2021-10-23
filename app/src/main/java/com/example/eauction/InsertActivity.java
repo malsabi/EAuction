@@ -26,8 +26,10 @@ import com.example.eauction.Models.Car;
 import com.example.eauction.Models.CarPlate;
 import com.example.eauction.Models.General;
 import com.example.eauction.Models.Landmark;
+import com.example.eauction.Models.User;
 import com.example.eauction.Models.ValidationResult;
 import com.example.eauction.Models.VipPhoneNumber;
+import com.example.eauction.Utilities.PreferenceUtils;
 import com.example.eauction.Validations.TelemetryValidation;
 import com.royrodriguez.transitionbutton.TransitionButton;
 import java.util.ArrayList;
@@ -37,7 +39,6 @@ import fr.ganfra.materialspinner.MaterialSpinner;
 
 public class InsertActivity extends AppCompatActivity
 {
-
     @BindView(R.id.spinner)
     MaterialSpinner Spinner;
 
@@ -51,6 +52,7 @@ public class InsertActivity extends AppCompatActivity
     TransitionButton AddTelemetryButton;
 
     private App AppInstance;
+    private User UserObj;
 
     private final CarPlateFragment CarPlateObj = new CarPlateFragment();           //Fragment
     private final CarFragment CarObj = new CarFragment();                          //Fragment
@@ -67,6 +69,7 @@ public class InsertActivity extends AppCompatActivity
 
 
         AppInstance = (App)getApplication();
+        GetUserInformation();
 
         String[] ITEMS = {"Car Plate","Car", "Landmark","VIP Phone Number","General Item"};
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, ITEMS);
@@ -156,6 +159,16 @@ public class InsertActivity extends AppCompatActivity
         AddTelemetryButton.stopAnimation(TransitionButton.StopAnimationStyle.SHAKE, null);
     }
 
+    private void GetUserInformation()
+    {
+        if (PreferenceUtils.getEmail(this) != null && PreferenceUtils.getPassword(this) != null)
+        {
+            AppInstance.GetFireStoreInstance().GetUserInformation(UserObj ->
+            {
+                this.UserObj = UserObj;
+            }, PreferenceUtils.getEmail(this));
+        }
+    }
 
     //region "Fragment Handlers"
     public void HandleCarPlate()
@@ -178,43 +191,34 @@ public class InsertActivity extends AppCompatActivity
         if (Result.isSuccess()) //Data is validated and ready to be submitted to fire store
         {
             Log.d("InsertActivity", "Validation Succeeded");
-            AppInstance.GetFireStoreInstance().GetUserInformation(UserObj ->
-            {
-                if (UserObj != null)
+
+            if (UserObj != null) {
+                Log.d("InsertActivity", UserObj.getSsn());
+
+                CarPlateModel.setID(UserObj.getEmail()); //Set the Telemetry ID by the user ID which is the email.
+
+                //If its empty create a new list with empty items.
+                if (UserObj.getOwnedCarPlateTelemetry() == null) {
+                    UserObj.setOwnedCarPlateTelemetry(new ArrayList<CarPlate>());
+                }
+                //Get the owned telemetries that the user have
+                ArrayList<CarPlate> TempList = UserObj.getOwnedCarPlateTelemetry();
+                //Add the Telemetry Object to the Owned Telemetry List.
+                TempList.add(CarPlateModel);
+                //Update the Owned Telemetry List.
+                UserObj.setOwnedCarPlateTelemetry(TempList);
+                //Update the Owned Telemetry in the fire store data base.
+                AppInstance.GetFireStoreInstance().SetCarPlateTelemetry(SetResult ->
                 {
-                    Log.d("InsertActivity", UserObj.getSsn());
-
-                    CarPlateModel.setID(UserObj.getEmail()); //Set the Telemetry ID by the user ID which is the email.
-
-                    //If its empty create a new list with empty items.
-                    if (UserObj.getOwnedCarPlateTelemetry() == null)
-                    {
-                        UserObj.setOwnedCarPlateTelemetry(new ArrayList<CarPlate>());
+                    if (SetResult.isSuccess()) {
+                        Log.d("InsertActivity", "Successfully Updated");
+                    } else {
+                        Log.d("InsertActivity", SetResult.getMessage());
                     }
-                    //Get the owned telemetries that the user have
-                    ArrayList<CarPlate> TempList = UserObj.getOwnedCarPlateTelemetry();
-                    //Add the Telemetry Object to the Owned Telemetry List.
-                    TempList.add(CarPlateModel);
-                    //Update the Owned Telemetry List.
-                    UserObj.setOwnedCarPlateTelemetry(TempList);
-                    //Update the Owned Telemetry in the fire store data base.
-                    AppInstance.GetFireStoreInstance().SetCarPlateTelemetry(SetResult ->
-                    {
-                        if (SetResult.isSuccess())
-                        {
-                            Log.d("InsertActivity", "Successfully Updated");
-                        }
-                        else
-                        {
-                            Log.d("InsertActivity", SetResult.getMessage());
-                        }
-                    },  UserObj.getOwnedCarPlateTelemetry(), UserObj.getEmail());
-                }
-                else
-                {
-                    Log.d("InsertActivity","NULL USER");
-                }
-            }, "h5JGBrQTGorO7q6IaFMfu5cSqqB6XTp1aybOD11spnQ=");
+                }, UserObj.getOwnedCarPlateTelemetry(), UserObj.getEmail());
+            } else {
+                Log.d("InsertActivity", "NULL USER");
+            }
         }
         else
         {
@@ -248,46 +252,36 @@ public class InsertActivity extends AppCompatActivity
 
         ValidationResult Result = TelemetryValidator.CarValidation(CarModel);
 
-        if (Result.isSuccess())
-        {
+        if (Result.isSuccess()) {
             Log.d("InsertActivity", "Validation Succeeded");
-            AppInstance.GetFireStoreInstance().GetUserInformation(UserObj ->
-            {
-                if (UserObj != null)
+
+            if (UserObj != null) {
+                Log.d("InsertActivity", UserObj.getSsn());
+
+                CarModel.setID(UserObj.getEmail()); //Set the Telemetry ID by the user ID which is the email.
+
+                //If its empty create a new list with empty items.
+                if (UserObj.getOwnedCarTelemetry() == null) {
+                    UserObj.setOwnedCarTelemetry(new ArrayList<Car>());
+                }
+                //Get the owned telemetries that the user have
+                ArrayList<Car> TempList = UserObj.getOwnedCarTelemetry();
+                //Add the Telemetry Object to the Owned Telemetry List.
+                TempList.add(CarModel);
+                //Update the Owned Telemetry List.
+                UserObj.setOwnedCarTelemetry(TempList);
+                //Update the Owned Telemetry in the fire store data base.
+                AppInstance.GetFireStoreInstance().SetCarTelemetry(SetResult ->
                 {
-                    Log.d("InsertActivity", UserObj.getSsn());
-
-                    CarModel.setID(UserObj.getEmail()); //Set the Telemetry ID by the user ID which is the email.
-
-                    //If its empty create a new list with empty items.
-                    if (UserObj.getOwnedCarTelemetry() == null)
-                    {
-                        UserObj.setOwnedCarTelemetry(new ArrayList<Car>());
+                    if (SetResult.isSuccess()) {
+                        Log.d("InsertActivity", "Successfully Updated");
+                    } else {
+                        Log.d("InsertActivity", SetResult.getMessage());
                     }
-                    //Get the owned telemetries that the user have
-                    ArrayList<Car> TempList = UserObj.getOwnedCarTelemetry();
-                    //Add the Telemetry Object to the Owned Telemetry List.
-                    TempList.add(CarModel);
-                    //Update the Owned Telemetry List.
-                    UserObj.setOwnedCarTelemetry(TempList);
-                    //Update the Owned Telemetry in the fire store data base.
-                    AppInstance.GetFireStoreInstance().SetCarTelemetry(SetResult ->
-                    {
-                        if (SetResult.isSuccess())
-                        {
-                            Log.d("InsertActivity", "Successfully Updated");
-                        }
-                        else
-                        {
-                            Log.d("InsertActivity", SetResult.getMessage());
-                        }
-                    },  UserObj.getOwnedCarTelemetry(), UserObj.getEmail());
-                }
-                else
-                {
-                    Log.d("InsertActivity","NULL USER");
-                }
-            }, "h5JGBrQTGorO7q6IaFMfu5cSqqB6XTp1aybOD11spnQ=");
+                }, UserObj.getOwnedCarTelemetry(), UserObj.getEmail());
+            } else {
+                Log.d("InsertActivity", "NULL USER");
+            }
         }
         else
         {
@@ -321,46 +315,36 @@ public class InsertActivity extends AppCompatActivity
 
         ValidationResult Result = TelemetryValidator.LandmarkValidation(LandmarkModel);
 
-        if (Result.isSuccess())
-        {
+        if (Result.isSuccess()) {
             Log.d("InsertActivity", "Validation Succeeded");
-            AppInstance.GetFireStoreInstance().GetUserInformation(UserObj ->
-            {
-                if (UserObj != null)
+
+            if (UserObj != null) {
+                Log.d("InsertActivity", UserObj.getSsn());
+
+                LandmarkModel.setID(UserObj.getEmail()); //Set the Telemetry ID by the user ID which is the email.
+
+                //If its empty create a new list with empty items.
+                if (UserObj.getOwnedLandmarkTelemetry() == null) {
+                    UserObj.setOwnedLandmarkTelemetry(new ArrayList<Landmark>());
+                }
+                //Get the owned telemetries that the user have
+                ArrayList<Landmark> TempList = UserObj.getOwnedLandmarkTelemetry();
+                //Add the Telemetry Object to the Owned Telemetry List.
+                TempList.add(LandmarkModel);
+                //Update the Owned Telemetry List.
+                UserObj.setOwnedLandmarkTelemetry(TempList);
+                //Update the Owned Telemetry in the fire store data base.
+                AppInstance.GetFireStoreInstance().SetLandmarkTelemetry(SetResult ->
                 {
-                    Log.d("InsertActivity", UserObj.getSsn());
-
-                    LandmarkModel.setID(UserObj.getEmail()); //Set the Telemetry ID by the user ID which is the email.
-
-                    //If its empty create a new list with empty items.
-                    if (UserObj.getOwnedLandmarkTelemetry() == null)
-                    {
-                        UserObj.setOwnedLandmarkTelemetry(new ArrayList<Landmark>());
+                    if (SetResult.isSuccess()) {
+                        Log.d("InsertActivity", "Successfully Updated");
+                    } else {
+                        Log.d("InsertActivity", SetResult.getMessage());
                     }
-                    //Get the owned telemetries that the user have
-                    ArrayList<Landmark> TempList = UserObj.getOwnedLandmarkTelemetry();
-                    //Add the Telemetry Object to the Owned Telemetry List.
-                    TempList.add(LandmarkModel);
-                    //Update the Owned Telemetry List.
-                    UserObj.setOwnedLandmarkTelemetry(TempList);
-                    //Update the Owned Telemetry in the fire store data base.
-                    AppInstance.GetFireStoreInstance().SetLandmarkTelemetry(SetResult ->
-                    {
-                        if (SetResult.isSuccess())
-                        {
-                            Log.d("InsertActivity", "Successfully Updated");
-                        }
-                        else
-                        {
-                            Log.d("InsertActivity", SetResult.getMessage());
-                        }
-                    },  UserObj.getOwnedLandmarkTelemetry(), UserObj.getEmail());
-                }
-                else
-                {
-                    Log.d("InsertActivity","NULL USER");
-                }
-            }, "h5JGBrQTGorO7q6IaFMfu5cSqqB6XTp1aybOD11spnQ=");
+                }, UserObj.getOwnedLandmarkTelemetry(), UserObj.getEmail());
+            } else {
+                Log.d("InsertActivity", "NULL USER");
+            }
         }
         else
         {
@@ -393,46 +377,35 @@ public class InsertActivity extends AppCompatActivity
 
         ValidationResult Result = TelemetryValidator.VipPhoneNumberValidation(VIPPhoneModel);
 
-        if (Result.isSuccess())
-        {
+        if (Result.isSuccess()) {
             Log.d("InsertActivity", "Validation Succeeded");
-            AppInstance.GetFireStoreInstance().GetUserInformation(UserObj ->
-            {
-                if (UserObj != null)
+            if (UserObj != null) {
+                Log.d("InsertActivity", UserObj.getSsn());
+
+                VIPPhoneModel.setID(UserObj.getEmail()); //Set the Telemetry ID by the user ID which is the email.
+
+                //If its empty create a new list with empty items.
+                if (UserObj.getOwnedVipPhoneTelemetry() == null) {
+                    UserObj.setOwnedVipPhoneTelemetry(new ArrayList<VipPhoneNumber>());
+                }
+                //Get the owned telemetries that the user have
+                ArrayList<VipPhoneNumber> TempList = UserObj.getOwnedVipPhoneTelemetry();
+                //Add the Telemetry Object to the Owned Telemetry List.
+                TempList.add(VIPPhoneModel);
+                //Update the Owned Telemetry List.
+                UserObj.setOwnedVipPhoneTelemetry(TempList);
+                //Update the Owned Telemetry in the fire store data base.
+                AppInstance.GetFireStoreInstance().SetVipPhoneTelemetry(SetResult ->
                 {
-                    Log.d("InsertActivity", UserObj.getSsn());
-
-                    VIPPhoneModel.setID(UserObj.getEmail()); //Set the Telemetry ID by the user ID which is the email.
-
-                    //If its empty create a new list with empty items.
-                    if (UserObj.getOwnedVipPhoneTelemetry() == null)
-                    {
-                        UserObj.setOwnedVipPhoneTelemetry(new ArrayList<VipPhoneNumber>());
+                    if (SetResult.isSuccess()) {
+                        Log.d("InsertActivity", "Successfully Updated");
+                    } else {
+                        Log.d("InsertActivity", SetResult.getMessage());
                     }
-                    //Get the owned telemetries that the user have
-                    ArrayList<VipPhoneNumber> TempList = UserObj.getOwnedVipPhoneTelemetry();
-                    //Add the Telemetry Object to the Owned Telemetry List.
-                    TempList.add(VIPPhoneModel);
-                    //Update the Owned Telemetry List.
-                    UserObj.setOwnedVipPhoneTelemetry(TempList);
-                    //Update the Owned Telemetry in the fire store data base.
-                    AppInstance.GetFireStoreInstance().SetVipPhoneTelemetry(SetResult ->
-                    {
-                        if (SetResult.isSuccess())
-                        {
-                            Log.d("InsertActivity", "Successfully Updated");
-                        }
-                        else
-                        {
-                            Log.d("InsertActivity", SetResult.getMessage());
-                        }
-                    },  UserObj.getOwnedVipPhoneTelemetry(), UserObj.getEmail());
-                }
-                else
-                {
-                    Log.d("InsertActivity","NULL USER");
-                }
-            }, "h5JGBrQTGorO7q6IaFMfu5cSqqB6XTp1aybOD11spnQ=");
+                }, UserObj.getOwnedVipPhoneTelemetry(), UserObj.getEmail());
+            } else {
+                Log.d("InsertActivity", "NULL USER");
+            }
         }
         else
         {
@@ -463,46 +436,35 @@ public class InsertActivity extends AppCompatActivity
 
         ValidationResult Result = TelemetryValidator.GeneralValidation(GeneralModel);
 
-        if (Result.isSuccess())
-        {
+        if (Result.isSuccess()) {
             Log.d("InsertActivity", "Validation Succeeded");
-            AppInstance.GetFireStoreInstance().GetUserInformation(UserObj ->
-            {
-                if (UserObj != null)
+            if (UserObj != null) {
+                Log.d("InsertActivity", UserObj.getSsn());
+
+                GeneralModel.setID(UserObj.getEmail()); //Set the Telemetry ID by the user ID which is the email.
+
+                //If its empty create a new list with empty items.
+                if (UserObj.getOwnedGeneralTelemetry() == null) {
+                    UserObj.setOwnedGeneralTelemetry(new ArrayList<General>());
+                }
+                //Get the owned telemetries that the user have
+                ArrayList<General> TempList = UserObj.getOwnedGeneralTelemetry();
+                //Add the Telemetry Object to the Owned Telemetry List.
+                TempList.add(GeneralModel);
+                //Update the Owned Telemetry List.
+                UserObj.setOwnedGeneralTelemetry(TempList);
+                //Update the Owned Telemetry in the fire store data base.
+                AppInstance.GetFireStoreInstance().SetGeneralTelemetry(SetResult ->
                 {
-                    Log.d("InsertActivity", UserObj.getSsn());
-
-                    GeneralModel.setID(UserObj.getEmail()); //Set the Telemetry ID by the user ID which is the email.
-
-                    //If its empty create a new list with empty items.
-                    if (UserObj.getOwnedGeneralTelemetry() == null)
-                    {
-                        UserObj.setOwnedGeneralTelemetry(new ArrayList<General>());
+                    if (SetResult.isSuccess()) {
+                        Log.d("InsertActivity", "Successfully Updated");
+                    } else {
+                        Log.d("InsertActivity", SetResult.getMessage());
                     }
-                    //Get the owned telemetries that the user have
-                    ArrayList<General> TempList = UserObj.getOwnedGeneralTelemetry();
-                    //Add the Telemetry Object to the Owned Telemetry List.
-                    TempList.add(GeneralModel);
-                    //Update the Owned Telemetry List.
-                    UserObj.setOwnedGeneralTelemetry(TempList);
-                    //Update the Owned Telemetry in the fire store data base.
-                    AppInstance.GetFireStoreInstance().SetGeneralTelemetry(SetResult ->
-                    {
-                        if (SetResult.isSuccess())
-                        {
-                            Log.d("InsertActivity", "Successfully Updated");
-                        }
-                        else
-                        {
-                            Log.d("InsertActivity", SetResult.getMessage());
-                        }
-                    },  UserObj.getOwnedGeneralTelemetry(), UserObj.getEmail());
-                }
-                else
-                {
-                    Log.d("InsertActivity","NULL USER");
-                }
-            }, "h5JGBrQTGorO7q6IaFMfu5cSqqB6XTp1aybOD11spnQ=");
+                }, UserObj.getOwnedGeneralTelemetry(), UserObj.getEmail());
+            } else {
+                Log.d("InsertActivity", "NULL USER");
+            }
         }
         else
         {
