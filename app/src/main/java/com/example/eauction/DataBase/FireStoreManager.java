@@ -313,10 +313,13 @@ public class FireStoreManager extends FireStoreHelpers
                 Gson gson = new Gson();
                 for (int i = 0; i < (LandmarkTelemetries != null ? LandmarkTelemetries.size() : 0); i++)
                 {
-                    JsonElement jsonElement = gson.toJsonTree(LandmarkTelemetries.get(i));
-                    Landmark Landmark = gson.fromJson(jsonElement, Landmark.class);
-                    Landmarks.add(Landmark);
-                    Log.d("UserObjCar", "LandmarkType: " + Landmark.getType());
+                    if (!LandmarkTelemetries.get(i).toString().isEmpty())
+                    {
+                        JsonElement jsonElement = gson.toJsonTree(LandmarkTelemetries.get(i));
+                        Landmark Landmark = gson.fromJson(jsonElement, Landmark.class);
+                        Landmarks.add(Landmark);
+                        Log.d("UserObjCar", "LandmarkType: " + Landmark.getType());
+                    }
                 }
                 Callback.onCallback(Landmarks);
             }
@@ -350,10 +353,13 @@ public class FireStoreManager extends FireStoreHelpers
                 Gson gson = new Gson();
                 for (int i = 0; i < (VIPPhoneTelemetries != null ? VIPPhoneTelemetries.size() : 0); i++)
                 {
-                    JsonElement jsonElement = gson.toJsonTree(VIPPhoneTelemetries.get(i));
-                    VipPhoneNumber VipPhoneNumber = gson.fromJson(jsonElement, VipPhoneNumber.class);
-                    VIPPhoneNumbers.add(VipPhoneNumber);
-                    Log.d("UserObjCar", "PhoneNumber: " + VipPhoneNumber.getPhoneNumber());
+                    if (!VIPPhoneTelemetries.get(i).toString().isEmpty())
+                    {
+                        JsonElement jsonElement = gson.toJsonTree(VIPPhoneTelemetries.get(i));
+                        VipPhoneNumber VipPhoneNumber = gson.fromJson(jsonElement, VipPhoneNumber.class);
+                        VIPPhoneNumbers.add(VipPhoneNumber);
+                        Log.d("UserObjCar", "PhoneNumber: " + VipPhoneNumber.getPhoneNumber());
+                    }
                 }
                 Callback.onCallback(VIPPhoneNumbers);
             }
@@ -387,10 +393,13 @@ public class FireStoreManager extends FireStoreHelpers
                 Gson gson = new Gson();
                 for (int i = 0; i < (GeneralTelemetries != null ? GeneralTelemetries.size() : 0); i++)
                 {
-                    JsonElement jsonElement = gson.toJsonTree(GeneralTelemetries.get(i));
-                    General General = gson.fromJson(jsonElement, General.class);
-                    Generals.add(General);
-                    Log.d("UserObjCar", "General Name: " + General.getName());
+                    if (!GeneralTelemetries.get(i).toString().isEmpty())
+                    {
+                        JsonElement jsonElement = gson.toJsonTree(GeneralTelemetries.get(i));
+                        General General = gson.fromJson(jsonElement, General.class);
+                        Generals.add(General);
+                        Log.d("UserObjCar", "General Name: " + General.getName());
+                    }
                 }
                 Callback.onCallback(Generals);
             }
@@ -424,10 +433,13 @@ public class FireStoreManager extends FireStoreHelpers
                 Gson gson = new Gson();
                 for (int i = 0; i < (ServiceTelemetries != null ? ServiceTelemetries.size() : 0); i++)
                 {
-                    JsonElement jsonElement = gson.toJsonTree(ServiceTelemetries.get(i));
-                    Service Service = gson.fromJson(jsonElement, Service.class);
-                    Services.add(Service);
-                    Log.d("UserObjCar", "Service Name: " + Service.getName());
+                    if (!ServiceTelemetries.get(i).toString().isEmpty())
+                    {
+                        JsonElement jsonElement = gson.toJsonTree(ServiceTelemetries.get(i));
+                        Service Service = gson.fromJson(jsonElement, Service.class);
+                        Services.add(Service);
+                        Log.d("UserObjCar", "Service Name: " + Service.getName());
+                    }
                 }
                 Callback.onCallback(Services);
             }
