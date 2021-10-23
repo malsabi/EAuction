@@ -6,18 +6,28 @@ import androidx.annotation.NonNull;
 
 import com.example.eauction.Cryptograpgy.FirestoreEncoder;
 import com.example.eauction.Cryptograpgy.Hashing;
+import com.example.eauction.Interfaces.GetCarAuctionsCallback;
 import com.example.eauction.Interfaces.GetCarPlateAuctionsCallback;
+import com.example.eauction.Interfaces.GetGeneralAuctionsCallback;
+import com.example.eauction.Interfaces.GetLandmarkAuctionsCallback;
+import com.example.eauction.Interfaces.GetServiceAuctionsCallback;
 import com.example.eauction.Interfaces.GetUserTelemetryCallback;
+import com.example.eauction.Interfaces.GetVIPPhoneAuctionsCallback;
 import com.example.eauction.Interfaces.SetUserTelemetryCallback;
 import com.example.eauction.Interfaces.RegisterUserCallback;
 import com.example.eauction.Interfaces.SignInUserCallback;
 import com.example.eauction.Interfaces.SignOutUserCallback;
+import com.example.eauction.Models.Car;
 import com.example.eauction.Models.CarPlate;
 import com.example.eauction.Models.FireStoreResult;
+import com.example.eauction.Models.General;
+import com.example.eauction.Models.Landmark;
+import com.example.eauction.Models.Service;
 import com.example.eauction.Models.SignIn;
 import com.example.eauction.Models.Telemetry;
 import com.example.eauction.Models.User;
 import com.example.eauction.Models.ValidationResult;
+import com.example.eauction.Models.VipPhoneNumber;
 import com.example.eauction.Validations.UserValidation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -30,6 +40,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.firestore.Source;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.squareup.okhttp.internal.DiskLruCache;
 
 import java.util.ArrayList;
@@ -214,26 +226,136 @@ public class FireStoreManager extends FireStoreHelpers
 
     public void GetCarPlateAuctions(GetCarPlateAuctionsCallback Callback)
     {
-
-        DB.collection("AUCTIONS").document("CARPLATE").get()
-        .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
+        ArrayList<CarPlate> CarPlates = new ArrayList<>();
+        DocumentReference documentReference = DB.collection("AUCTIONS").document("CARPLATE");
+        documentReference.get().addOnSuccessListener(documentSnapshot ->
         {
-           @Override
-           public void onComplete(@NonNull Task<DocumentSnapshot> task)
-           {
-               DocumentSnapshot document = task.getResult();
-               List<CarPlate> CarPlates = (List<CarPlate>) document.get("CarPlateTelemetries");
-               Callback.onCallback((ArrayList<CarPlate>)CarPlates);
-           }
+            if (documentSnapshot.exists())
+            {
+                ArrayList<?> CarPlateTelemetries = (ArrayList<?>)documentSnapshot.get("CarPlateTelemetries");
+                Gson gson = new Gson();
+                for (int i = 0; i < (CarPlateTelemetries != null ? CarPlateTelemetries.size() : 0); i++)
+                {
+                    JsonElement jsonElement = gson.toJsonTree(CarPlateTelemetries.get(i));
+                    CarPlate CarPlate = gson.fromJson(jsonElement, CarPlate.class);
+                    CarPlates.add(CarPlate);
+                    Log.d("UserObjCarPlate", "CarPlates: " + CarPlate.getPlateNumber());
+                }
+                Callback.onCallback(CarPlates);
+            }
         });
     }
 
-    public List<Telemetry> GetActiveAuctions()
+    public void GetCarAuctions(GetCarAuctionsCallback Callback)
     {
-        return null;
+        ArrayList<Car> Cars = new ArrayList<>();
+        DocumentReference documentReference = DB.collection("AUCTIONS").document("CAR");
+        documentReference.get().addOnSuccessListener(documentSnapshot ->
+        {
+            if (documentSnapshot.exists())
+            {
+                ArrayList<?> CarTelemetries = (ArrayList<?>)documentSnapshot.get("CarTelemetries");
+                Gson gson = new Gson();
+                for (int i = 0; i < (CarTelemetries != null ? CarTelemetries.size() : 0); i++)
+                {
+                    if (!CarTelemetries.get(i).toString().isEmpty())
+                    {
+                        JsonElement jsonElement = gson.toJsonTree(CarTelemetries.get(i));
+                        Car Car = gson.fromJson(jsonElement, Car.class);
+                        Cars.add(Car);
+                        Log.d("UserObjCar", "CarModel: " + Car.getModel());
+                    }
+                }
+                Callback.onCallback(Cars);
+            }
+        });
     }
-    public FireStoreResult UpdateAuction(Telemetry TelemetryObj)
+
+    public void GetLandmarkAuctions(GetLandmarkAuctionsCallback Callback)
     {
-        return new FireStoreResult();
+        ArrayList<Landmark> Landmarks = new ArrayList<>();
+        DocumentReference documentReference = DB.collection("AUCTIONS").document("LANDMARK");
+        documentReference.get().addOnSuccessListener(documentSnapshot ->
+        {
+            if (documentSnapshot.exists())
+            {
+                ArrayList<?> LandmarkTelemetries = (ArrayList<?>)documentSnapshot.get("LandmarkTelemetries");
+                Gson gson = new Gson();
+                for (int i = 0; i < (LandmarkTelemetries != null ? LandmarkTelemetries.size() : 0); i++)
+                {
+                    JsonElement jsonElement = gson.toJsonTree(LandmarkTelemetries.get(i));
+                    Landmark Landmark = gson.fromJson(jsonElement, Landmark.class);
+                    Landmarks.add(Landmark);
+                    Log.d("UserObjCar", "LandmarkType: " + Landmark.getType());
+                }
+                Callback.onCallback(Landmarks);
+            }
+        });
+    }
+
+    public void GetVIPPHoneNumberAuctions(GetVIPPhoneAuctionsCallback Callback)
+    {
+        ArrayList<VipPhoneNumber> VIPPhoneNumbers = new ArrayList<>();
+        DocumentReference documentReference = DB.collection("AUCTIONS").document("VIPPHONE");
+        documentReference.get().addOnSuccessListener(documentSnapshot ->
+        {
+            if (documentSnapshot.exists())
+            {
+                ArrayList<?> VIPPhoneTelemetries = (ArrayList<?>)documentSnapshot.get("VIPPhoneTelemetries");
+                Gson gson = new Gson();
+                for (int i = 0; i < (VIPPhoneTelemetries != null ? VIPPhoneTelemetries.size() : 0); i++)
+                {
+                    JsonElement jsonElement = gson.toJsonTree(VIPPhoneTelemetries.get(i));
+                    VipPhoneNumber VipPhoneNumber = gson.fromJson(jsonElement, VipPhoneNumber.class);
+                    VIPPhoneNumbers.add(VipPhoneNumber);
+                    Log.d("UserObjCar", "PhoneNumber: " + VipPhoneNumber.getPhoneNumber());
+                }
+                Callback.onCallback(VIPPhoneNumbers);
+            }
+        });
+    }
+
+    public void GetGeneralAuctions(GetGeneralAuctionsCallback Callback)
+    {
+        ArrayList<General> Generals = new ArrayList<>();
+        DocumentReference documentReference = DB.collection("AUCTIONS").document("GENERAL");
+        documentReference.get().addOnSuccessListener(documentSnapshot ->
+        {
+            if (documentSnapshot.exists())
+            {
+                ArrayList<?> GeneralTelemetries = (ArrayList<?>)documentSnapshot.get("GeneralTelemetries");
+                Gson gson = new Gson();
+                for (int i = 0; i < (GeneralTelemetries != null ? GeneralTelemetries.size() : 0); i++)
+                {
+                    JsonElement jsonElement = gson.toJsonTree(GeneralTelemetries.get(i));
+                    General General = gson.fromJson(jsonElement, General.class);
+                    Generals.add(General);
+                    Log.d("UserObjCar", "General Name: " + General.getName());
+                }
+                Callback.onCallback(Generals);
+            }
+        });
+    }
+
+    public void GetServiceAuctions(GetServiceAuctionsCallback Callback)
+    {
+        ArrayList<Service> Services = new ArrayList<>();
+        DocumentReference documentReference = DB.collection("AUCTIONS").document("SERVICE");
+        documentReference.get().addOnSuccessListener(documentSnapshot ->
+        {
+            if (documentSnapshot.exists())
+            {
+                ArrayList<?> ServiceTelemetries = (ArrayList<?>)documentSnapshot.get("ServiceTelemetries");
+                Gson gson = new Gson();
+                for (int i = 0; i < (ServiceTelemetries != null ? ServiceTelemetries.size() : 0); i++)
+                {
+                    JsonElement jsonElement = gson.toJsonTree(ServiceTelemetries.get(i));
+                    Service Service = gson.fromJson(jsonElement, Service.class);
+                    Services.add(Service);
+                    Log.d("UserObjCar", "Service Name: " + Service.getName());
+                }
+                Callback.onCallback(Services);
+            }
+        });
     }
 }
