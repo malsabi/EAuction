@@ -47,71 +47,59 @@ public class HomeFragment extends Fragment{
         ButterKnife.bind(this,view);
 
         //region Switching to Auctioned Properties Fragment
-        BtnCarAuctions.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                Fragment globalAuctionsFragment = new GlobalAuctionsFragment();
-                Bundle bundle = new Bundle();
-                bundle.putString("AuctionNeeded","CarAuction");
-                globalAuctionsFragment.setArguments(bundle);
-                fragmentManager.beginTransaction().replace(R.id.fragment_container, globalAuctionsFragment).commit();
-            }
+        BtnCarAuctions.setOnClickListener(view1 ->
+        {
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+            Fragment globalAuctionsFragment = new GlobalAuctionsFragment();
+            Bundle bundle = new Bundle();
+            bundle.putString("AuctionNeeded","CarAuction");
+            globalAuctionsFragment.setArguments(bundle);
+            fragmentManager.beginTransaction().replace(R.id.fragment_container, globalAuctionsFragment).commit();
         });
-        BtnLandmarkAuctions.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                Fragment globalAuctionsFragment = new GlobalAuctionsFragment();
-                Bundle bundle = new Bundle();
-                bundle.putString("AuctionNeeded","LandmarkAuction");
-                globalAuctionsFragment.setArguments(bundle);
-                fragmentManager.beginTransaction().replace(R.id.fragment_container, globalAuctionsFragment).commit();
-            }
+        BtnLandmarkAuctions.setOnClickListener(view12 ->
+        {
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+            Fragment globalAuctionsFragment = new GlobalAuctionsFragment();
+            Bundle bundle = new Bundle();
+            bundle.putString("AuctionNeeded","LandmarkAuction");
+            globalAuctionsFragment.setArguments(bundle);
+            fragmentManager.beginTransaction().replace(R.id.fragment_container, globalAuctionsFragment).commit();
         });
-        BtnVipAuctions.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                Fragment globalAuctionsFragment = new GlobalAuctionsFragment();
-                Bundle bundle = new Bundle();
-                bundle.putString("AuctionNeeded","VipAuction");
-                globalAuctionsFragment.setArguments(bundle);
-                fragmentManager.beginTransaction().replace(R.id.fragment_container, globalAuctionsFragment).commit();
-            }
+        BtnVipAuctions.setOnClickListener(view13 ->
+        {
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+            Fragment globalAuctionsFragment = new GlobalAuctionsFragment();
+            Bundle bundle = new Bundle();
+            bundle.putString("AuctionNeeded","VipAuction");
+            globalAuctionsFragment.setArguments(bundle);
+            fragmentManager.beginTransaction().replace(R.id.fragment_container, globalAuctionsFragment).commit();
         });
-        BtnPlateCodeAuctions.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                Fragment globalAuctionsFragment = new GlobalAuctionsFragment();
-                Bundle bundle = new Bundle();
-                bundle.putString("AuctionNeeded","PlateCodeAuction");
-                globalAuctionsFragment.setArguments(bundle);
-                fragmentManager.beginTransaction().replace(R.id.fragment_container, globalAuctionsFragment).commit();
-            }
+        BtnPlateCodeAuctions.setOnClickListener(view14 ->
+        {
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+            Fragment globalAuctionsFragment = new GlobalAuctionsFragment();
+            Bundle bundle = new Bundle();
+            bundle.putString("AuctionNeeded","PlateCodeAuction");
+            globalAuctionsFragment.setArguments(bundle);
+            fragmentManager.beginTransaction().replace(R.id.fragment_container, globalAuctionsFragment).commit();
         });
-        BtnGeneralItemAuctions.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                Fragment globalAuctionsFragment = new GlobalAuctionsFragment();
-                Bundle bundle = new Bundle();
-                bundle.putString("AuctionNeeded","GeneralAuction");
-                globalAuctionsFragment.setArguments(bundle);
-                fragmentManager.beginTransaction().replace(R.id.fragment_container, globalAuctionsFragment).commit();
-            }
+        BtnGeneralItemAuctions.setOnClickListener(view15 ->
+        {
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+            Fragment globalAuctionsFragment = new GlobalAuctionsFragment();
+            Bundle bundle = new Bundle();
+            bundle.putString("AuctionNeeded","GeneralAuction");
+            globalAuctionsFragment.setArguments(bundle);
+            fragmentManager.beginTransaction().replace(R.id.fragment_container, globalAuctionsFragment).commit();
         });
-        BtnServiceAuctions.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                Fragment globalAuctionsFragment = new GlobalAuctionsFragment();
-                Bundle bundle = new Bundle();
-                bundle.putString("AuctionNeeded","ServiceAuction");
-                globalAuctionsFragment.setArguments(bundle);
-                fragmentManager.beginTransaction().replace(R.id.fragment_container, globalAuctionsFragment).commit();
-            }
+        BtnServiceAuctions.setOnClickListener(view16 ->
+        {
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+            Fragment globalAuctionsFragment = new GlobalAuctionsFragment();
+            Bundle bundle = new Bundle();
+            bundle.putString("AuctionNeeded","ServiceAuction");
+            globalAuctionsFragment.setArguments(bundle);
+            fragmentManager.beginTransaction().replace(R.id.fragment_container, globalAuctionsFragment).commit();
         });
         //endregion
         return view;

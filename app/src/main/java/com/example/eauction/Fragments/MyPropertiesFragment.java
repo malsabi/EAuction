@@ -23,10 +23,8 @@ import com.example.eauction.Helpers.DateHelper;
 import com.example.eauction.Helpers.TelemetryHelper;
 import com.example.eauction.InsertActivity;
 import com.example.eauction.Interfaces.SetUserInformationCallback;
-import com.example.eauction.Interfaces.SetUserTelemetryCallback;
 import com.example.eauction.Models.Car;
 import com.example.eauction.Models.CarPlate;
-import com.example.eauction.Models.FireStoreResult;
 import com.example.eauction.Models.General;
 import com.example.eauction.Models.Landmark;
 import com.example.eauction.Models.Service;
@@ -58,7 +56,8 @@ public class MyPropertiesFragment extends Fragment
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
+    {
 
         View view = inflater.inflate(R.layout.fragment_myproperties,container,false);
         ButterKnife.bind(this,view);
@@ -77,11 +76,11 @@ public class MyPropertiesFragment extends Fragment
     {
         if (PreferenceUtils.getEmail(this.getContext()) != null && PreferenceUtils.getPassword(this.getContext()) != null)
         {
-            Log.d("UserObjProperties", "MSG Fragment: " + PreferenceUtils.getEmail(this.getContext()));
+            Log.d("MyPropertiesFragment", "GetUserInformation Email: " + PreferenceUtils.getEmail(this.getContext()));
             AppInstance.GetFireStoreInstance().GetUserInformation(UserObj ->
             {
                 this.UserObj = UserObj;
-                Log.d("UserObjProperties", "SSN Fragment: " + this.UserObj.getSsn());
+                Log.d("MyPropertiesFragment", "User Id: " + this.UserObj.getId());
 
                 ArrayList<Telemetry> UserTelemetries = Merge(UserObj.getOwnedCarPlateTelemetry(), UserObj.getOwnedCarTelemetry(), UserObj.getOwnedLandmarkTelemetry(), UserObj.getOwnedVipPhoneTelemetry(), UserObj.getOwnedGeneralTelemetry());
 
@@ -119,6 +118,7 @@ public class MyPropertiesFragment extends Fragment
                             SelectedTelemetryItem.setAuctionStart(DateHelper.GetCurrentDateTime());
                             SelectedTelemetryItem.setStatus(StatusEnum.Auctioned);
                             HandleTelemetryUpdate(SelectedTelemetryItem);
+
                         }
                         dialog.hide();
                     });
@@ -150,7 +150,7 @@ public class MyPropertiesFragment extends Fragment
     private void HandleTelemetryUpdate(Telemetry SelectedTelemetry)
     {
         String TelemetryType = TelemetryHelper.GetTelemetryType(SelectedTelemetry);
-        Log.d("UserObjProperties", "Type Name: " + TelemetryType);
+        Log.d("MyPropertiesFragment", "HandleTelemetryUpdate Type Name: " + TelemetryType);
         switch (TelemetryType)
         {
             case "CarPlate":
@@ -164,11 +164,13 @@ public class MyPropertiesFragment extends Fragment
                         {
                             if (AddAuctionResult.isSuccess())
                             {
-                                Log.d("UserObjProperties", "Successfully added the auction into the global auction collection");
+                                Toast.makeText(getContext(), "Your Telemetry Item is now being auctioned.", Toast.LENGTH_SHORT).show();
+                                Log.d("MyPropertiesFragment", "HandleTelemetryUpdate AddCarPlateAuction Successfully added the auction into the global auction collection");
                             }
                             else
                             {
-                                Log.d("UserObjProperties", "Failed to add the auction into the global auction collection");
+                                Toast.makeText(getContext(), "Failed to set the Telemetry Item to be auctioned.", Toast.LENGTH_SHORT).show();
+                                Log.d("MyPropertiesFragment", "HandleTelemetryUpdate AddCarPlateAuction Failed to add the auction into the global auction collection");
                             }
                         }, (CarPlate)SelectedTelemetry);
                    }
@@ -186,11 +188,13 @@ public class MyPropertiesFragment extends Fragment
                         {
                             if (AddAuctionResult.isSuccess())
                             {
-                                Log.d("UserObjProperties", "Successfully added the auction into the global auction collection");
+                                Toast.makeText(getContext(), "Your Telemetry Item is now being auctioned.", Toast.LENGTH_SHORT).show();
+                                Log.d("MyPropertiesFragment", "HandleTelemetryUpdate AddCarAuction Successfully added the auction into the global auction collection");
                             }
                             else
                             {
-                                Log.d("UserObjProperties", "Failed to add the auction into the global auction collection");
+                                Toast.makeText(getContext(), "Failed to set the Telemetry Item to be auctioned.", Toast.LENGTH_SHORT).show();
+                                Log.d("MyPropertiesFragment", "HandleTelemetryUpdate AddCarAuction Failed to add the auction into the global auction collection");
                             }
                         }, (Car)SelectedTelemetry);
                     }
@@ -208,11 +212,13 @@ public class MyPropertiesFragment extends Fragment
                         {
                             if (AddAuctionResult.isSuccess())
                             {
-                                Log.d("UserObjProperties", "Successfully added the auction into the global auction collection");
+                                Toast.makeText(getContext(), "Your Telemetry Item is now being auctioned.", Toast.LENGTH_SHORT).show();
+                                Log.d("MyPropertiesFragment", "HandleTelemetryUpdate AddLandmarkAuction Successfully added the auction into the global auction collection");
                             }
                             else
                             {
-                                Log.d("UserObjProperties", "Failed to add the auction into the global auction collection");
+                                Toast.makeText(getContext(), "Failed to set the Telemetry Item to be auctioned.", Toast.LENGTH_SHORT).show();
+                                Log.d("MyPropertiesFragment", "HandleTelemetryUpdate AddLandmarkAuction Failed to add the auction into the global auction collection");
                             }
                         }, (Landmark) SelectedTelemetry);
                     }
@@ -230,11 +236,13 @@ public class MyPropertiesFragment extends Fragment
                         {
                             if (AddAuctionResult.isSuccess())
                             {
-                                Log.d("UserObjProperties", "Successfully added the auction into the global auction collection");
+                                Toast.makeText(getContext(), "Your Telemetry Item is now being auctioned.", Toast.LENGTH_SHORT).show();
+                                Log.d("MyPropertiesFragment", "HandleTelemetryUpdate AddVIPPhoneNumberAuction Successfully added the auction into the global auction collection");
                             }
                             else
                             {
-                                Log.d("UserObjProperties", "Failed to add the auction into the global auction collection");
+                                Toast.makeText(getContext(), "Failed to set the Telemetry Item to be auctioned.", Toast.LENGTH_SHORT).show();
+                                Log.d("MyPropertiesFragment", "HandleTelemetryUpdate AddVIPPhoneNumberAuction Failed to add the auction into the global auction collection");
                             }
                         }, (VipPhoneNumber) SelectedTelemetry);
                     }
@@ -252,11 +260,13 @@ public class MyPropertiesFragment extends Fragment
                         {
                             if (AddAuctionResult.isSuccess())
                             {
-                                Log.d("UserObjProperties", "Successfully added the auction into the global auction collection");
+                                Toast.makeText(getContext(), "Your Telemetry Item is now being auctioned.", Toast.LENGTH_SHORT).show();
+                                Log.d("MyPropertiesFragment", "HandleTelemetryUpdate AddGeneralAuction Successfully added the auction into the global auction collection");
                             }
                             else
                             {
-                                Log.d("UserObjProperties", "Failed to add the auction into the global auction collection");
+                                Toast.makeText(getContext(), "Failed to set the Telemetry Item to be auctioned.", Toast.LENGTH_SHORT).show();
+                                Log.d("MyPropertiesFragment", "HandleTelemetryUpdate AddGeneralAuction Failed to add the auction into the global auction collection");
                             }
                         }, (General) SelectedTelemetry);
                     }
@@ -274,11 +284,13 @@ public class MyPropertiesFragment extends Fragment
                         {
                             if (AddAuctionResult.isSuccess())
                             {
-                                Log.d("UserObjProperties", "Successfully added the auction into the global auction collection");
+                                Toast.makeText(getContext(), "Your Service Item is now being auctioned.", Toast.LENGTH_SHORT).show();
+                                Log.d("MyPropertiesFragment", "HandleTelemetryUpdate AddServiceAuction Successfully added the auction into the global auction collection");
                             }
                             else
                             {
-                                Log.d("UserObjProperties", "Failed to add the auction into the global auction collection");
+                                Toast.makeText(getContext(), "Failed to set the Service Item to be auctioned.", Toast.LENGTH_SHORT).show();
+                                Log.d("MyPropertiesFragment", "HandleTelemetryUpdate AddServiceAuction Failed to add the auction into the global auction collection");
                             }
                         }, (Service) SelectedTelemetry);
                     }
@@ -290,95 +302,140 @@ public class MyPropertiesFragment extends Fragment
 
     private void HandleUserTelemetry(Telemetry Telemetry, String Type)
     {
-        if (Type.equals("CarPlate"))
+        switch (Type)
         {
-            ArrayList<CarPlate> CarPlateTelemetries = UserObj.getOwnedCarPlateTelemetry();
-            CarPlate CarPlateItem = (CarPlate)Telemetry;
-            for (CarPlate CarPlateObj : UserObj.getOwnedCarPlateTelemetry())
+            case "CarPlate":
             {
-                if (CarPlateObj.IsEqual(CarPlateItem))
+                CarPlate CarPlateItem = (CarPlate) Telemetry;
+                int Index = -1;
+                for (CarPlate CarPlateObj : UserObj.getOwnedCarPlateTelemetry())
                 {
-                    CarPlateTelemetries.remove(CarPlateObj);
-                    CarPlateTelemetries.add(CarPlateItem);
-                    break;
+                    if (CarPlateObj.getID().equals(CarPlateItem.getID()))
+                    {
+                        Index = UserObj.getOwnedCarPlateTelemetry().indexOf(CarPlateObj);
+                        break;
+                    }
                 }
+                if (Index != -1)
+                {
+                    UserObj.getOwnedCarPlateTelemetry().set(Index, CarPlateItem);
+                }
+                else
+                {
+                    UserObj.getOwnedCarPlateTelemetry().add(CarPlateItem);
+                }
+                break;
             }
-            UserObj.setOwnedCarPlateTelemetry(CarPlateTelemetries);
-        }
-        else if (Type.equals("Car"))
-        {
-            ArrayList<Car> CarTelemetries = UserObj.getOwnedCarTelemetry();
-            Car CarItem = (Car)Telemetry;
-            for (Car CarObj : UserObj.getOwnedCarTelemetry())
+            case "Car":
             {
-                if (CarObj.IsEqual(CarItem))
+                Car CarItem = (Car) Telemetry;
+                int Index = -1;
+                for (Car CarObj : UserObj.getOwnedCarTelemetry())
                 {
-                    CarTelemetries.remove(CarObj);
-                    CarTelemetries.add(CarItem);
-                    break;
+                    if (CarObj.getID().equals(CarItem.getID()))
+                    {
+                        Index = UserObj.getOwnedCarTelemetry().indexOf(CarObj);
+                        break;
+                    }
                 }
+                if (Index != -1)
+                {
+                    UserObj.getOwnedCarTelemetry().set(Index, CarItem);
+                }
+                else
+                {
+                    UserObj.getOwnedCarTelemetry().add(CarItem);
+                }
+                break;
             }
-            UserObj.setOwnedCarTelemetry(CarTelemetries);
-        }
-        else if (Type.equals("Landmark"))
-        {
-            ArrayList<Landmark> LandmarkTelemetries = UserObj.getOwnedLandmarkTelemetry();
-            Landmark LandmarkItem = (Landmark)Telemetry;
-            for (Landmark LandmarkObj : UserObj.getOwnedLandmarkTelemetry())
+            case "Landmark":
             {
-                if (LandmarkObj.IsEqual(LandmarkItem))
+                int Index = -1;
+                Landmark LandmarkItem = (Landmark) Telemetry;
+                for (Landmark LandmarkObj : UserObj.getOwnedLandmarkTelemetry())
                 {
-                    LandmarkTelemetries.remove(LandmarkObj);
-                    LandmarkTelemetries.add(LandmarkItem);
-                    break;
+                    if (LandmarkObj.getID().equals(LandmarkItem.getID()))
+                    {
+                        Index = UserObj.getOwnedLandmarkTelemetry().indexOf(LandmarkObj);
+                        break;
+                    }
                 }
+                if (Index != -1)
+                {
+                    UserObj.getOwnedLandmarkTelemetry().set(Index, LandmarkItem);
+                }
+                else
+                {
+                    UserObj.getOwnedLandmarkTelemetry().add(LandmarkItem);
+                }
+                break;
             }
-            UserObj.setOwnedLandmarkTelemetry(LandmarkTelemetries);
-        }
-        else if (Type.equals("VipPhoneNumber"))
-        {
-            ArrayList<VipPhoneNumber> VipPhoneNumberTelemetries = UserObj.getOwnedVipPhoneTelemetry();
-            VipPhoneNumber VipPhoneItem = (VipPhoneNumber)Telemetry;
-            for (VipPhoneNumber VipPhoneObj : UserObj.getOwnedVipPhoneTelemetry())
+            case "VipPhoneNumber":
             {
-                if (VipPhoneObj.IsEqual(VipPhoneItem))
+                int Index = -1;
+                VipPhoneNumber VipPhoneItem = (VipPhoneNumber) Telemetry;
+                for (VipPhoneNumber VipPhoneObj : UserObj.getOwnedVipPhoneTelemetry())
                 {
-                    VipPhoneNumberTelemetries.remove(VipPhoneObj);
-                    VipPhoneNumberTelemetries.add(VipPhoneItem);
-                    break;
+                    if (VipPhoneObj.getID().equals(VipPhoneItem.getID()))
+                    {
+                        Index = UserObj.getOwnedVipPhoneTelemetry().indexOf(VipPhoneObj);
+                        break;
+                    }
                 }
+                if (Index != -1)
+                {
+                    UserObj.getOwnedVipPhoneTelemetry().set(Index, VipPhoneItem);
+                }
+                else
+                {
+                    UserObj.getOwnedVipPhoneTelemetry().add(VipPhoneItem);
+                }
+                break;
             }
-            UserObj.setOwnedVipPhoneTelemetry(VipPhoneNumberTelemetries);
-        }
-        else if (Type.equals("General"))
-        {
-            ArrayList<General> GeneralTelemetries = UserObj.getOwnedGeneralTelemetry();
-            General GeneralItem = (General)Telemetry;
-            for (General GeneralObj : UserObj.getOwnedGeneralTelemetry())
+            case "General":
             {
-                if (GeneralObj.IsEqual(GeneralItem))
+                int Index = -1;
+                General GeneralItem = (General) Telemetry;
+                for (General GeneralObj : UserObj.getOwnedGeneralTelemetry())
                 {
-                    GeneralTelemetries.remove(GeneralObj);
-                    GeneralTelemetries.add(GeneralItem);
-                    break;
+                    if (GeneralObj.getID().equals(GeneralItem.getID()))
+                    {
+                        Index = UserObj.getOwnedGeneralTelemetry().indexOf(GeneralObj);
+                        break;
+                    }
                 }
+                if (Index != -1)
+                {
+                    UserObj.getOwnedGeneralTelemetry().set(Index, GeneralItem);
+                }
+                else
+                {
+                    UserObj.getOwnedGeneralTelemetry().add(GeneralItem);
+                }
+                break;
             }
-            UserObj.setOwnedGeneralTelemetry(GeneralTelemetries);
-        }
-        else if (Type.equals("Service"))
-        {
-            ArrayList<Service> ServiceTelemetries = UserObj.getOwnedServiceTelemetry();
-            Service ServiceItem = (Service)Telemetry;
-            for (Service ServiceObj : UserObj.getOwnedServiceTelemetry())
+            case "Service":
             {
-                if (ServiceObj.IsEqual(ServiceItem))
+                int Index = -1;
+                Service ServiceItem = (Service) Telemetry;
+                for (Service ServiceObj : UserObj.getOwnedServiceTelemetry())
                 {
-                    ServiceTelemetries.remove(ServiceObj);
-                    ServiceTelemetries.add(ServiceItem);
-                    break;
+                    if (ServiceObj.getID().equals(ServiceItem.getID()))
+                    {
+                        Index = UserObj.getOwnedServiceTelemetry().indexOf(ServiceObj);
+                        break;
+                    }
                 }
+                if (Index != -1)
+                {
+                    UserObj.getOwnedServiceTelemetry().set(Index, ServiceItem);
+                }
+                else
+                {
+                    UserObj.getOwnedServiceTelemetry().add(ServiceItem);
+                }
+                break;
             }
-            UserObj.setOwnedServiceTelemetry(ServiceTelemetries);
         }
     }
 }

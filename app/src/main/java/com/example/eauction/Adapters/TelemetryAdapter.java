@@ -10,10 +10,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.eauction.Helpers.TelemetryHelper;
 import com.example.eauction.Models.Car;
 import com.example.eauction.Models.CarPlate;
@@ -22,35 +20,34 @@ import com.example.eauction.Models.Landmark;
 import com.example.eauction.Models.Telemetry;
 import com.example.eauction.Models.VipPhoneNumber;
 import com.example.eauction.R;
-
 import java.util.ArrayList;
-import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class TelemetryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-
+public class TelemetryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
+{
     public static final int CAR_TEL = 1;
     public static final int CARPLATE_TEL = 2;
     public static final int VIPNUMBER_TEL = 3;
     public static final int GENERALITEM_TEL = 4;
     public static final int LANDMARK_TEL = 5;
 
-    private ArrayList<Telemetry> Telemetries;
+    private final ArrayList<Telemetry> Telemetries;
     private OnItemClickListener mListener;
 
     public interface OnItemClickListener{
         void onItemClick(int position);
     }
 
-    public void setOnItemClickListener(OnItemClickListener listener){
+    public void setOnItemClickListener(OnItemClickListener listener)
+    {
         mListener = listener;
     }
 
-    public TelemetryAdapter(ArrayList<Telemetry> Telemetries){
+    public TelemetryAdapter(ArrayList<Telemetry> Telemetries)
+    {
         this.Telemetries = Telemetries;
-        Log.i("TelCount",Telemetries.size() + "");
+        Log.d("TelemetryAdapter","Telemetries Size: " + Telemetries.size());
     }
 
     @NonNull
@@ -175,14 +172,15 @@ public class TelemetryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     }
 
     @Override
-    public int getItemCount() {
+    public int getItemCount()
+    {
         return Telemetries.size();
     }
 
     @Override
-    public int getItemViewType (int position) {
-
-        Log.i("position",position+"");
+    public int getItemViewType (int position)
+    {
+        Log.d("TelemetryAdapter", "Adapter Position: " + position);
         if(Telemetries.get(position) instanceof Car)
             return CAR_TEL;
         else if(Telemetries.get(position) instanceof CarPlate)
@@ -214,18 +212,17 @@ public class TelemetryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         @BindView(R.id.cvCarDetails)
         public TextView cvCarDetails;
 
-        public CarViewHolder(@NonNull View itemView, OnItemClickListener listener) {
+        public CarViewHolder(@NonNull View itemView, OnItemClickListener listener)
+        {
             super(itemView);
             ButterKnife.bind(this,itemView);
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if(listener != null){
-                        int position = getAdapterPosition();
-                        if(position != RecyclerView.NO_POSITION){
-                            listener.onItemClick(position);
-                        }
+            itemView.setOnClickListener(view ->
+            {
+                if(listener != null){
+                    int position = getAdapterPosition();
+                    if(position != RecyclerView.NO_POSITION){
+                        listener.onItemClick(position);
                     }
                 }
             });
@@ -252,14 +249,12 @@ public class TelemetryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         public CarPlateViewHolder(@NonNull View itemView, OnItemClickListener listener) {
             super(itemView);
             ButterKnife.bind(this,itemView);
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if(listener != null){
-                        int position = getAdapterPosition();
-                        if(position != RecyclerView.NO_POSITION){
-                            listener.onItemClick(position);
-                        }
+            itemView.setOnClickListener(view ->
+            {
+                if(listener != null){
+                    int position = getAdapterPosition();
+                    if(position != RecyclerView.NO_POSITION){
+                        listener.onItemClick(position);
                     }
                 }
             });
@@ -286,21 +281,20 @@ public class TelemetryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         public LandmarkViewHolder(@NonNull View itemView, OnItemClickListener listener) {
             super(itemView);
             ButterKnife.bind(this,itemView);
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if(listener != null){
-                        int position = getAdapterPosition();
-                        if(position != RecyclerView.NO_POSITION){
-                            listener.onItemClick(position);
-                        }
+            itemView.setOnClickListener(view ->
+            {
+                if(listener != null){
+                    int position = getAdapterPosition();
+                    if(position != RecyclerView.NO_POSITION){
+                        listener.onItemClick(position);
                     }
                 }
             });
         }
     }
 
-    public static class PhoneNumberViewHolder extends RecyclerView.ViewHolder{
+    public static class PhoneNumberViewHolder extends RecyclerView.ViewHolder
+    {
 
         @BindView(R.id.cvPhoneNumberImg)
         public ImageView cvPhoneNumberImg;
@@ -314,17 +308,16 @@ public class TelemetryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         @BindView(R.id.cvCompanyDetails)
         public TextView cvCompanyDetails;
 
-        public PhoneNumberViewHolder(@NonNull View itemView, OnItemClickListener listener) {
+        public PhoneNumberViewHolder(@NonNull View itemView, OnItemClickListener listener)
+        {
             super(itemView);
             ButterKnife.bind(this,itemView);
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if(listener != null){
-                        int position = getAdapterPosition();
-                        if(position != RecyclerView.NO_POSITION){
-                            listener.onItemClick(position);
-                        }
+            itemView.setOnClickListener(view ->
+            {
+                if(listener != null){
+                    int position = getAdapterPosition();
+                    if(position != RecyclerView.NO_POSITION){
+                        listener.onItemClick(position);
                     }
                 }
             });
@@ -342,24 +335,24 @@ public class TelemetryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         @BindView(R.id.cvDetails)
         public TextView cvDetails;
 
-        public GeneralViewHolder(@NonNull View itemView, OnItemClickListener listener) {
+        public GeneralViewHolder(@NonNull View itemView, OnItemClickListener listener)
+        {
             super(itemView);
             ButterKnife.bind(this,itemView);
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if(listener != null){
-                        int position = getAdapterPosition();
-                        if(position != RecyclerView.NO_POSITION){
-                            listener.onItemClick(position);
-                        }
+            itemView.setOnClickListener(view ->
+            {
+                if(listener != null){
+                    int position = getAdapterPosition();
+                    if(position != RecyclerView.NO_POSITION){
+                        listener.onItemClick(position);
                     }
                 }
             });
         }
     }
 
-    private void addCurrent_addBasePrice(LinearLayout linearLayout,Telemetry telemetry){
+    private void addCurrent_addBasePrice(LinearLayout linearLayout,Telemetry telemetry)
+    {
         String currentBid = "<b><u>" + "Current Bid:" + "</u></b> "+telemetry.getCurrentBid();
         String basePrice = "<b><u>" + "Base Price:" + "</u></b> "+telemetry.getBasePrice();
 

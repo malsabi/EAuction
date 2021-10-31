@@ -1,5 +1,7 @@
 package com.example.eauction.Models;
 
+import androidx.annotation.NonNull;
+
 public class Service extends Telemetry
 {
     private String name;
@@ -33,5 +35,12 @@ public class Service extends Telemetry
     public boolean IsEqual(Service S)
     {
         return name.equals(S.getName()) && getDetails().equals(S.getDetails());
+    }
+
+    @NonNull
+    @Override
+    public String toString()
+    {
+        return (name + getDetails()).toUpperCase();
     }
 }

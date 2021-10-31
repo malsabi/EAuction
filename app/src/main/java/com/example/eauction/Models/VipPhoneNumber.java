@@ -1,5 +1,7 @@
 package com.example.eauction.Models;
 
+import androidx.annotation.NonNull;
+
 public class VipPhoneNumber extends Telemetry
 {
     private String phoneNumber;
@@ -45,5 +47,12 @@ public class VipPhoneNumber extends Telemetry
     public boolean IsEqual(VipPhoneNumber V)
     {
         return phoneNumber.equals(V.getPhoneNumber()) && company.equals(V.getPhoneNumber()) && getDetails().equals(V.getDetails());
+    }
+
+    @NonNull
+    @Override
+    public String toString()
+    {
+        return (phoneNumber + company + getDetails()).toUpperCase();
     }
 }

@@ -1,16 +1,11 @@
 package com.example.eauction.Validations;
 
 import android.util.Log;
-
 import com.example.eauction.Models.SignIn;
 import com.example.eauction.Models.User;
 import com.example.eauction.Models.ValidationResult;
-
-import java.text.DateFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -59,11 +54,11 @@ public class UserValidation
             Result.setTitle("EtDOBSignup");
             Result.setMessage("Date is invalid");
         }
-        else if (!SSNValidation(UserObj.getSsn()).isSuccess())
+        else if (!IdValidation(UserObj.getId()).isSuccess())
         {
             Result.setSuccess(false);
-            Result.setTitle("EtSSNSignup");
-            Result.setMessage("SSN is invalid");
+            Result.setTitle("EtIdSignup");
+            Result.setMessage("Id is invalid");
         }
         return Result;
     }
@@ -104,8 +99,7 @@ public class UserValidation
             Result.setMessage("First name should be less than 15 letters");
         }
         else
-        {   //String: array of characters
-            //"Mohammed1"
+        {
             for (int i = 0; i < FirstName.length(); i++)
             {
                 if (!IsLetter(FirstName.charAt(i)))
@@ -148,7 +142,7 @@ public class UserValidation
     public ValidationResult EmailValidation(String Email)
     {
         ValidationResult Result = new ValidationResult();
-        if (IsValidEmailAddress(Email) == true)
+        if (IsValidEmailAddress(Email))
         {
             Result.setSuccess(true);
             Result.setMessage("Valid email address");
@@ -232,29 +226,37 @@ public class UserValidation
         }
         return Result;
     }
-    public ValidationResult SSNValidation(String SSN)
+    public ValidationResult IdValidation(String Id) //Update it to UAE ID Format.
     {
         ValidationResult Result = new ValidationResult();
         Result.setSuccess(true);
-        Result.setMessage("Valid SSN");
-        if (SSN.length() != 10)
+        Result.setMessage("Valid Id");
+        if (Id.length() != 18)
         {
             Result.setSuccess(false);
-            Result.setMessage("SSN Should contain 8 digits");
+            Result.setMessage("The Id contains invalid format or missing digits.");
         }
         else
         {
-            String[] Digits = SSN.split("-");
-            for (int i = 0; i < 3; i++)
+            String[] Digits = Id.split("-");
+            if (Digits.length != 4)
             {
-                for (int j = 0; j < Digits[i].length(); j++)
+                Result.setSuccess(false);
+                Result.setMessage("The Id contains invalid format.");
+            }
+            else
+            {
+                for (int i = 0; i < 4; i++)
                 {
-                    if (!IsDigit(Digits[i].charAt(j))) //123-a2-912
+                    for (int j = 0; j < Digits[i].length(); j++)
                     {
-                        Result.setSuccess(false);
-                        Result.setMessage("Invalid SSN");
+                        if (!IsDigit(Digits[i].charAt(j)))
+                        {
+                            Result.setSuccess(false);
+                            Result.setMessage("The Id contains non digit characters.");
+                            break;
+                        }
                     }
-                    break;
                 }
             }
         }
@@ -264,26 +266,11 @@ public class UserValidation
     //region "Private Methods"
     private boolean IsDigit(char ch)
     {
-        if (ch >= '0' && ch <= '9')
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return (ch >= '0' && ch <= '9');
     }
     private boolean IsLetter(char ch)
     {
-        if (ch >= 'a' && ch <= 'z')
-        {
-            return true;
-        }
-        else if (ch >= 'A' && ch <= 'Z')
-        {
-            return true;
-        }
-        return false;
+        return  (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z');
     }
     public boolean IsValidEmailAddress(String emailAddress)
     {

@@ -232,7 +232,7 @@
     </RadioGroup>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/EtSSNSignupFloatLabel"
+        android:id="@+id/EtIdSignupFloatLabel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
@@ -244,14 +244,14 @@
         >
 
         <EditText
-            android:id="@+id/EtSSNSignup"
+            android:id="@+id/EtIdSignup"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@android:color/transparent"
             android:ems="10"
-            android:hint="@string/ssn"
+            android:hint="@string/Id"
             android:inputType="phone"
-            android:maxLength="10"
+            android:maxLength="18"
             android:paddingBottom="8dp" />
 
     </com.google.android.material.textfield.TextInputLayout>

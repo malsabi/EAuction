@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.util.Base64;
 
+import com.example.eauction.Cryptograpgy.Hashing;
 import com.example.eauction.Models.Car;
 import com.example.eauction.Models.CarPlate;
 import com.example.eauction.Models.General;
@@ -15,6 +16,7 @@ import com.example.eauction.Models.Telemetry;
 import com.example.eauction.Models.VipPhoneNumber;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 
 public class TelemetryHelper
 {
@@ -97,5 +99,22 @@ public class TelemetryHelper
         {
             return "N/A";
         }
+    }
+
+    public static String GetTelemetryHash(String TelemetryPropertyValues)
+    {
+        return Hashing.SHA256(TelemetryPropertyValues);
+    }
+
+    public static Boolean IsTelemetryAdded(ArrayList<? extends Telemetry> Telemetries, Telemetry NewTelemetry)
+    {
+        for (Telemetry Telemetry : Telemetries)
+        {
+            if (Telemetry.getID().equals(NewTelemetry.getID()))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -71,7 +71,7 @@ public class InsertActivity extends AppCompatActivity
         AppInstance = (App)getApplication();
         GetUserInformation();
 
-        String[] ITEMS = {"Car Plate","Car", "Landmark","VIP Phone Number","General Item"};
+        String[] ITEMS = {"Car Plate", "Car", "Landmark", "VIP Phone Number", "General Item", "Service"};
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, ITEMS);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         Spinner.setAdapter(adapter);
@@ -82,7 +82,7 @@ public class InsertActivity extends AppCompatActivity
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id)
             {
                 //Option numbers has the same index of selection as strings
-                Log.d("ComboBox","Selected: " + position);
+                Log.d("InsertActivity","ComboBox Selected: " + position);
                 switch (position)
                 {
                     case 0:
@@ -100,12 +100,12 @@ public class InsertActivity extends AppCompatActivity
                     case 4:
                         getSupportFragmentManager().beginTransaction().replace(R.id.TeleFragmentContainer, GeneralObj).commit();
                         break;
+                    //Handle Service
                 }
             }
             @Override
             public void onNothingSelected(AdapterView<?> parentView)
             {
-                // your code here
             }
         });
         UploadImageButton.setOnClickListener(view -> TakeImageFromGallery());
@@ -156,7 +156,6 @@ public class InsertActivity extends AppCompatActivity
         {
             HandleGeneral();
         }
-        AddTelemetryButton.stopAnimation(TransitionButton.StopAnimationStyle.SHAKE, null);
     }
 
     private void GetUserInformation()
@@ -184,45 +183,66 @@ public class InsertActivity extends AppCompatActivity
         CarPlateModel.setAuctionStart(DateHelper.GetCurrentDateTime());
         CarPlateModel.setStatus(StatusEnum.UnAuctioned);
         CarPlateModel.setImage(TelemetryHelper.ImageToBase64(UploadImageButton.getDrawable()));
+        CarPlateModel.setId(TelemetryHelper.GetTelemetryHash(CarPlateModel.toString()));
 
         //Validate the model
         ValidationResult Result = TelemetryValidator.CarPlateValidation(CarPlateModel);
 
         if (Result.isSuccess()) //Data is validated and ready to be submitted to fire store
         {
-            Log.d("InsertActivity", "Validation Succeeded");
+            Log.d("InsertActivity", "HandleCarPlate Validation Succeeded");
 
-            if (UserObj != null) {
-                Log.d("InsertActivity", UserObj.getSsn());
-
-                CarPlateModel.setID(UserObj.getEmail()); //Set the Telemetry ID by the user ID which is the email.
-
+            if (UserObj != null)
+            {
+                Log.d("InsertActivity", "HandleCarPlate User Id: " + UserObj.getId());
+                //Set the Telemetry ID by the user ID which is the email.
+                CarPlateModel.setOwnerId(UserObj.getEmail());
                 //If its empty create a new list with empty items.
-                if (UserObj.getOwnedCarPlateTelemetry() == null) {
+                if (UserObj.getOwnedCarPlateTelemetry() == null)
+                {
                     UserObj.setOwnedCarPlateTelemetry(new ArrayList<CarPlate>());
                 }
                 //Get the owned telemetries that the user have
                 ArrayList<CarPlate> TempList = UserObj.getOwnedCarPlateTelemetry();
-                //Add the Telemetry Object to the Owned Telemetry List.
-                TempList.add(CarPlateModel);
-                //Update the Owned Telemetry List.
-                UserObj.setOwnedCarPlateTelemetry(TempList);
-                //Update the Owned Telemetry in the fire store data base.
-                AppInstance.GetFireStoreInstance().SetCarPlateTelemetry(SetResult ->
+
+                boolean IsTelemetryAdded = TelemetryHelper.IsTelemetryAdded(TempList, CarPlateModel);
+
+                if (IsTelemetryAdded)
                 {
-                    if (SetResult.isSuccess()) {
-                        Log.d("InsertActivity", "Successfully Updated");
-                    } else {
-                        Log.d("InsertActivity", SetResult.getMessage());
-                    }
-                }, UserObj.getOwnedCarPlateTelemetry(), UserObj.getEmail());
-            } else {
-                Log.d("InsertActivity", "NULL USER");
+                    Toast.makeText(InsertActivity.this, "You cannot add the same telemetry twice", Toast.LENGTH_SHORT).show();
+                    AddTelemetryButton.stopAnimation(TransitionButton.StopAnimationStyle.SHAKE, null);
+                }
+                else
+                {
+                    //Add the Telemetry Object to the Owned Telemetry List.
+                    TempList.add(CarPlateModel);
+                    //Update the Owned Telemetry List.
+                    UserObj.setOwnedCarPlateTelemetry(TempList);
+                    //Update the Owned Telemetry in the fire store data base.
+                    AppInstance.GetFireStoreInstance().SetCarPlateTelemetry(SetResult ->
+                    {
+                        if (SetResult.isSuccess())
+                        {
+                            Toast.makeText(InsertActivity.this, "Telemetry Item added successfully.", Toast.LENGTH_SHORT).show();
+                            Log.d("InsertActivity", "HandleCarPlate Successfully Updated");
+                        }
+                        else
+                        {
+                            Toast.makeText(InsertActivity.this, "Failed to add, " + SetResult.getMessage(), Toast.LENGTH_SHORT).show();
+                            Log.d("InsertActivity", "HandleCarPlate Failed: " + SetResult.getMessage());
+                        }
+                        AddTelemetryButton.stopAnimation(TransitionButton.StopAnimationStyle.SHAKE, null);
+                    }, UserObj.getOwnedCarPlateTelemetry(), UserObj.getEmail());
+                }
+            }
+            else
+            {
+                Log.d("InsertActivity", "HandleCarPlate No user found");
             }
         }
         else
         {
-            Log.d("InsertActivity", "Validation Failed");
+            Log.d("InsertActivity", "HandleCarPlate Validation Failed");
             int resID = getResources().getIdentifier(Result.getTitle(), "id", getPackageName());
             if (resID != 0)
             {
@@ -249,43 +269,64 @@ public class InsertActivity extends AppCompatActivity
         CarModel.setAuctionStart(DateHelper.GetCurrentDateTime());
         CarModel.setStatus(StatusEnum.UnAuctioned);
         CarModel.setImage(TelemetryHelper.ImageToBase64(UploadImageButton.getDrawable()));
+        CarModel.setId(TelemetryHelper.GetTelemetryHash(CarModel.toString()));
 
         ValidationResult Result = TelemetryValidator.CarValidation(CarModel);
 
         if (Result.isSuccess()) {
-            Log.d("InsertActivity", "Validation Succeeded");
+            Log.d("InsertActivity", "HandleCar Validation Succeeded");
 
             if (UserObj != null) {
-                Log.d("InsertActivity", UserObj.getSsn());
+                Log.d("InsertActivity", "HandleCar User Id: " + UserObj.getId());
 
-                CarModel.setID(UserObj.getEmail()); //Set the Telemetry ID by the user ID which is the email.
+                CarModel.setOwnerId(UserObj.getEmail()); //Set the Telemetry ID by the user ID which is the email.
 
                 //If its empty create a new list with empty items.
-                if (UserObj.getOwnedCarTelemetry() == null) {
+                if (UserObj.getOwnedCarTelemetry() == null)
+                {
                     UserObj.setOwnedCarTelemetry(new ArrayList<Car>());
                 }
                 //Get the owned telemetries that the user have
                 ArrayList<Car> TempList = UserObj.getOwnedCarTelemetry();
-                //Add the Telemetry Object to the Owned Telemetry List.
-                TempList.add(CarModel);
-                //Update the Owned Telemetry List.
-                UserObj.setOwnedCarTelemetry(TempList);
-                //Update the Owned Telemetry in the fire store data base.
-                AppInstance.GetFireStoreInstance().SetCarTelemetry(SetResult ->
+
+                boolean IsTelemetryAdded = TelemetryHelper.IsTelemetryAdded(TempList, CarModel);
+
+                if (IsTelemetryAdded)
                 {
-                    if (SetResult.isSuccess()) {
-                        Log.d("InsertActivity", "Successfully Updated");
-                    } else {
-                        Log.d("InsertActivity", SetResult.getMessage());
-                    }
-                }, UserObj.getOwnedCarTelemetry(), UserObj.getEmail());
-            } else {
-                Log.d("InsertActivity", "NULL USER");
+                    Toast.makeText(InsertActivity.this, "You cannot add the same telemetry twice", Toast.LENGTH_SHORT).show();
+                    AddTelemetryButton.stopAnimation(TransitionButton.StopAnimationStyle.SHAKE, null);
+                }
+                else
+                {
+                    //Add the Telemetry Object to the Owned Telemetry List.
+                    TempList.add(CarModel);
+                    //Update the Owned Telemetry List.
+                    UserObj.setOwnedCarTelemetry(TempList);
+                    //Update the Owned Telemetry in the fire store data base.
+                    AppInstance.GetFireStoreInstance().SetCarTelemetry(SetResult ->
+                    {
+                        if (SetResult.isSuccess())
+                        {
+                            Toast.makeText(InsertActivity.this, "Telemetry Item added successfully.", Toast.LENGTH_SHORT).show();
+                            Log.d("InsertActivity", "HandleCar Successfully Updated");
+                        }
+                        else
+                        {
+                            Toast.makeText(InsertActivity.this, "Failed to add, " + SetResult.getMessage(), Toast.LENGTH_SHORT).show();
+                            Log.d("InsertActivity", "HandleCar Failed: " + SetResult.getMessage());
+                        }
+                        AddTelemetryButton.stopAnimation(TransitionButton.StopAnimationStyle.SHAKE, null);
+                    }, UserObj.getOwnedCarTelemetry(), UserObj.getEmail());
+                }
+            }
+            else
+            {
+                Log.d("InsertActivity", "HandleCar No user found");
             }
         }
         else
         {
-            Log.d("InsertActivity", "Validation Failed");
+            Log.d("InsertActivity", "HandleCar Validation Failed");
             int resID = getResources().getIdentifier(Result.getTitle(), "id", getPackageName());
             if (resID != 0)
             {
@@ -312,43 +353,67 @@ public class InsertActivity extends AppCompatActivity
         LandmarkModel.setAuctionStart(DateHelper.GetCurrentDateTime());
         LandmarkModel.setStatus(StatusEnum.UnAuctioned);
         LandmarkModel.setImage(TelemetryHelper.ImageToBase64(UploadImageButton.getDrawable()));
+        LandmarkModel.setId(TelemetryHelper.GetTelemetryHash(LandmarkModel.toString()));
 
         ValidationResult Result = TelemetryValidator.LandmarkValidation(LandmarkModel);
 
-        if (Result.isSuccess()) {
-            Log.d("InsertActivity", "Validation Succeeded");
+        if (Result.isSuccess())
+        {
+            Log.d("InsertActivity", "HandleLandmark Validation Succeeded");
 
-            if (UserObj != null) {
-                Log.d("InsertActivity", UserObj.getSsn());
+            if (UserObj != null)
+            {
+                Log.d("InsertActivity", "HandleLandmark User Id: " + UserObj.getId());
 
-                LandmarkModel.setID(UserObj.getEmail()); //Set the Telemetry ID by the user ID which is the email.
+                //Set the Telemetry ID by the user ID which is the email.
+                LandmarkModel.setOwnerId(UserObj.getEmail());
 
                 //If its empty create a new list with empty items.
-                if (UserObj.getOwnedLandmarkTelemetry() == null) {
+                if (UserObj.getOwnedLandmarkTelemetry() == null)
+                {
                     UserObj.setOwnedLandmarkTelemetry(new ArrayList<Landmark>());
                 }
                 //Get the owned telemetries that the user have
                 ArrayList<Landmark> TempList = UserObj.getOwnedLandmarkTelemetry();
-                //Add the Telemetry Object to the Owned Telemetry List.
-                TempList.add(LandmarkModel);
-                //Update the Owned Telemetry List.
-                UserObj.setOwnedLandmarkTelemetry(TempList);
-                //Update the Owned Telemetry in the fire store data base.
-                AppInstance.GetFireStoreInstance().SetLandmarkTelemetry(SetResult ->
+
+                boolean IsTelemetryAdded = TelemetryHelper.IsTelemetryAdded(TempList, LandmarkModel);
+
+                if (IsTelemetryAdded)
                 {
-                    if (SetResult.isSuccess()) {
-                        Log.d("InsertActivity", "Successfully Updated");
-                    } else {
-                        Log.d("InsertActivity", SetResult.getMessage());
-                    }
-                }, UserObj.getOwnedLandmarkTelemetry(), UserObj.getEmail());
-            } else {
-                Log.d("InsertActivity", "NULL USER");
+                    Toast.makeText(InsertActivity.this, "You cannot add the same telemetry twice", Toast.LENGTH_SHORT).show();
+                    AddTelemetryButton.stopAnimation(TransitionButton.StopAnimationStyle.SHAKE, null);
+                }
+                else
+                {
+                    //Add the Telemetry Object to the Owned Telemetry List.
+                    TempList.add(LandmarkModel);
+                    //Update the Owned Telemetry List.
+                    UserObj.setOwnedLandmarkTelemetry(TempList);
+                    //Update the Owned Telemetry in the fire store data base.
+                    AppInstance.GetFireStoreInstance().SetLandmarkTelemetry(SetResult ->
+                    {
+                        if (SetResult.isSuccess())
+                        {
+                            Toast.makeText(InsertActivity.this, "Telemetry Item added successfully.", Toast.LENGTH_SHORT).show();
+                            Log.d("InsertActivity", "HandleLandmark Successfully Updated");
+                        }
+                        else
+                        {
+                            Toast.makeText(InsertActivity.this, "Failed to add, " + SetResult.getMessage(), Toast.LENGTH_SHORT).show();
+                            Log.d("InsertActivity", "HandleLandmark Failed: " + SetResult.getMessage());
+                        }
+                        AddTelemetryButton.stopAnimation(TransitionButton.StopAnimationStyle.SHAKE, null);
+                    }, UserObj.getOwnedLandmarkTelemetry(), UserObj.getEmail());
+                }
+            }
+            else
+            {
+                Log.d("InsertActivity", "HandleLandmark No User Found");
             }
         }
         else
         {
-            Log.d("InsertActivity", "Validation Failed");
+            Log.d("InsertActivity", "HandleLandmark Validation Failed");
             int resID = getResources().getIdentifier(Result.getTitle(), "id", getPackageName());
             if (resID != 0)
             {
@@ -373,43 +438,66 @@ public class InsertActivity extends AppCompatActivity
         VIPPhoneModel.setAuctionStart(DateHelper.GetCurrentDateTime());
         VIPPhoneModel.setStatus(StatusEnum.UnAuctioned);
         VIPPhoneModel.setImage(TelemetryHelper.ImageToBase64(UploadImageButton.getDrawable()));
-
+        VIPPhoneModel.setId(TelemetryHelper.GetTelemetryHash(VIPPhoneModel.toString()));
 
         ValidationResult Result = TelemetryValidator.VipPhoneNumberValidation(VIPPhoneModel);
 
-        if (Result.isSuccess()) {
-            Log.d("InsertActivity", "Validation Succeeded");
-            if (UserObj != null) {
-                Log.d("InsertActivity", UserObj.getSsn());
+        if (Result.isSuccess())
+        {
+            Log.d("InsertActivity", "HandleVIPPhoneNumber Validation Succeeded");
+            if (UserObj != null)
+            {
+                Log.d("InsertActivity", "HandleVIPPhoneNumber User Id: " + UserObj.getId());
 
-                VIPPhoneModel.setID(UserObj.getEmail()); //Set the Telemetry ID by the user ID which is the email.
+                //Set the Telemetry ID by the user ID which is the email.
+                VIPPhoneModel.setOwnerId(UserObj.getEmail());
 
                 //If its empty create a new list with empty items.
-                if (UserObj.getOwnedVipPhoneTelemetry() == null) {
+                if (UserObj.getOwnedVipPhoneTelemetry() == null)
+                {
                     UserObj.setOwnedVipPhoneTelemetry(new ArrayList<VipPhoneNumber>());
                 }
                 //Get the owned telemetries that the user have
                 ArrayList<VipPhoneNumber> TempList = UserObj.getOwnedVipPhoneTelemetry();
-                //Add the Telemetry Object to the Owned Telemetry List.
-                TempList.add(VIPPhoneModel);
-                //Update the Owned Telemetry List.
-                UserObj.setOwnedVipPhoneTelemetry(TempList);
-                //Update the Owned Telemetry in the fire store data base.
-                AppInstance.GetFireStoreInstance().SetVipPhoneTelemetry(SetResult ->
+
+                boolean IsTelemetryAdded = TelemetryHelper.IsTelemetryAdded(TempList, VIPPhoneModel);
+
+                if (IsTelemetryAdded)
                 {
-                    if (SetResult.isSuccess()) {
-                        Log.d("InsertActivity", "Successfully Updated");
-                    } else {
-                        Log.d("InsertActivity", SetResult.getMessage());
-                    }
-                }, UserObj.getOwnedVipPhoneTelemetry(), UserObj.getEmail());
-            } else {
-                Log.d("InsertActivity", "NULL USER");
+                    Toast.makeText(InsertActivity.this, "You cannot add the same telemetry twice", Toast.LENGTH_SHORT).show();
+                    AddTelemetryButton.stopAnimation(TransitionButton.StopAnimationStyle.SHAKE, null);
+                }
+                else
+                {
+                    //Add the Telemetry Object to the Owned Telemetry List.
+                    TempList.add(VIPPhoneModel);
+                    //Update the Owned Telemetry List.
+                    UserObj.setOwnedVipPhoneTelemetry(TempList);
+                    //Update the Owned Telemetry in the fire store data base.
+                    AppInstance.GetFireStoreInstance().SetVipPhoneTelemetry(SetResult ->
+                    {
+                        if (SetResult.isSuccess())
+                        {
+                            Toast.makeText(InsertActivity.this, "Telemetry Item added successfully.", Toast.LENGTH_SHORT).show();
+                            Log.d("InsertActivity", "HandleVIPPhoneNumber Successfully Updated");
+                        }
+                        else
+                        {
+                            Toast.makeText(InsertActivity.this, "Failed to add, " + SetResult.getMessage(), Toast.LENGTH_SHORT).show();
+                            Log.d("InsertActivity", "HandleVIPPhoneNumber Failed: " + SetResult.getMessage());
+                        }
+                        AddTelemetryButton.stopAnimation(TransitionButton.StopAnimationStyle.SHAKE, null);
+                    }, UserObj.getOwnedVipPhoneTelemetry(), UserObj.getEmail());
+                }
+            }
+            else
+            {
+                Log.d("InsertActivity", "HandleVIPPhoneNumber No User Found");
             }
         }
         else
         {
-            Log.d("InsertActivity", "Validation Failed");
+            Log.d("InsertActivity", "HandleVIPPhoneNumber Validation Failed");
             int resID = getResources().getIdentifier(Result.getTitle(), "id", getPackageName());
             if (resID != 0)
             {
@@ -433,42 +521,66 @@ public class InsertActivity extends AppCompatActivity
         GeneralModel.setAuctionStart(DateHelper.GetCurrentDateTime());
         GeneralModel.setStatus(StatusEnum.UnAuctioned);
         GeneralModel.setImage(TelemetryHelper.ImageToBase64(UploadImageButton.getDrawable()));
+        GeneralModel.setId(TelemetryHelper.GetTelemetryHash(GeneralModel.toString()));
 
         ValidationResult Result = TelemetryValidator.GeneralValidation(GeneralModel);
 
-        if (Result.isSuccess()) {
-            Log.d("InsertActivity", "Validation Succeeded");
-            if (UserObj != null) {
-                Log.d("InsertActivity", UserObj.getSsn());
+        if (Result.isSuccess())
+        {
+            Log.d("InsertActivity", "HandleGeneral Validation Succeeded");
+            if (UserObj != null)
+            {
+                Log.d("InsertActivity", "HandleGeneral User ID: " + UserObj.getId());
 
-                GeneralModel.setID(UserObj.getEmail()); //Set the Telemetry ID by the user ID which is the email.
+                //Set the Telemetry ID by the user ID which is the email.
+                GeneralModel.setOwnerId(UserObj.getEmail());
 
                 //If its empty create a new list with empty items.
-                if (UserObj.getOwnedGeneralTelemetry() == null) {
+                if (UserObj.getOwnedGeneralTelemetry() == null)
+                {
                     UserObj.setOwnedGeneralTelemetry(new ArrayList<General>());
                 }
                 //Get the owned telemetries that the user have
                 ArrayList<General> TempList = UserObj.getOwnedGeneralTelemetry();
-                //Add the Telemetry Object to the Owned Telemetry List.
-                TempList.add(GeneralModel);
-                //Update the Owned Telemetry List.
-                UserObj.setOwnedGeneralTelemetry(TempList);
-                //Update the Owned Telemetry in the fire store data base.
-                AppInstance.GetFireStoreInstance().SetGeneralTelemetry(SetResult ->
+
+                boolean IsTelemetryAdded = TelemetryHelper.IsTelemetryAdded(TempList, GeneralModel);
+
+                if (IsTelemetryAdded)
                 {
-                    if (SetResult.isSuccess()) {
-                        Log.d("InsertActivity", "Successfully Updated");
-                    } else {
-                        Log.d("InsertActivity", SetResult.getMessage());
-                    }
-                }, UserObj.getOwnedGeneralTelemetry(), UserObj.getEmail());
-            } else {
-                Log.d("InsertActivity", "NULL USER");
+                    Toast.makeText(InsertActivity.this, "You cannot add the same telemetry twice", Toast.LENGTH_SHORT).show();
+                    AddTelemetryButton.stopAnimation(TransitionButton.StopAnimationStyle.SHAKE, null);
+                }
+                else
+                {
+                    //Add the Telemetry Object to the Owned Telemetry List.
+                    TempList.add(GeneralModel);
+                    //Update the Owned Telemetry List.
+                    UserObj.setOwnedGeneralTelemetry(TempList);
+                    //Update the Owned Telemetry in the fire store data base.
+                    AppInstance.GetFireStoreInstance().SetGeneralTelemetry(SetResult ->
+                    {
+                        if (SetResult.isSuccess())
+                        {
+                            Toast.makeText(InsertActivity.this, "Telemetry Item added successfully.", Toast.LENGTH_SHORT).show();
+                            Log.d("InsertActivity", "HandleGeneral Successfully Updated");
+                        }
+                        else
+                        {
+                            Toast.makeText(InsertActivity.this, "Failed to add, " + SetResult.getMessage(), Toast.LENGTH_SHORT).show();
+                            Log.d("InsertActivity", "HandleGeneral Failed: " + SetResult.getMessage());
+                        }
+                        AddTelemetryButton.stopAnimation(TransitionButton.StopAnimationStyle.SHAKE, null);
+                    }, UserObj.getOwnedGeneralTelemetry(), UserObj.getEmail());
+                }
+            }
+            else
+            {
+                Log.d("InsertActivity", "HandleGeneral No User Found");
             }
         }
         else
         {
-            Log.d("InsertActivity", "Validation Failed");
+            Log.d("InsertActivity", "HandleGeneral Validation Failed");
             int resID = getResources().getIdentifier(Result.getTitle(), "id", getPackageName());
             if (resID != 0)
             {

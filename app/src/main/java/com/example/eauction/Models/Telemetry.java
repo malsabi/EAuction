@@ -11,6 +11,7 @@ public class Telemetry
     private String auctionEnd;
     private String details;
     private String id;
+    private String ownerId;
     private String image;
 
     //region Constructor
@@ -51,7 +52,8 @@ public class Telemetry
     {
         this.details = details;
     }
-    public void setID(String id) {this.id = id;}
+    public void setId(String id) {this.id = id;}
+    public void setOwnerId(String ownerId) {this.ownerId = ownerId;}
     public void setImage(String image) {this.image = image; }
     //endregion
     //region Getters
@@ -83,6 +85,7 @@ public class Telemetry
     {
         return id;
     }
+    public String getOwnerId() {return ownerId;}
     public String getImage() {return  image; }
     //endregion
 }

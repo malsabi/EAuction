@@ -58,12 +58,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
+        AppInstance = (App)getApplication();
+        GetUserInformation();
+
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         navigationView.setNavigationItemSelectedListener(this);
         setSupportActionBar(toolbar);
 
-        AppInstance = (App)getApplication();
+
 
         //region Username and ProfilePicture Events
         View headerLayout = navigationView.getHeaderView(0);
@@ -78,7 +82,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             navigationView.setCheckedItem(R.id.dm_home);
         }
         InitializeBurgerButtonAnimation();
-        GetUserInformation();
 
         SignOutButton.setOnClickListener(v ->
         {
@@ -99,15 +102,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     {
         if (PreferenceUtils.getEmail(this) != null && PreferenceUtils.getPassword(this) != null)
         {
-            Log.d("UserObjMainActivity", "MSG: " + PreferenceUtils.getEmail(this));
+            Log.d("MainActivity", "GetUserInformation Email: " + PreferenceUtils.getEmail(this));
             AppInstance.GetFireStoreInstance().GetUserInformation(UserObj ->
             {
                 this.UserObj = UserObj;
-                Log.d("UserObjMainActivity", UserObj.getProfilePicture() + "");
-                String FullUserName = UserObj.getFirstName() + " " + UserObj.getLastName();
-                UsernameEditText.setText(FullUserName);
-                UserProfileImageView.setImageBitmap(TelemetryHelper.Base64ToImage(UserObj.getProfilePicture()));
-                Log.d("UserObjMainActivity", "Successfully set the text and image");
+                if (this.UserObj == null)
+                {
+                    Log.d("MainActivity", "GetUserInformation is NULL");
+                    PreferenceUtils.ClearPreferences(this);
+                    Intent IntentObj = new Intent(MainActivity.this, LoginActivity.class);
+                    startActivity(IntentObj);
+                    finish();
+                }
+                else
+                {
+                    Log.d("MainActivity", "GetUserInformation ProfilePicture Size: " + UserObj.getProfilePicture().length());
+                    String FullUserName = UserObj.getFirstName() + " " + UserObj.getLastName();
+                    UsernameEditText.setText(FullUserName);
+                    UserProfileImageView.setImageBitmap(TelemetryHelper.Base64ToImage(UserObj.getProfilePicture()));
+                    Log.d("MainActivity", "GetUserInformation Successfully set the text and image");
+                }
+
             }, PreferenceUtils.getEmail(this));
         }
     }

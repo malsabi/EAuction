@@ -13,7 +13,7 @@ public class User
     private String date;
     private String gender;
     private String nationality;
-    private String ssn;
+    private String Id;
     private String profilePicture;
     private ArrayList<Car> ownedCarTelemetry;
     private ArrayList<CarPlate> ownedCarPlateTelemetry;
@@ -34,7 +34,7 @@ public class User
         this.date = "";
         this.gender = "";
         this.nationality = "";
-        this.ssn = "";
+        this.Id = "";
         this.profilePicture = "";
         this.ownedCarTelemetry = null;
         this.ownedCarPlateTelemetry = null;
@@ -44,7 +44,7 @@ public class User
         this.ownedServiceTelemetry = null;
         this.isActive = "Offline";
     }
-    public User(String firstName, String lastName, String email, String phoneNumber, String password, String date, String gender, String nationality, String ssn, String profilePicture, ArrayList<Car> ownedCarTelemetry, ArrayList<CarPlate> ownedCarePlateTelemetry, ArrayList<VipPhoneNumber> ownedVipPhoneTelemetry, ArrayList<Landmark> ownedLandmarkTelemetry, ArrayList<General> ownedGeneralTelemetry,  ArrayList<Service> ownedServiceTelemetry, String isActive) {
+    public User(String firstName, String lastName, String email, String phoneNumber, String password, String date, String gender, String nationality, String Id, String profilePicture, ArrayList<Car> ownedCarTelemetry, ArrayList<CarPlate> ownedCarePlateTelemetry, ArrayList<VipPhoneNumber> ownedVipPhoneTelemetry, ArrayList<Landmark> ownedLandmarkTelemetry, ArrayList<General> ownedGeneralTelemetry,  ArrayList<Service> ownedServiceTelemetry, String isActive) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -53,7 +53,7 @@ public class User
         this.date = date;
         this.gender = gender;
         this.nationality = nationality;
-        this.ssn = ssn;
+        this.Id = Id;
         this.profilePicture = profilePicture;
         this.ownedCarTelemetry = ownedCarTelemetry;
         this.ownedCarPlateTelemetry = ownedCarePlateTelemetry;
@@ -97,9 +97,9 @@ public class User
     {
         this.nationality = nationality;
     }
-    public void setSsn(String ssn)
+    public void setId(String Id)
     {
-        this.ssn = ssn;
+        this.Id = Id;
     }
     public void setProfilePicture(String profilePicture)
     {
@@ -146,9 +146,9 @@ public class User
     {
         return nationality;
     }
-    public String getSsn()
+    public String getId()
     {
-        return ssn;
+        return Id;
     }
     public String getProfilePicture()
     {

@@ -1,5 +1,7 @@
 package com.example.eauction.Models;
 
+import androidx.annotation.NonNull;
+
 public class Landmark extends Telemetry
 {
     private String type;
@@ -66,5 +68,12 @@ public class Landmark extends Telemetry
     public boolean IsEqual(Landmark LM)
     {
         return type.equals(LM.getType()) && location.equals(LM.getLocation()) && name.equals(LM.getName()) && area == LM.getArea() && getDetails().equals(LM.getDetails());
+    }
+
+    @NonNull
+    @Override
+    public String toString()
+    {
+        return (type + location + name + area + getDetails()).toUpperCase();
     }
 }

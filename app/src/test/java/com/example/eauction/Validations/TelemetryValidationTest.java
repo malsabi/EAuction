@@ -2,8 +2,8 @@ package com.example.eauction.Validations;
 
 import junit.framework.TestCase;
 
-public class TelemetryValidationTest extends TestCase {
-
+public class TelemetryValidationTest extends TestCase
+{
     public void testCarPlateValidation() {
     }
 

@@ -1,5 +1,7 @@
 package com.example.eauction.Models;
 
+import androidx.annotation.NonNull;
+
 public class CarPlate extends Telemetry
 {
     private String plateNumber;
@@ -54,5 +56,12 @@ public class CarPlate extends Telemetry
     public boolean IsEqual(CarPlate CP)
     {
         return plateNumber.equals(CP.getPlateNumber()) && plateCode.equals(CP.getPlateCode()) && emirate.equals(CP.getEmirate()) && getDetails().equals(CP.getDetails());
+    }
+
+    @NonNull
+    @Override
+    public String toString()
+    {
+        return (plateNumber + plateCode + emirate + getDetails()).toUpperCase();
     }
 }

@@ -1,7 +1,6 @@
 package com.example.eauction;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,11 +8,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.eauction.Interfaces.SetUserIsActiveCallback;
 import com.example.eauction.Interfaces.SignInUserCallback;
 import com.example.eauction.Models.SignIn;
 import com.example.eauction.Utilities.PreferenceUtils;
 import com.royrodriguez.transitionbutton.TransitionButton;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -68,9 +67,9 @@ public class LoginActivity extends AppCompatActivity
         String Password = PasswordEditText.getText().toString();
 
         SignIn SignInObj = new SignIn(Email, Password);
-        Log.d("TAG", "Starting SignIn function");
+        Log.d("LoginActivity", "OnSignInClick Starting SignIn function");
 
-        AppInstance.GetFireStoreInstance().SignInUser((SignInUserCallback) (Result, UserObj) ->
+        AppInstance.GetFireStoreInstance().SignInUser((Result, UserObj) ->
         {
             if (Result.isSuccess())
             {
@@ -94,7 +93,7 @@ public class LoginActivity extends AppCompatActivity
                     Toast.makeText(LoginActivity.this, Result.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
-            Log.d("TAG", "Finished from SignIn Function");
+            Log.d("LoginActivity", "OnSignInClick Finished from SignIn Function");
             SignInButton.stopAnimation(TransitionButton.StopAnimationStyle.SHAKE, null);
         }, SignInObj);
     }

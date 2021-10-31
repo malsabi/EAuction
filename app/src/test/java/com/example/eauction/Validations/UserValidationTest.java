@@ -22,7 +22,7 @@ public class UserValidationTest
         DummyUser.setPassword("123qwe321");
         DummyUser.setDate("12/07/1999");
         DummyUser.setGender("Female");
-        DummyUser.setSsn("199-31-834");
+        DummyUser.setId("000-1111-1234567-0");
 
         //Actual: The actual value is the result from the validation and should be true.
         boolean ActualValue = UserValidator.ValidateRegister(DummyUser).isSuccess();
@@ -162,16 +162,16 @@ public class UserValidationTest
     }
 
     @Test
-    public void testSSNValidation()
+    public void testIdValidation()
     {
         //Given
         UserValidation UserValidator = new UserValidation();
 
         //When
-        String SSN = "100-10-122";
+        String Id = "000-0000-0000111-1";
 
         //Actual: The actual value is the result from the validation and should be true.
-        boolean ActualValue = UserValidator.SSNValidation(SSN).isSuccess();
+        boolean ActualValue = UserValidator.IdValidation(Id).isSuccess();
 
         //If the actualValue is true, then it passed the test, otherwise it will throw an exception.
         Assert.assertEquals(true, ActualValue);

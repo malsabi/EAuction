@@ -12,9 +12,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.Toast;
-
-import com.example.eauction.Interfaces.RegisterUserCallback;
-import com.example.eauction.Models.FireStoreResult;
 import com.example.eauction.Models.User;
 import com.royrodriguez.transitionbutton.TransitionButton;
 import java.text.SimpleDateFormat;
@@ -53,15 +50,15 @@ public class SignUpActivity extends AppCompatActivity
     @BindView(R.id.FemaleRadioBtn)
     RadioButton FemaleRadioButton;
 
-    @BindView(R.id.EtSSNSignup)
-    EditText SSNEditText;
+    @BindView(R.id.EtIdSignup)
+    EditText IdEditText;
 
     @BindView(R.id.BtnSignup)
     TransitionButton SignUpButton;
     //endregion
 
     private String LastChar = " ";
-    private String LastCharSSN = " ";
+    private String LastCharId = " ";
     private Calendar MyCalendar = null;
     private App AppInstance;
 
@@ -90,7 +87,7 @@ public class SignUpActivity extends AppCompatActivity
             public void onTextChanged(CharSequence s, int start, int before, int count)
             {
                 int digits = PhoneNumberEditText.getText().toString().length();
-                Log.d("LENGTH",""+digits);
+                Log.d("SignUpActivity","OnTextChanged Text Length: " + digits);
                 if (!LastChar.equals("-"))
                 {
                     if (digits == 3 || digits == 7)
@@ -122,28 +119,28 @@ public class SignUpActivity extends AppCompatActivity
             dp.getButton(DatePickerDialog.BUTTON_POSITIVE).setBackgroundColor(Color.WHITE);
         });
         //endregion
-        //region SSN TextWatcher
-        SSNEditText.addTextChangedListener(new TextWatcher()
+        //region Id TextWatcher
+        IdEditText.addTextChangedListener(new TextWatcher()
         {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after)
             {
-                int digits = SSNEditText.getText().toString().length();
+                int digits = IdEditText.getText().toString().length();
                 if (digits > 1)
                 {
-                    LastCharSSN = SSNEditText.getText().toString().substring(digits - 1);
+                    LastCharId = IdEditText.getText().toString().substring(digits - 1);
                 }
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count)
             {
-                int characters = SSNEditText.getText().toString().length();
-                if (!LastCharSSN.equals("-"))
+                int characters = IdEditText.getText().toString().length();
+                if (!LastCharId.equals("-"))
                 {
-                    if (characters == 3 || characters == 6)
+                    if (characters == 3 || characters == 8 || characters == 16)
                     {
-                        SSNEditText.append("-");
+                        IdEditText.append("-");
                     }
                 }
             }
@@ -184,7 +181,7 @@ public class SignUpActivity extends AppCompatActivity
         UserObj.setEmail(EmailEditText.getText().toString());
         UserObj.setDate(DayOfBirthEditText.getText().toString());
         UserObj.setGender(MaleRadioButton.isChecked() ? "Male" : "Female");
-        UserObj.setSsn(SSNEditText.getText().toString());
+        UserObj.setId(IdEditText.getText().toString());
         UserObj.setIsActive("Offline");
 
         AppInstance.GetFireStoreInstance().RegisterUser(Result ->
@@ -208,7 +205,7 @@ public class SignUpActivity extends AppCompatActivity
                     Toast.makeText(SignUpActivity.this, Result.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
-            Log.d("TAG", "Finished from registerUser");
+            Log.d("SignUpActivity", "HandleSignUpUser Finished from registerUser");
             SignUpButton.stopAnimation(TransitionButton.StopAnimationStyle.SHAKE, null);
         }, UserObj);
     }

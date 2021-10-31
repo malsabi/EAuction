@@ -26,6 +26,7 @@ import com.example.eauction.R;
 import com.example.eauction.Utilities.PreferenceUtils;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -33,21 +34,21 @@ import butterknife.ButterKnife;
 public class GlobalAuctionsFragment extends Fragment {
 
     @BindView(R.id.RvAucitonedGlobalProperties)
-    public RecyclerView RvAucitonedGlobalProperties;
+    public RecyclerView RvAuctionedGlobalProperties;
 
     private TelemetryAdapter RecyclerViewAdapter;
     private RecyclerView.LayoutManager LayoutManager;
-
     private App AppInstance;
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
+    {
         View view =  inflater.inflate(R.layout.fragment_globalauctions,container,false);
         ButterKnife.bind(this,view);
         AppInstance = (App) this.requireActivity().getApplication();
 
-        String auctionNeeded = this.getArguments().getString("AuctionNeeded");
+        String auctionNeeded = this.requireArguments().getString("AuctionNeeded");
         PopulateCards(auctionNeeded);
 
         return view;
@@ -55,86 +56,88 @@ public class GlobalAuctionsFragment extends Fragment {
 
     private void PopulateCards(String auctionNeeded)
     {
-        if(auctionNeeded.equals("PlateCodeAuction")) {
-            Toast.makeText(getContext(), auctionNeeded, Toast.LENGTH_SHORT).show(); //Todo populate cards with auctioned PlateCode (done)
+        if(auctionNeeded.equals("PlateCodeAuction"))
+        {
+            Toast.makeText(getContext(), auctionNeeded, Toast.LENGTH_SHORT).show();
             AppInstance.GetFireStoreInstance().GetCarPlateAuctions(Result ->
             {
 
-                if (Result != null) {
+                if (Result != null)
+                {
                     LayoutManager = new LinearLayoutManager(getContext());
                     RecyclerViewAdapter = new TelemetryAdapter(Merge(Result));
-                    RvAucitonedGlobalProperties.setLayoutManager(LayoutManager);
-                    RvAucitonedGlobalProperties.setAdapter(RecyclerViewAdapter);
+                    RvAuctionedGlobalProperties.setLayoutManager(LayoutManager);
+                    RvAuctionedGlobalProperties.setAdapter(RecyclerViewAdapter);
                 }
             });
         }
         else if(auctionNeeded.equals("CarAuction"))
         {
-            Toast.makeText(getContext(), auctionNeeded, Toast.LENGTH_SHORT).show(); //Todo populate cards with auctioned cars (done)
+            Toast.makeText(getContext(), auctionNeeded, Toast.LENGTH_SHORT).show();
             AppInstance.GetFireStoreInstance().GetCarAuctions(Result ->
             {
                 if (Result != null)
                 {
                     LayoutManager = new LinearLayoutManager(getContext());
                     RecyclerViewAdapter = new TelemetryAdapter(Merge(Result));
-                    RvAucitonedGlobalProperties.setLayoutManager(LayoutManager);
-                    RvAucitonedGlobalProperties.setAdapter(RecyclerViewAdapter);
+                    RvAuctionedGlobalProperties.setLayoutManager(LayoutManager);
+                    RvAuctionedGlobalProperties.setAdapter(RecyclerViewAdapter);
                 }
             });
         }
         else if(auctionNeeded.equals("LandmarkAuction"))
         {
-            Toast.makeText(getContext(), auctionNeeded, Toast.LENGTH_SHORT).show(); //Todo populate cards with auctioned landmarks (done)
+            Toast.makeText(getContext(), auctionNeeded, Toast.LENGTH_SHORT).show();
             AppInstance.GetFireStoreInstance().GetLandmarkAuctions(Result ->
             {
                 if (Result != null)
                 {
                     LayoutManager = new LinearLayoutManager(getContext());
                     RecyclerViewAdapter = new TelemetryAdapter(Merge(Result));
-                    RvAucitonedGlobalProperties.setLayoutManager(LayoutManager);
-                    RvAucitonedGlobalProperties.setAdapter(RecyclerViewAdapter);
+                    RvAuctionedGlobalProperties.setLayoutManager(LayoutManager);
+                    RvAuctionedGlobalProperties.setAdapter(RecyclerViewAdapter);
                 }
             });
         }
         else if(auctionNeeded.equals("VipAuction"))
         {
-            Toast.makeText(getContext(), auctionNeeded, Toast.LENGTH_SHORT).show(); //Todo populate cards with auctioned Vip (done)
+            Toast.makeText(getContext(), auctionNeeded, Toast.LENGTH_SHORT).show();
             AppInstance.GetFireStoreInstance().GetVIPPHoneNumberAuctions(Result ->
             {
                 if (Result != null)
                 {
                     LayoutManager = new LinearLayoutManager(getContext());
                     RecyclerViewAdapter = new TelemetryAdapter(Merge(Result));
-                    RvAucitonedGlobalProperties.setLayoutManager(LayoutManager);
-                    RvAucitonedGlobalProperties.setAdapter(RecyclerViewAdapter);
+                    RvAuctionedGlobalProperties.setLayoutManager(LayoutManager);
+                    RvAuctionedGlobalProperties.setAdapter(RecyclerViewAdapter);
                 }
             });
         }
         else if(auctionNeeded.equals("GeneralAuction"))
         {
-            Toast.makeText(getContext(), auctionNeeded, Toast.LENGTH_SHORT).show(); //Todo populate cards with auctioned General (done)
+            Toast.makeText(getContext(), auctionNeeded, Toast.LENGTH_SHORT).show();
             AppInstance.GetFireStoreInstance().GetGeneralAuctions(Result ->
             {
                 if (Result != null)
                 {
                     LayoutManager = new LinearLayoutManager(getContext());
                     RecyclerViewAdapter = new TelemetryAdapter(Merge(Result));
-                    RvAucitonedGlobalProperties.setLayoutManager(LayoutManager);
-                    RvAucitonedGlobalProperties.setAdapter(RecyclerViewAdapter);
+                    RvAuctionedGlobalProperties.setLayoutManager(LayoutManager);
+                    RvAuctionedGlobalProperties.setAdapter(RecyclerViewAdapter);
                 }
             });
         }
         else if(auctionNeeded.equals("ServiceAuction"))
         {
-            Toast.makeText(getContext(), auctionNeeded, Toast.LENGTH_SHORT).show(); //Todo populate cards with auctioned Service (done)
+            Toast.makeText(getContext(), auctionNeeded, Toast.LENGTH_SHORT).show();
             AppInstance.GetFireStoreInstance().GetServiceAuctions(Result ->
             {
                 if (Result != null)
                 {
                     LayoutManager = new LinearLayoutManager(getContext());
                     RecyclerViewAdapter = new TelemetryAdapter(Merge(Result));
-                    RvAucitonedGlobalProperties.setLayoutManager(LayoutManager);
-                    RvAucitonedGlobalProperties.setAdapter(RecyclerViewAdapter);
+                    RvAuctionedGlobalProperties.setLayoutManager(LayoutManager);
+                    RvAuctionedGlobalProperties.setAdapter(RecyclerViewAdapter);
                 }
             });
         }
@@ -152,7 +155,7 @@ public class GlobalAuctionsFragment extends Fragment {
         {
             for (int i = 0; i < arg.size(); i++)
             {
-                if (!arg.get(i).getID().equals(Email))
+                if (!arg.get(i).getOwnerId().equals(Email))
                 {
                     returnTelemetries.add(arg.get(i));
                 }

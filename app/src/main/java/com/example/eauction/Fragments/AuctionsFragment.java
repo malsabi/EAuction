@@ -28,8 +28,8 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class AuctionsFragment extends Fragment {
-
+public class AuctionsFragment extends Fragment
+{
     @BindView(R.id.RvMyAuctionsTelemetry)
     public RecyclerView RvMyAuctionsTelemetry;
 
@@ -55,11 +55,11 @@ public class AuctionsFragment extends Fragment {
     {
         if (PreferenceUtils.getEmail(this.getContext()) != null && PreferenceUtils.getPassword(this.getContext()) != null)
         {
-            Log.d("UserObjAuctions", "MSG Fragment: " + PreferenceUtils.getEmail(this.getContext()));
+            Log.d("AuctionsFragment", "GetUserInformation Email: " + PreferenceUtils.getEmail(this.getContext()));
             AppInstance.GetFireStoreInstance().GetUserInformation(UserObj ->
             {
                 this.UserObj = UserObj;
-                Log.d("UserObjAuctions", "SSN Fragment: " + this.UserObj.getSsn());
+                Log.d("AuctionsFragment", "GetUserInformation User Id: " + this.UserObj.getId());
 
                 ArrayList<Telemetry> UserTelemetries = Merge(UserObj.getOwnedCarPlateTelemetry(), UserObj.getOwnedCarTelemetry(), UserObj.getOwnedLandmarkTelemetry(), UserObj.getOwnedVipPhoneTelemetry(), UserObj.getOwnedGeneralTelemetry());
 

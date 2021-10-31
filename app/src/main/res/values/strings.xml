@@ -11,7 +11,7 @@
     <string name="birth_date">Birth Date</string>
     <string name="female">Female</string>
     <string name="male">Male</string>
-    <string name="ssn">SSN</string>
+    <string name="Id">Id</string>
     <string name="sign_up_noUL">Sign up</string>
     <string name="home">Home</string>
     <string name="auctions">Auctions</string>
