@@ -26,6 +26,8 @@ public class LoginActivity extends AppCompatActivity
     EditText PasswordEditText;
     @BindView(R.id.TvSignUp)
     TextView signUpTextView;
+    @BindView(R.id.TvResetPassword)
+    TextView TvResetPassword;
 
     private App AppInstance;
 
@@ -46,6 +48,9 @@ public class LoginActivity extends AppCompatActivity
         signUpTextView.setOnClickListener(v ->
         {
             OnSignUpClick();
+        });
+        TvResetPassword.setOnClickListener(v -> {
+            startActivity(new Intent(this,ResetPasswordActivity.class));
         });
     }
 
