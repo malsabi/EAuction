@@ -41,6 +41,9 @@ public class SignUpActivity extends AppCompatActivity
     @BindView(R.id.EtPasswordSignup)
     EditText PasswordEditText;
 
+    @BindView(R.id.EtPasswordSignupReapeat)
+    EditText PasswordRepeatEditText;
+
     @BindView(R.id.EtDOBSignup)
     EditText DayOfBirthEditText;
 
@@ -172,41 +175,48 @@ public class SignUpActivity extends AppCompatActivity
     private void HandleSignUpUser()
     {
         SignUpButton.startAnimation();
-
-        User UserObj = new User();
-        UserObj.setFirstName(FirstNameEditText.getText().toString());
-        UserObj.setLastName(LastNameEditText.getText().toString());
-        UserObj.setPhoneNumber(PhoneNumberEditText.getText().toString());
-        UserObj.setPassword(PasswordEditText.getText().toString());
-        UserObj.setEmail(EmailEditText.getText().toString());
-        UserObj.setDate(DayOfBirthEditText.getText().toString());
-        UserObj.setGender(MaleRadioButton.isChecked() ? "Male" : "Female");
-        UserObj.setId(IdEditText.getText().toString());
-        UserObj.setIsActive("Offline");
-
-        AppInstance.GetFireStoreInstance().RegisterUser(Result ->
+        if (PasswordRepeatEditText.getText().toString().equals(PasswordEditText.getText().toString()))
         {
-            if (Result.isSuccess())
+            User UserObj = new User();
+            UserObj.setFirstName(FirstNameEditText.getText().toString());
+            UserObj.setLastName(LastNameEditText.getText().toString());
+            UserObj.setPhoneNumber(PhoneNumberEditText.getText().toString());
+            UserObj.setPassword(PasswordEditText.getText().toString());
+            UserObj.setEmail(EmailEditText.getText().toString());
+            UserObj.setDate(DayOfBirthEditText.getText().toString());
+            UserObj.setGender(MaleRadioButton.isChecked() ? "Male" : "Female");
+            UserObj.setId(IdEditText.getText().toString());
+            UserObj.setIsActive("Offline");
+
+            AppInstance.GetFireStoreInstance().RegisterUser(Result ->
             {
-                Toast.makeText(SignUpActivity.this, Result.getMessage(), Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(SignUpActivity.this, LoginActivity.class));
-                finish();
-            }
-            else
-            {
-                int resID = getResources().getIdentifier(Result.getTitle(), "id", getPackageName());
-                if (resID != 0)
+                if (Result.isSuccess())
                 {
-                    EditText InvalidControl = findViewById(resID);
-                    InvalidControl.setError(Result.getMessage());
+                    Toast.makeText(SignUpActivity.this, Result.getMessage(), Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(SignUpActivity.this, LoginActivity.class));
+                    finish();
                 }
                 else
                 {
-                    Toast.makeText(SignUpActivity.this, Result.getMessage(), Toast.LENGTH_SHORT).show();
+                    int resID = getResources().getIdentifier(Result.getTitle(), "id", getPackageName());
+                    if (resID != 0)
+                    {
+                        EditText InvalidControl = findViewById(resID);
+                        InvalidControl.setError(Result.getMessage());
+                    }
+                    else
+                    {
+                        Toast.makeText(SignUpActivity.this, Result.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
                 }
-            }
-            Log.d("SignUpActivity", "HandleSignUpUser Finished from registerUser");
+                Log.d("SignUpActivity", "HandleSignUpUser Finished from registerUser");
+                SignUpButton.stopAnimation(TransitionButton.StopAnimationStyle.SHAKE, null);
+            }, UserObj);
+        }
+        else
+        {
+            PasswordRepeatEditText.setError("Password is not same, make sure you to enter the same password");
             SignUpButton.stopAnimation(TransitionButton.StopAnimationStyle.SHAKE, null);
-        }, UserObj);
+        }
     }
 }

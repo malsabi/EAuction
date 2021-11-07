@@ -4,8 +4,11 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.example.eauction.Cryptograpgy.AESProvider;
+import com.example.eauction.Cryptograpgy.FirestoreEncoder;
 import com.example.eauction.Interfaces.GetFieldUserCallback;
 import com.example.eauction.Interfaces.GetUserInformationCallback;
+import com.example.eauction.Interfaces.IsUserRegisteredCallback;
 import com.example.eauction.Interfaces.SetUserInformationCallback;
 import com.example.eauction.Interfaces.SetUserIsActiveCallback;
 import com.example.eauction.Interfaces.SetUserTelemetryCallback;
@@ -88,7 +91,7 @@ public class FireStoreHelpers
         })
         .addOnFailureListener(d ->
         {
-            Log.d("FireStore", "SetUserIsActive Failed");
+            Log.d("FireStore", "SetUserIsActive Failed: " + d.getMessage());
             IsActiveCallback.onCallback(false);
         });
     }
@@ -125,17 +128,6 @@ public class FireStoreHelpers
         }).addOnFailureListener(e ->
         {
             Log.d("FireStore", "SetUserImage Failed: " + e.getMessage());
-        });
-    }
-    public void SetUserPassword(String Email, String Password)
-    {
-        DB.collection("USERS").document(Email).update("password", Password)
-        .addOnSuccessListener(u ->
-        {
-            Log.d("FireStore", "SetUserPassword Success");
-        }).addOnFailureListener(e ->
-        {
-            Log.d("FireStore", "SetUserPassword Failed: " + e.getMessage());
         });
     }
     //endregion

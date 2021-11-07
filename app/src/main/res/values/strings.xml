@@ -51,11 +51,7 @@
     <string name="password_again">Password Again</string>
     <string name="reset_password"><u>Forgot Password</u></string>
     <string name="send_code">Send Code</string>
-    <string name="password">Password</string>
-    <string name="password_again">Password Again</string>
     <string name="confirm_password">Confirm Password</string>
     <string name="code">Code</string>
     <string name="verify_code">Verify Code</string>
-
-
 </resources>

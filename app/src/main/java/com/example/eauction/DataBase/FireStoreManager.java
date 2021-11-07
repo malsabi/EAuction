@@ -9,12 +9,15 @@ import com.example.eauction.Interfaces.GetCarPlateAuctionsCallback;
 import com.example.eauction.Interfaces.GetGeneralAuctionsCallback;
 import com.example.eauction.Interfaces.GetLandmarkAuctionsCallback;
 import com.example.eauction.Interfaces.GetServiceAuctionsCallback;
+import com.example.eauction.Interfaces.GetUserInformationCallback;
 import com.example.eauction.Interfaces.GetVIPPhoneAuctionsCallback;
+import com.example.eauction.Interfaces.IsUserRegisteredCallback;
 import com.example.eauction.Interfaces.SetUserIsActiveCallback;
 import com.example.eauction.Interfaces.SetUserTelemetryCallback;
 import com.example.eauction.Interfaces.RegisterUserCallback;
 import com.example.eauction.Interfaces.SignInUserCallback;
 import com.example.eauction.Interfaces.SignOutUserCallback;
+import com.example.eauction.Interfaces.UpdateUserPasswordCallback;
 import com.example.eauction.Models.Car;
 import com.example.eauction.Models.CarPlate;
 import com.example.eauction.Models.FireStoreResult;
@@ -25,13 +28,17 @@ import com.example.eauction.Models.SignIn;
 import com.example.eauction.Models.User;
 import com.example.eauction.Models.ValidationResult;
 import com.example.eauction.Models.VipPhoneNumber;
+import com.example.eauction.Utilities.SyncFireStore;
 import com.example.eauction.Validations.UserValidation;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public class FireStoreManager extends FireStoreHelpers
@@ -44,10 +51,40 @@ public class FireStoreManager extends FireStoreHelpers
         DB = FirebaseFirestore.getInstance();
         SetFirebaseFirestore(DB);
         AesProvider = new AESProvider(this);
+        //SetCompanyAccount();
+        //SetCompanyPassword();
         //SetPrivateKey(AesProvider.CreatePrivateKey());
         //SetPublicKey(AesProvider.CreatePublicKey());
         //AesProvider.GetPrivateKey();
     }
+
+    //region User
+    public void IsUserRegistered(IsUserRegisteredCallback IsRegisteredCallback, String Email, boolean EncryptEmail)
+    {
+        if (EncryptEmail && Email.length() != 0)
+        {
+            Email = FirestoreEncoder.EncodeForFirebaseKey(AesProvider.Encrypt(Email));
+        }
+        DB.collection("USERS").document(Email).get()
+        .addOnSuccessListener(d ->
+        {
+            IsRegisteredCallback.onCallback(d.exists());
+        })
+        .addOnFailureListener(d -> IsRegisteredCallback.onCallback(false));
+    }
+
+    public void UpdateUserPassword(UpdateUserPasswordCallback UpdatePasswordCallback, String Email, String NewPassword, boolean EncryptEmail)
+    {
+        if (EncryptEmail && Email.length() != 0)
+        {
+            Email = FirestoreEncoder.EncodeForFirebaseKey(AesProvider.Encrypt(Email));
+        }
+        NewPassword = FirestoreEncoder.EncodeForFirebaseKey(Objects.requireNonNull(Hashing.SHA256(NewPassword)));
+        DB.collection("USERS").document(Email).update("password", NewPassword)
+        .addOnSuccessListener(d -> UpdatePasswordCallback.onCallback(true))
+        .addOnFailureListener(d -> UpdatePasswordCallback.onCallback(false));
+    }
+    //endregion
 
     //region Identity
     public void RegisterUser(final RegisterUserCallback RegisterCallback, User UserObj)
@@ -71,7 +108,7 @@ public class FireStoreManager extends FireStoreHelpers
             DB.collection("USERS").document(UserObj.getEmail()).set(UserObj)
             .addOnSuccessListener(d ->
             {
-                Log.d("FireStore", "RegisterUser Successfully added the item");
+                Log.d("FireStore", "RegisterUser Successfully added the user");
                 Result.setSuccess(true);
                 Result.setTitle("Success");
                 Result.setMessage("User successfully registered");
@@ -79,7 +116,7 @@ public class FireStoreManager extends FireStoreHelpers
             })
             .addOnFailureListener(e ->
             {
-                Log.d("FireStore", "RegisterUser failed to add the item");
+                Log.d("FireStore", "RegisterUser failed to add the user: " + e.getMessage());
                 Result.setSuccess(false);
                 Result.setTitle("Error");
                 Result.setMessage(e.getMessage());
@@ -94,12 +131,15 @@ public class FireStoreManager extends FireStoreHelpers
 
         ValidationResult UserValidationResult = Validation.ValidateSignIn(SignInObj);
 
-        if (!UserValidationResult.isSuccess()) {
+        if (!UserValidationResult.isSuccess())
+        {
             Result.setSuccess(false);
             Result.setTitle(UserValidationResult.getTitle());
             Result.setMessage(UserValidationResult.getMessage());
             SignInCallback.onCallback(Result, null);
-        } else {
+        }
+        else
+        {
             Log.d("FireStore", "SignInUser Attempting to make get request");
             SignInObj.setEmail(FirestoreEncoder.EncodeForFirebaseKey(AesProvider.Encrypt(SignInObj.getEmail())));
             SignInObj.setPassword(FirestoreEncoder.EncodeForFirebaseKey(Objects.requireNonNull(Hashing.SHA256(SignInObj.getPassword()))));
@@ -157,7 +197,7 @@ public class FireStoreManager extends FireStoreHelpers
                     })
                     .addOnFailureListener(e ->
                     {
-                        Log.d("FireStore", "SignInUser failed to sign in, make sure you are connected to the internet");
+                        Log.d("FireStore", "SignInUser failed to sign in, make sure you are connected to the internet: " + e.getMessage());
                         Result.setSuccess(false);
                         Result.setTitle("Exception");
                         Result.setMessage(e.getMessage());
@@ -190,6 +230,7 @@ public class FireStoreManager extends FireStoreHelpers
         }, "Offline", UserObj.getEmail());
     }
     //endregion
+
     //region Auctions
     public void AddCarPlateAuction(SetUserTelemetryCallback AddCarPlateCallback, CarPlate CarPlateTelemetry)
     {
@@ -425,5 +466,35 @@ public class FireStoreManager extends FireStoreHelpers
         });
     }
 
+    //endregion
+
+    //region Company
+    public void SetCompanyAccount()
+    {
+        String Email = FirestoreEncoder.EncodeForFirebaseKey(AesProvider.Encrypt("eauctionuae@gmail.com"));
+        Map<String, Object> HashMap = new HashMap<>();
+        HashMap.put("Email", Email);
+        DB.collection("COMPANY").document("Email").set(HashMap);
+    }
+
+    public void SetCompanyPassword()
+    {
+        String Password = FirestoreEncoder.EncodeForFirebaseKey(AesProvider.Encrypt("kali_linux"));
+        Map<String, Object> HashMap = new HashMap<>();
+        HashMap.put("Password", Password);
+        DB.collection("COMPANY").document("Password").set(HashMap);
+    }
+
+    public String GetCompanyAccount()
+    {
+        String EncryptedCompanyAccount = (String)new SyncFireStore().GetField("COMPANY", "Email", "Email", DB);
+        return AesProvider.Decrypt(FirestoreEncoder.DecodeFromFirebaseKey(EncryptedCompanyAccount));
+    }
+
+    public String GetCompanyPassword()
+    {
+        String EncryptedCompanyPassword = (String)new SyncFireStore().GetField("COMPANY", "Password", "Password", DB);
+        return AesProvider.Decrypt(FirestoreEncoder.DecodeFromFirebaseKey(EncryptedCompanyPassword));
+    }
     //endregion
 }
