@@ -13,7 +13,13 @@
         android:theme="@style/Theme.EAuction">
         <activity
             android:name=".VerifyCodeActivity"
-            android:exported="true" />
+            android:exported="true" >
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+        </activity>
         <activity
             android:name=".DoublePasswordActivity"
             android:exported="true" />
@@ -21,11 +27,7 @@
             android:name=".ResetPasswordActivity"
             android:exported="true" />
         <activity android:name=".LoginActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".InsertActivity"

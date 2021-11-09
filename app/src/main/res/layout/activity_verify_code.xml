@@ -27,25 +27,39 @@
         android:layout_marginTop="16sp"
         />
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/EtCodeFloatLabel"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:theme="@style/TextInputLayoutStyle"
-        android:layout_margin="16sp"
-        >
+    <com.github.gongw.VerifyCodeView
+        android:id="@+id/EtOTPCode"
+        android:layout_width="240dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="42dp"
+        app:vcTextColor="#b63b21"
+        app:vcTextCount="6"
+        app:vcTextSize="36sp"
+        app:vcDividerWidth="16dp"
+        app:vcWrapper="centerLine"
+        app:vcWrapperColor="#313335"
+        app:vcNextWrapperColor="#b63b21"
+        app:vcWrapperStrokeWidth="2dp" />
 
-        <EditText
-            android:id="@+id/EtOTPCode"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@android:color/transparent"
-            android:ems="10"
-            android:hint="@string/code"
-            android:inputType="text" />
+<!--    <com.google.android.material.textfield.TextInputLayout-->
+<!--        android:id="@+id/EtCodeFloatLabel"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:background="@android:color/transparent"-->
+<!--        android:theme="@style/TextInputLayoutStyle"-->
+<!--        android:layout_margin="16sp"-->
+<!--        >-->
 
-    </com.google.android.material.textfield.TextInputLayout>
+<!--        <EditText-->
+<!--            android:id="@+id/EtOTPCode"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:background="@android:color/transparent"-->
+<!--            android:ems="10"-->
+<!--            android:hint="@string/code"-->
+<!--            android:inputType="text" />-->
+
+<!--    </com.google.android.material.textfield.TextInputLayout>-->
 
     <com.royrodriguez.transitionbutton.TransitionButton
         android:id="@+id/VerifyCodeBtn"
@@ -56,6 +70,16 @@
         app:defaultColor="@color/PrimaryRedColor"
         app:loaderColor="@android:color/white"
         android:layout_margin="16sp"
+        />
+
+    <TextView
+        android:id="@+id/EtTimer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Timer"
+        android:textColor="@color/PrimaryRedColor"
+        android:textSize="24sp"
+        android:layout_marginTop="16sp"
         />
 
 </LinearLayout>
