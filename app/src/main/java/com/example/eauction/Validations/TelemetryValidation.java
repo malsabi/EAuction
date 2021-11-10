@@ -7,7 +7,7 @@ public class TelemetryValidation
     //Codes used in car plates for each emirate used in Validation
     private final String[] AbuDhabiCodes = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "17", "50"};
     private final String[] AjmanCodes = {"A", "B", "C", "D", "E"};
-    private final String[] DubaiCodes = {"A", "AA", "B", "N", "X", "J", ""};
+    private final String[] DubaiCodes = {"A", "AA", "B", "N", "X", "J"};
     private final String[] FujairahCodes = {"A", "B", "C", "D", "E", "F", "G", "K", "M", "P", "R", "S", "T"};
     private final String[] RasAlKhaimahCodes = {"A", "B", "C", "D", "I", "K", "M", "N", "S", "V", "Y"};
     private final String[] SharjahCodes = {"1", "2", "3"};
@@ -167,10 +167,10 @@ public class TelemetryValidation
             Result.setMessage("The car model is invalid");
             Result.setSuccess(false);
         }
-        else if (Mileage < 0 || Mileage > 200000)
+        else if (Mileage < 0 || Mileage > 500000)
         {
             Result.setTitle("EtMileage");
-            Result.setMessage("The Mileage range should between from 0 to 200,000");
+            Result.setMessage("The Mileage range should between from 0 to 500,000");
             Result.setSuccess(false);
         }
         else if (Name.length() == 0 || Name.length() > 20)
@@ -179,10 +179,10 @@ public class TelemetryValidation
             Result.setMessage("The car name is invalid");
             Result.setSuccess(false);
         }
-        else if (HorsePower < 200 || HorsePower > 5000)
+        else if (HorsePower < 50 || HorsePower > 5000)
         {
             Result.setTitle("EtHorsePower");
-            Result.setMessage("The Horsepower should be between 200 and 5000");
+            Result.setMessage("The Horsepower should be between 50 and 5000");
             Result.setSuccess(false);
         }
         return Result;
@@ -206,6 +206,7 @@ public class TelemetryValidation
         }
         else if (Location.length() < 4 || Location.length() >= 50)
         {
+
             Result.setTitle("EtLandmarkLocation");
             Result.setMessage("Location should be in the range of 4 to 20");
             Result.setSuccess(false);
@@ -216,10 +217,11 @@ public class TelemetryValidation
             Result.setMessage("Name should be in the range of 4 to 20");
             Result.setSuccess(false);
         }
-        else if (Area < 0 || Area > 1000)
+        else if (Area <= 0 || Area > 1000)
         {
+            //
             Result.setTitle("EtLandmarkArea");
-            Result.setMessage("Area should be in the range of 0 to 500");
+            Result.setMessage("Area should be in the range of 0 to 1000");
             Result.setSuccess(false);
         }
         return Result;
@@ -304,6 +306,15 @@ public class TelemetryValidation
                             Result.setMessage("Missing Company Name");
                             Result.setSuccess(false);
                     }
+                    for (int i = 0; i < Number.length(); i++)
+                    {
+                        if (!IsDigit(Number.charAt(i)))
+                        {
+                            Result.setTitle("EtPhoneNumberTel");
+                            Result.setMessage("Please enter a correct UAE format phone number");
+                            Result.setSuccess(false);
+                        }
+                    }
                 }
             }
         }
@@ -317,10 +328,10 @@ public class TelemetryValidation
 
         String Name = GeneralObj.getName();
 
-        if (Name.length() == 0 || Name.length() > 200)
+        if (Name.length() == 0 || Name.length() > 50)
         {
             Result.setTitle("");
-            Result.setMessage("Name object should be between 0 and 200");
+            Result.setMessage("Name object should be between 0 and 50");
             Result.setSuccess(false);
         }
 

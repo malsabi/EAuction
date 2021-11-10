@@ -7,9 +7,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.QuickContactBadge;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,7 +28,6 @@ public class VerifyCodeActivity extends AppCompatActivity
     @BindView(R.id.EtTimer)
     TextView EtTimer;
 
-    private App AppInstance;
     private String OTPCode;
     private String Email;
 
@@ -42,22 +38,23 @@ public class VerifyCodeActivity extends AppCompatActivity
         setContentView(R.layout.activity_verify_code);
         ButterKnife.bind(this);
 
-        AppInstance = (App)getApplication();
+        App appInstance = (App) getApplication();
 
         Intent ResetPasswordIntent = getIntent();
         OTPCode = ResetPasswordIntent.getStringExtra("Code");
         Email = ResetPasswordIntent.getStringExtra("Email");
 
         //Send an email.
-        String CompanyAccount = AppInstance.GetFireStoreInstance().GetCompanyAccount();
-        String CompanyPassword = AppInstance.GetFireStoreInstance().GetCompanyPassword();
+        String CompanyAccount = appInstance.GetFireStoreInstance().GetCompanyAccount();
+        String CompanyPassword = appInstance.GetFireStoreInstance().GetCompanyPassword();
 
         Log.d("VerifyCodeActivity", "Company Account: " + CompanyAccount + " Company Password: " + CompanyPassword);
 
         ResetPasswordHelper.SendMessage(CompanyAccount, CompanyPassword, Email, "OTP CODE", "Your OTP Code is: " + OTPCode);
 
         VerifyCodeButton.setOnClickListener(view -> HandleVerifyCode(OTPCodeEditText.getVcText().toString()));
-        startTimer(60000, 1000);
+
+        startTimer();
     }
 
     private void HandleVerifyCode(String UserCode)
@@ -65,9 +62,14 @@ public class VerifyCodeActivity extends AppCompatActivity
         VerifyCodeButton.startAnimation();
         if (UserCode == null || UserCode.length() == 0)
         {
-            //OTPCodeEditText.setError("OTP Code cannot be empty, please insert a valid OTP Code.");
             Toast.makeText(this, "OTP Code cannot be empty, please insert a valid OTP Code.", Toast.LENGTH_SHORT).show();
             VerifyCodeButton.stopAnimation(TransitionButton.StopAnimationStyle.SHAKE, null);
+        }
+        else if (OTPCode == null || OTPCode.length() == 0)
+        {
+            Toast.makeText(VerifyCodeActivity.this, "Session is invalid, Please try again", Toast.LENGTH_SHORT).show();
+            VerifyCodeButton.stopAnimation(TransitionButton.StopAnimationStyle.SHAKE, null);
+            finish();
         }
         else
         {
@@ -81,26 +83,27 @@ public class VerifyCodeActivity extends AppCompatActivity
             }
             else
             {
-                //OTPCodeEditText.setError("Invalid Code, please insert a valid OTP Code.");
                 Toast.makeText(this, "Invalid Code, please insert a valid OTP Code.", Toast.LENGTH_SHORT).show();
                 VerifyCodeButton.stopAnimation(TransitionButton.StopAnimationStyle.SHAKE, null);
             }
         }
     }
-    //Helper Timer Button
-    private void startTimer(final long finish, long tick) {
-        CountDownTimer t;
-        t = new CountDownTimer(finish, tick) {
 
+    private void startTimer()
+    {
+        new CountDownTimer(20000, 1000)
+        {
             @SuppressLint("SetTextI18n")
-            public void onTick(long millisUntilFinished) {
-                String remainedSecs = String.valueOf(millisUntilFinished / 1000);
-                EtTimer.setText("Code expires in "+remainedSecs+" seconds");
+            public void onTick(long millisUntilFinished)
+            {
+                String RemainingSeconds = String.valueOf(millisUntilFinished / 1000);
+                EtTimer.setText("Code expires in " + RemainingSeconds + " seconds");
             }
-
-            public void onFinish() { //TODO This is the event for the timer
-                Toast.makeText(VerifyCodeActivity.this, "Timer is over", Toast.LENGTH_SHORT).show();
-                cancel();
+            public void onFinish()
+            {
+                OTPCode = null;
+                finish();
+                Toast.makeText(VerifyCodeActivity.this, "Session is finished, Please try again", Toast.LENGTH_SHORT).show();
             }
         }.start();
     }

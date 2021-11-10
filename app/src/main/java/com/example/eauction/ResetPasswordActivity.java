@@ -58,8 +58,6 @@ public class ResetPasswordActivity extends AppCompatActivity
                 {
                     if (IsRegistered)
                     {
-                        SendCodeButton.stopAnimation(TransitionButton.StopAnimationStyle.EXPAND, null);
-
                         String OTPCode = ResetPasswordHelper.GetOTPCode(6);
 
                         Intent VerifyCodeIntent = new Intent(ResetPasswordActivity.this, VerifyCodeActivity.class);
@@ -67,6 +65,8 @@ public class ResetPasswordActivity extends AppCompatActivity
                         VerifyCodeIntent.putExtra("Email", Email);
 
                         Log.d("ResetPasswordActivity", "Code: " + OTPCode + " Email: " + Email);
+
+                        SendCodeButton.stopAnimation(TransitionButton.StopAnimationStyle.SHAKE, null);
 
                         startActivity(VerifyCodeIntent);
                         finish();

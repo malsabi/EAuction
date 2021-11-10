@@ -11,14 +11,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.EAuction">
+
+        <activity android:name=".LoginActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".VerifyCodeActivity"
             android:exported="true" >
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
         </activity>
         <activity
             android:name=".DoublePasswordActivity"
@@ -26,9 +28,6 @@
         <activity
             android:name=".ResetPasswordActivity"
             android:exported="true" />
-        <activity android:name=".LoginActivity">
-
-        </activity>
         <activity
             android:name=".InsertActivity"
             android:exported="true" />
@@ -40,5 +39,4 @@
             android:name=".SignUpActivity"
             android:theme="@style/Theme.Design.NoActionBar" />
     </application>
-
 </manifest>

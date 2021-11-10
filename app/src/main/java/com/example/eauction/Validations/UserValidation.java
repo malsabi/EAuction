@@ -60,6 +60,12 @@ public class UserValidation
             Result.setTitle("EtIdSignup");
             Result.setMessage("Id is invalid");
         }
+        else if (!GenderValidation(UserObj.getGender()).isSuccess())
+        {
+            Result.setSuccess(false);
+            Result.setTitle("");
+            Result.setMessage("Gender is invalid");
+        }
         return Result;
     }
     public ValidationResult ValidateSignIn(SignIn SignInObj)
@@ -187,7 +193,7 @@ public class UserValidation
         if (Password.length() > 40)
         {
             Result.setSuccess(false);
-            Result.setMessage("Password should not exceed 20 characters");
+            Result.setMessage("Password should not exceed 40 characters");
         }
         else if (Password.length() < 5)
         {

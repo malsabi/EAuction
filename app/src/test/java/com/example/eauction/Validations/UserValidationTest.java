@@ -21,7 +21,7 @@ public class UserValidationTest
         DummyUser.setPhoneNumber("050-458-5334");
         DummyUser.setPassword("123qwe321");
         DummyUser.setDate("12/07/1999");
-        DummyUser.setGender("Female");
+        DummyUser.setGender("Male");
         DummyUser.setId("000-1111-1234567-0");
 
         //Actual: The actual value is the result from the validation and should be true.
@@ -75,7 +75,7 @@ public class UserValidationTest
         String LastName = "Aisha";
 
         //Actual: The actual value is the result from the validation and should be true.
-        boolean ActualValue = UserValidator.FirstNameValidation(LastName).isSuccess();
+        boolean ActualValue = UserValidator.LastNameValidation(LastName).isSuccess();
 
         //If the actualValue is true, then it passed the test, otherwise it will throw an exception.
         Assert.assertEquals(true, ActualValue);

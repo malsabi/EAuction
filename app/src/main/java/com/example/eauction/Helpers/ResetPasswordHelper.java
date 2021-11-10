@@ -14,7 +14,7 @@ public class ResetPasswordHelper
 {
     public static String GetOTPCode(int Size)
     {
-        String Sequence = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        String Sequence = "0123456789";
         Random RND = new Random();
         StringBuilder OTPCode = new StringBuilder(Size);
         for (int i = 0; i < Size; i++)
