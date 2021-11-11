@@ -10,9 +10,13 @@ import android.widget.Toast;
 
 import com.example.eauction.Interfaces.SetUserIsActiveCallback;
 import com.example.eauction.Interfaces.SignInUserCallback;
+import com.example.eauction.Models.SessionModel;
 import com.example.eauction.Models.SignIn;
 import com.example.eauction.Utilities.PreferenceUtils;
 import com.royrodriguez.transitionbutton.TransitionButton;
+
+import java.time.LocalDateTime;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -79,6 +83,7 @@ public class LoginActivity extends AppCompatActivity
             if (Result.isSuccess())
             {
                 Toast.makeText(LoginActivity.this, Result.getMessage(), Toast.LENGTH_SHORT).show();
+                AddUserSession(UserObj.getEmail(), UserObj.getIsActive());
                 PreferenceUtils.saveEmail(UserObj.getEmail(), this);
                 PreferenceUtils.savePassword(UserObj.getPassword(), this);
                 Intent I = new Intent(LoginActivity.this, MainActivity.class);
@@ -106,5 +111,14 @@ public class LoginActivity extends AppCompatActivity
     private void OnSignUpClick()
     {
         startActivity(new Intent(LoginActivity.this, SignUpActivity.class));
+    }
+
+    private void AddUserSession(String UserId, String IsActive)
+    {
+        SessionModel Session = new SessionModel();
+        Session.setUserId(UserId);
+        Session.setIsActive(IsActive);
+        Session.setLastSeen("N/A");
+        AppInstance.GetSessionManagement().AddSession(Session);
     }
 }

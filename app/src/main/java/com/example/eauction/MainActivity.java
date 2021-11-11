@@ -129,6 +129,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void OnSignOutClick()
     {
+        AppInstance.GetSessionManagement().DeleteSession(UserObj.getEmail());
         AppInstance.GetFireStoreInstance().SignOut(Result ->
         {
             Toast.makeText(MainActivity.this, Result.getMessage(), Toast.LENGTH_SHORT).show();
@@ -139,7 +140,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(new Intent(MainActivity.this, LoginActivity.class));
                 finish();
             }
-        }, UserObj);
+        }, UserObj.getEmail());
     }
 
     private void TakeImageFromGallery()

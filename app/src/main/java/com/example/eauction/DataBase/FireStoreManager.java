@@ -1,41 +1,54 @@
 package com.example.eauction.DataBase;
 
 import android.util.Log;
+
+import androidx.annotation.NonNull;
+
 import com.example.eauction.Cryptograpgy.AESProvider;
 import com.example.eauction.Cryptograpgy.FirestoreEncoder;
 import com.example.eauction.Cryptograpgy.Hashing;
+import com.example.eauction.Interfaces.AddUserSessionCallback;
+import com.example.eauction.Interfaces.DeleteUserSessionCallback;
 import com.example.eauction.Interfaces.GetCarAuctionsCallback;
 import com.example.eauction.Interfaces.GetCarPlateAuctionsCallback;
 import com.example.eauction.Interfaces.GetGeneralAuctionsCallback;
 import com.example.eauction.Interfaces.GetLandmarkAuctionsCallback;
 import com.example.eauction.Interfaces.GetServiceAuctionsCallback;
 import com.example.eauction.Interfaces.GetUserInformationCallback;
+import com.example.eauction.Interfaces.GetUserSessionCallback;
 import com.example.eauction.Interfaces.GetVIPPhoneAuctionsCallback;
 import com.example.eauction.Interfaces.IsUserRegisteredCallback;
+import com.example.eauction.Interfaces.IsUserSessionAddedCallback;
 import com.example.eauction.Interfaces.SetUserIsActiveCallback;
 import com.example.eauction.Interfaces.SetUserTelemetryCallback;
 import com.example.eauction.Interfaces.RegisterUserCallback;
 import com.example.eauction.Interfaces.SignInUserCallback;
 import com.example.eauction.Interfaces.SignOutUserCallback;
 import com.example.eauction.Interfaces.UpdateUserPasswordCallback;
+import com.example.eauction.Interfaces.UpdateUserSessionCallback;
 import com.example.eauction.Models.Car;
 import com.example.eauction.Models.CarPlate;
 import com.example.eauction.Models.FireStoreResult;
 import com.example.eauction.Models.General;
 import com.example.eauction.Models.Landmark;
 import com.example.eauction.Models.Service;
+import com.example.eauction.Models.SessionModel;
 import com.example.eauction.Models.SignIn;
 import com.example.eauction.Models.User;
 import com.example.eauction.Models.ValidationResult;
 import com.example.eauction.Models.VipPhoneNumber;
 import com.example.eauction.Utilities.SyncFireStore;
 import com.example.eauction.Validations.UserValidation;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
+
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -83,6 +96,76 @@ public class FireStoreManager extends FireStoreHelpers
         DB.collection("USERS").document(Email).update("password", NewPassword)
         .addOnSuccessListener(d -> UpdatePasswordCallback.onCallback(true))
         .addOnFailureListener(d -> UpdatePasswordCallback.onCallback(false));
+    }
+    //endregion
+
+    //region Session
+    public void AddUserSession(final AddUserSessionCallback AddSessionCallback, SessionModel Session)
+    {
+        DB.collection("SESSIONS").document(Session.getUserId()).set(Session)
+        .addOnSuccessListener(o ->
+        {
+            AddSessionCallback.onCallback(true);
+        })
+        .addOnFailureListener(e ->
+        {
+            Log.d("FireStore", "AddUserSession Exception: " + e.getMessage());
+            AddSessionCallback.onCallback(false);
+        });
+    }
+    public void DeleteUserSession(final DeleteUserSessionCallback DeleteSessionCallback, String UserId)
+    {
+        DB.collection("SESSIONS").document(UserId).delete()
+        .addOnSuccessListener(o ->
+        {
+            DeleteSessionCallback.onCallback(true);
+        })
+        .addOnFailureListener(e ->
+        {
+            Log.d("FireStore", "DeleteUserSession Exception: " + e.getMessage());
+            DeleteSessionCallback.onCallback(false);
+        });
+    }
+    public void UpdateUserSession(final UpdateUserSessionCallback UpdateSessionCallback, String UserId, String LastSeen)
+    {
+        HashMap<String, Object> UpdatedField = new HashMap<>();
+        UpdatedField.put("lastSeen", LastSeen.toString());
+        DB.collection("SESSIONS").document(UserId).update(UpdatedField)
+        .addOnSuccessListener(o ->
+        {
+            UpdateSessionCallback.onCallback(true);
+        })
+        .addOnFailureListener(e ->
+        {
+            Log.d("FireStore", "UpdateUserSession Exception: " + e.getMessage());
+            UpdateSessionCallback.onCallback(false);
+        });
+    }
+    public void IsUserSessionAdded(final IsUserSessionAddedCallback IsSessionAddedCallback, String UserId)
+    {
+        DB.collection("SESSIONS").document(UserId).get()
+        .addOnSuccessListener(d ->
+        {
+            IsSessionAddedCallback.onCallback(d.exists());
+        })
+        .addOnFailureListener(e ->
+        {
+            Log.d("FireStore", "IsUserSessionAdded Exception: " + e.getMessage());
+            IsSessionAddedCallback.onCallback(false);
+        });
+    }
+    public void GetUserSession(final GetUserSessionCallback GetSessionCallback, String UserId)
+    {
+        DB.collection("SESSIONS").document(UserId).get()
+        .addOnSuccessListener(d ->
+        {
+            GetSessionCallback.onCallback(d.toObject(SessionModel.class));
+        })
+        .addOnFailureListener(e ->
+        {
+            Log.d("FireStore", "GetUserSession Exception: " + e.getMessage());
+            GetSessionCallback.onCallback(null);
+        });
     }
     //endregion
 
@@ -150,34 +233,47 @@ public class FireStoreManager extends FireStoreHelpers
                     DB.collection("USERS").document(SignInObj.getEmail()).get()
                     .addOnSuccessListener(d ->
                     {
-                        if (d.exists()) {
+                        if (d.exists())
+                        {
                             User UserObj = d.toObject(User.class);
-                            if (UserObj != null) {
-                                if (UserObj.getIsActive().equals("Online")) {
+                            if (UserObj != null)
+                            {
+                                if (UserObj.getIsActive().equals("Online"))
+                                {
                                     Log.d("FireStore", "SignInUser This account is already signed in");
                                     Result.setSuccess(false);
                                     Result.setTitle("Exception");
                                     Result.setMessage("failed to sign in, because this account is already signed in");
                                     SignInCallback.onCallback(Result, null);
-                                } else {
-                                    if (UserObj.getPassword().equals(SignInObj.getPassword())) {
+                                }
+                                else
+                                {
+                                    if (UserObj.getPassword().equals(SignInObj.getPassword()))
+                                    {
                                         Log.d("FireStore", "SignInUser Received all documents: " + UserObj.getId());
                                         SetUserIsActive(IsOperatingSuccess ->
                                         {
-                                            Log.d("FireStore", "SignInUser SetUserIsActive");
-                                            if (!IsOperatingSuccess) {
+                                            if (!IsOperatingSuccess)
+                                            {
+                                                Log.d("FireStore", "SignInUser SetUserIsActive: Failed");
                                                 Result.setSuccess(false);
                                                 Result.setTitle("Exception");
                                                 Result.setMessage("Failed to set the user activity");
                                                 SignInCallback.onCallback(Result, null);
-                                            } else {
+                                            }
+                                            else
+                                            {
+                                                Log.d("FireStore", "SignInUser SetUserIsActive: Success");
+                                                UserObj.setIsActive("Online");
                                                 Result.setSuccess(true);
                                                 Result.setTitle("Success");
                                                 Result.setMessage("User successfully logged in");
                                                 SignInCallback.onCallback(Result, UserObj);
                                             }
                                         }, "Online", SignInObj.getEmail());
-                                    } else {
+                                    }
+                                    else
+                                    {
                                         Log.d("FireStore", "SignInUser failed to sign in, make sure you typed the correct password!");
                                         Result.setSuccess(false);
                                         Result.setTitle("Exception");
@@ -208,7 +304,7 @@ public class FireStoreManager extends FireStoreHelpers
         }
     }
 
-    public void SignOut(final SignOutUserCallback SignOutCallback, User UserObj)
+    public void SignOut(final SignOutUserCallback SignOutCallback, String UserId)
     {
         FireStoreResult Result = new FireStoreResult();
         SetUserIsActive(IsOperationSuccess ->
@@ -227,7 +323,7 @@ public class FireStoreManager extends FireStoreHelpers
                 Result.setMessage("Successfully signed out");
             }
             SignOutCallback.onCallback(Result);
-        }, "Offline", UserObj.getEmail());
+        }, "Offline", UserId);
     }
     //endregion
 
