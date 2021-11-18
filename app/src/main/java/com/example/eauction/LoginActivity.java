@@ -62,6 +62,7 @@ public class LoginActivity extends AppCompatActivity
     {
         if (PreferenceUtils.getEmail(this) != null && PreferenceUtils.getPassword(this) != null)
         {
+            AppInstance.GetTelemetryMonitor().StartMonitor(PreferenceUtils.getEmail(this));
             Intent IntentObj = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(IntentObj);
             finish();
@@ -83,6 +84,7 @@ public class LoginActivity extends AppCompatActivity
             if (Result.isSuccess())
             {
                 Toast.makeText(LoginActivity.this, Result.getMessage(), Toast.LENGTH_SHORT).show();
+                AppInstance.GetTelemetryMonitor().StartMonitor(UserObj.getEmail());
                 AddUserSession(UserObj.getEmail(), UserObj.getIsActive());
                 PreferenceUtils.saveEmail(UserObj.getEmail(), this);
                 PreferenceUtils.savePassword(UserObj.getPassword(), this);

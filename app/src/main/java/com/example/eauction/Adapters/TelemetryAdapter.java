@@ -351,22 +351,22 @@ public class TelemetryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         }
     }
 
-    private void addCurrent_addBasePrice(LinearLayout linearLayout,Telemetry telemetry)
+    private void addCurrent_addBasePrice(LinearLayout linearLayout, Telemetry telemetry)
     {
         String currentBid = "<b><u>" + "Current Bid:" + "</u></b> "+telemetry.getCurrentBid();
         String basePrice = "<b><u>" + "Base Price:" + "</u></b> "+telemetry.getBasePrice();
 
-        if(telemetry.getBasePrice() != 0 && telemetry.getCurrentBid() != 0){
+        if(telemetry.getBasePrice() != 0 /*&& telemetry.getCurrentBid() != 0*/){
             TextView currentBidTV = new TextView(linearLayout.getContext());
             TextView basePriceTV = new TextView(linearLayout.getContext());
             currentBidTV.setPadding(8,0,0,0);
             basePriceTV.setPadding(8,0,0,0);
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams
+            (
                     LinearLayout.LayoutParams.WRAP_CONTENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
             );
             params.setMargins(0, 0, 0, 16);
-
 
             currentBidTV.setText(Html.fromHtml(currentBid));
             basePriceTV.setText(Html.fromHtml(basePrice));

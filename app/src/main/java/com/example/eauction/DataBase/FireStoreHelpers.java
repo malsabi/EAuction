@@ -17,6 +17,7 @@ import com.example.eauction.Models.CarPlate;
 import com.example.eauction.Models.FireStoreResult;
 import com.example.eauction.Models.General;
 import com.example.eauction.Models.Landmark;
+import com.example.eauction.Models.Service;
 import com.example.eauction.Models.User;
 import com.example.eauction.Models.VipPhoneNumber;
 import com.example.eauction.Utilities.SyncFireStore;
@@ -200,6 +201,20 @@ public class FireStoreHelpers
         .addOnFailureListener(e ->
         {
             Log.d("FireStore", "SetGeneralTelemetry Failed: " + e.getMessage());
+            Callback.onCallback(new FireStoreResult("", e.getMessage(), false));
+        });
+    }
+    public void SetServiceTelemetry(final SetUserTelemetryCallback Callback, ArrayList<Service> ServiceTelemetry, String Email)
+    {
+        DB.collection("USERS").document(Email).update("ownedServiceTelemetry", ServiceTelemetry)
+        .addOnSuccessListener(d ->
+        {
+            Log.d("FireStore", "SetServiceTelemetry Succeeded");
+            Callback.onCallback(new FireStoreResult("", "", true));
+        })
+        .addOnFailureListener(e ->
+        {
+            Log.d("FireStore", "SetServiceTelemetry Failed: " + e.getMessage());
             Callback.onCallback(new FireStoreResult("", e.getMessage(), false));
         });
     }

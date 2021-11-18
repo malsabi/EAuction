@@ -82,7 +82,7 @@ public class MyPropertiesFragment extends Fragment
                 this.UserObj = UserObj;
                 Log.d("MyPropertiesFragment", "User Id: " + this.UserObj.getId());
 
-                ArrayList<Telemetry> UserTelemetries = Merge(UserObj.getOwnedCarPlateTelemetry(), UserObj.getOwnedCarTelemetry(), UserObj.getOwnedLandmarkTelemetry(), UserObj.getOwnedVipPhoneTelemetry(), UserObj.getOwnedGeneralTelemetry());
+                ArrayList<Telemetry> UserTelemetries = Merge(UserObj.getOwnedCarPlateTelemetry(), UserObj.getOwnedCarTelemetry(), UserObj.getOwnedLandmarkTelemetry(), UserObj.getOwnedVipPhoneTelemetry(), UserObj.getOwnedGeneralTelemetry(), UserObj.getOwnedServiceTelemetry());
 
                 LayoutManager = new LinearLayoutManager(getContext());
                 RecyclerViewAdapter = new TelemetryAdapter(UserTelemetries);
@@ -105,7 +105,6 @@ public class MyPropertiesFragment extends Fragment
 
                     BtnSubmitAuction.setOnClickListener(view ->
                     {
-                        //TODO Apply the logic you need for the baseprice then update object and set it as auctioned (done)
                         double UserBasePrice = Double.parseDouble(EtBasePrice.getText().toString());
                         if (UserBasePrice <= 0)
                         {

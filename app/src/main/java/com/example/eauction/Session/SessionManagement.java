@@ -19,9 +19,6 @@ public class SessionManagement
     private LocalDateTime LastSeen;
     //endregion
 
-    //region Fields
-    //endregion
-
     //region Getters/Setters
     public LocalDateTime GetLastSeen()
     {

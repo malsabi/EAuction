@@ -129,6 +129,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void OnSignOutClick()
     {
+        AppInstance.GetTelemetryMonitor().StopMonitor();
         AppInstance.GetSessionManagement().DeleteSession(UserObj.getEmail());
         AppInstance.GetFireStoreInstance().SignOut(Result ->
         {

@@ -117,4 +117,17 @@ public class TelemetryHelper
         }
         return false;
     }
+
+    public static int GetTelemetryIndex(ArrayList<? extends  Telemetry> Telemetries, String ID)
+    {
+        int Index = -1;
+        for (Telemetry Telemetry : Telemetries)
+        {
+            if (Telemetry.getID().equals(ID))
+            {
+                Index = Telemetries.indexOf(Telemetry);
+            }
+        }
+        return Index;
+    }
 }

@@ -8,6 +8,7 @@ import com.example.eauction.Cryptograpgy.AESProvider;
 import com.example.eauction.Cryptograpgy.FirestoreEncoder;
 import com.example.eauction.Cryptograpgy.Hashing;
 import com.example.eauction.Interfaces.AddUserSessionCallback;
+import com.example.eauction.Interfaces.DeleteUserAuctionCallback;
 import com.example.eauction.Interfaces.DeleteUserSessionCallback;
 import com.example.eauction.Interfaces.GetCarAuctionsCallback;
 import com.example.eauction.Interfaces.GetCarPlateAuctionsCallback;
@@ -328,10 +329,11 @@ public class FireStoreManager extends FireStoreHelpers
     //endregion
 
     //region Auctions
-    public void AddCarPlateAuction(SetUserTelemetryCallback AddCarPlateCallback, CarPlate CarPlateTelemetry)
+    //region "CarPlate Auction"
+    public void AddCarPlateAuction(final SetUserTelemetryCallback AddCarPlateCallback, CarPlate CarPlateAuction)
     {
         DocumentReference CarPlateDocument = DB.collection("AUCTIONS").document("CARPLATE");
-        CarPlateDocument.update("CarPlateTelemetries", FieldValue.arrayUnion(CarPlateTelemetry))
+        CarPlateDocument.update("CarPlateTelemetries", FieldValue.arrayUnion(CarPlateAuction))
         .addOnSuccessListener(d ->
         {
             AddCarPlateCallback.onCallback(new FireStoreResult("", "", true));
@@ -342,7 +344,21 @@ public class FireStoreManager extends FireStoreHelpers
         });
     }
 
-    public void GetCarPlateAuctions(GetCarPlateAuctionsCallback Callback)
+    public void DeleteCarPlateAuction(DeleteUserAuctionCallback DeleteAuctionCallback, CarPlate CarPlateAuction)
+    {
+        DocumentReference CarPlateDocument = DB.collection("AUCTIONS").document("CARPLATE");
+        CarPlateDocument.update("CarPlateTelemetries", FieldValue.arrayRemove(CarPlateAuction))
+        .addOnSuccessListener(d ->
+        {
+            DeleteAuctionCallback.onCallback(true);
+        })
+        .addOnFailureListener(d ->
+        {
+            DeleteAuctionCallback.onCallback(false);
+        });
+    }
+
+    public void GetCarPlateAuctions(final GetCarPlateAuctionsCallback Callback)
     {
         ArrayList<CarPlate> CarPlates = new ArrayList<>();
         DocumentReference documentReference = DB.collection("AUCTIONS").document("CARPLATE");
@@ -363,11 +379,12 @@ public class FireStoreManager extends FireStoreHelpers
             }
         });
     }
-
-    public void AddCarAuction(SetUserTelemetryCallback AddCarCallback, Car CarTelemetry)
+    //endregion
+    //region "Car Auction"
+    public void AddCarAuction(final SetUserTelemetryCallback AddCarCallback, Car CarAuction)
     {
         DocumentReference CarPlateDocument = DB.collection("AUCTIONS").document("CAR");
-        CarPlateDocument.update("CarTelemetries", FieldValue.arrayUnion(CarTelemetry))
+        CarPlateDocument.update("CarTelemetries", FieldValue.arrayUnion(CarAuction))
         .addOnSuccessListener(d ->
         {
             AddCarCallback.onCallback(new FireStoreResult("", "", true));
@@ -377,8 +394,20 @@ public class FireStoreManager extends FireStoreHelpers
             AddCarCallback.onCallback(new FireStoreResult("", d.getMessage(), false));
         });
     }
-
-    public void GetCarAuctions(GetCarAuctionsCallback Callback)
+    public void DeleteCarAuction(DeleteUserAuctionCallback DeleteAuctionCallback, Car CarAuction)
+    {
+        DocumentReference CarPlateDocument = DB.collection("AUCTIONS").document("CAR");
+        CarPlateDocument.update("CarTelemetries", FieldValue.arrayRemove(CarAuction))
+        .addOnSuccessListener(d ->
+        {
+            DeleteAuctionCallback.onCallback(true);
+        })
+        .addOnFailureListener(d ->
+        {
+            DeleteAuctionCallback.onCallback(false);
+        });
+    }
+    public void GetCarAuctions(final GetCarAuctionsCallback Callback)
     {
         ArrayList<Car> Cars = new ArrayList<>();
         DocumentReference documentReference = DB.collection("AUCTIONS").document("CAR");
@@ -402,12 +431,13 @@ public class FireStoreManager extends FireStoreHelpers
             }
         });
     }
-
-    public void AddLandmarkAuction(SetUserTelemetryCallback AddLandmarkCallback, Landmark LandmarkTelemetry)
+    //endregion
+    //region "Landmark Auction"
+    public void AddLandmarkAuction(final SetUserTelemetryCallback AddLandmarkCallback, Landmark LandmarkAuction)
     {
         DocumentReference CarPlateDocument = DB.collection("AUCTIONS").document("LANDMARK");
         //Atomically add a new region to the "regions" array field.
-        CarPlateDocument.update("LandmarkTelemetries", FieldValue.arrayUnion(LandmarkTelemetry))
+        CarPlateDocument.update("LandmarkTelemetries", FieldValue.arrayUnion(LandmarkAuction))
         .addOnSuccessListener(d ->
         {
             AddLandmarkCallback.onCallback(new FireStoreResult("", "", true));
@@ -417,8 +447,20 @@ public class FireStoreManager extends FireStoreHelpers
             AddLandmarkCallback.onCallback(new FireStoreResult("", d.getMessage(), false));
         });
     }
-
-    public void GetLandmarkAuctions(GetLandmarkAuctionsCallback Callback)
+    public void DeleteLandmarkAuction(DeleteUserAuctionCallback DeleteAuctionCallback, Landmark LandmarkAuction)
+    {
+        DocumentReference CarPlateDocument = DB.collection("AUCTIONS").document("LANDMARK");
+        CarPlateDocument.update("LandmarkTelemetries", FieldValue.arrayRemove(LandmarkAuction))
+        .addOnSuccessListener(d ->
+        {
+            DeleteAuctionCallback.onCallback(true);
+        })
+        .addOnFailureListener(d ->
+        {
+            DeleteAuctionCallback.onCallback(false);
+        });
+    }
+    public void GetLandmarkAuctions(final GetLandmarkAuctionsCallback Callback)
     {
         ArrayList<Landmark> Landmarks = new ArrayList<>();
         DocumentReference documentReference = DB.collection("AUCTIONS").document("LANDMARK");
@@ -442,12 +484,12 @@ public class FireStoreManager extends FireStoreHelpers
             }
         });
     }
-
-    public void AddVIPPhoneNumberAuction(SetUserTelemetryCallback AddVIPPhoneNumberCallback, VipPhoneNumber VipPhoneNumberTelemetry)
+    //endregion
+    //region "VIPPhoneNumber Auction"
+    public void AddVIPPhoneNumberAuction(final SetUserTelemetryCallback AddVIPPhoneNumberCallback, VipPhoneNumber VipPhoneNumberAuction)
     {
         DocumentReference CarPlateDocument = DB.collection("AUCTIONS").document("VIPPHONE");
-        //Atomically add a new region to the "regions" array field.
-        CarPlateDocument.update("VIPPhoneTelemetries", FieldValue.arrayUnion(VipPhoneNumberTelemetry))
+        CarPlateDocument.update("VIPPhoneTelemetries", FieldValue.arrayUnion(VipPhoneNumberAuction))
         .addOnSuccessListener(d ->
         {
             AddVIPPhoneNumberCallback.onCallback(new FireStoreResult("", "", true));
@@ -457,7 +499,19 @@ public class FireStoreManager extends FireStoreHelpers
             AddVIPPhoneNumberCallback.onCallback(new FireStoreResult("", d.getMessage(), false));
         });
     }
-
+    public void DeleteVIPPhoneNumberAuction(final DeleteUserAuctionCallback DeleteAuctionCallback, VipPhoneNumber VipPhoneNumberAuction)
+    {
+        DocumentReference CarPlateDocument = DB.collection("AUCTIONS").document("VIPPHONE");
+        CarPlateDocument.update("VIPPhoneTelemetries", FieldValue.arrayRemove(VipPhoneNumberAuction))
+        .addOnSuccessListener(d ->
+        {
+            DeleteAuctionCallback.onCallback(true);
+        })
+        .addOnFailureListener(d ->
+        {
+            DeleteAuctionCallback.onCallback(false);
+        });
+    }
     public void GetVIPPHoneNumberAuctions(GetVIPPhoneAuctionsCallback Callback)
     {
         ArrayList<VipPhoneNumber> VIPPhoneNumbers = new ArrayList<>();
@@ -482,12 +536,12 @@ public class FireStoreManager extends FireStoreHelpers
             }
         });
     }
-
-    public void AddGeneralAuction(SetUserTelemetryCallback AddGeneralCallback, General GeneralTelemetry)
+    //endregion
+    //region "General Auction"
+    public void AddGeneralAuction(final SetUserTelemetryCallback AddGeneralCallback, General GeneralAuction)
     {
         DocumentReference CarPlateDocument = DB.collection("AUCTIONS").document("GENERAL");
-        //Atomically add a new region to the "regions" array field.
-        CarPlateDocument.update("GeneralTelemetries", FieldValue.arrayUnion(GeneralTelemetry))
+        CarPlateDocument.update("GeneralTelemetries", FieldValue.arrayUnion(GeneralAuction))
         .addOnSuccessListener(d ->
         {
             AddGeneralCallback.onCallback(new FireStoreResult("", "", true));
@@ -497,8 +551,20 @@ public class FireStoreManager extends FireStoreHelpers
             AddGeneralCallback.onCallback(new FireStoreResult("", d.getMessage(), false));
         });
     }
-
-    public void GetGeneralAuctions(GetGeneralAuctionsCallback Callback)
+    public void DeleteGeneralAuction(final DeleteUserAuctionCallback DeleteAuctionCallback, General GeneralAuction)
+    {
+        DocumentReference CarPlateDocument = DB.collection("AUCTIONS").document("GENERAL");
+        CarPlateDocument.update("GeneralTelemetries", FieldValue.arrayRemove(GeneralAuction))
+        .addOnSuccessListener(d ->
+        {
+            DeleteAuctionCallback.onCallback(true);
+        })
+        .addOnFailureListener(d ->
+        {
+            DeleteAuctionCallback.onCallback(false);
+        });
+    }
+    public void GetGeneralAuctions(final GetGeneralAuctionsCallback Callback)
     {
         ArrayList<General> Generals = new ArrayList<>();
         DocumentReference documentReference = DB.collection("AUCTIONS").document("GENERAL");
@@ -522,11 +588,12 @@ public class FireStoreManager extends FireStoreHelpers
             }
         });
     }
-
-    public void AddServiceAuction(SetUserTelemetryCallback AddServiceCallback, Service ServiceTelemetry)
+    //endregion
+    //region "Service Auction"
+    public void AddServiceAuction(final SetUserTelemetryCallback AddServiceCallback, Service ServiceAuction)
     {
         DocumentReference CarPlateDocument = DB.collection("AUCTIONS").document("SERVICE");
-        CarPlateDocument.update("ServiceTelemetries", FieldValue.arrayUnion(ServiceTelemetry))
+        CarPlateDocument.update("ServiceTelemetries", FieldValue.arrayUnion(ServiceAuction))
         .addOnSuccessListener(d ->
         {
             AddServiceCallback.onCallback(new FireStoreResult("", "", true));
@@ -536,8 +603,20 @@ public class FireStoreManager extends FireStoreHelpers
             AddServiceCallback.onCallback(new FireStoreResult("", d.getMessage(), false));
         });
     }
-
-    public void GetServiceAuctions(GetServiceAuctionsCallback Callback)
+    public void DeleteServiceAuction(final DeleteUserAuctionCallback DeleteAuctionCallback, Service ServiceAuction)
+    {
+        DocumentReference CarPlateDocument = DB.collection("AUCTIONS").document("SERVICE");
+        CarPlateDocument.update("ServiceTelemetries", FieldValue.arrayRemove(ServiceAuction))
+        .addOnSuccessListener(d ->
+        {
+            DeleteAuctionCallback.onCallback(true);
+        })
+        .addOnFailureListener(d ->
+        {
+            DeleteAuctionCallback.onCallback(false);
+        });
+    }
+    public void GetServiceAuctions(final GetServiceAuctionsCallback Callback)
     {
         ArrayList<Service> Services = new ArrayList<>();
         DocumentReference documentReference = DB.collection("AUCTIONS").document("SERVICE");
@@ -561,7 +640,7 @@ public class FireStoreManager extends FireStoreHelpers
             }
         });
     }
-
+    //endregion
     //endregion
 
     //region Company

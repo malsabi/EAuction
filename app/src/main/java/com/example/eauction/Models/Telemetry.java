@@ -2,6 +2,8 @@ package com.example.eauction.Models;
 
 import com.example.eauction.Enums.StatusEnum;
 
+import java.util.ArrayList;
+
 public class Telemetry
 {
     private StatusEnum status;
@@ -13,6 +15,7 @@ public class Telemetry
     private String id;
     private String ownerId;
     private String image;
+    private ArrayList<Bid> bids;
 
     //region Constructor
     public Telemetry()
@@ -25,6 +28,7 @@ public class Telemetry
         details = "";
         id = "";
         image = "";
+        bids = null;
     }
     //endregion
     //region Setters
@@ -55,6 +59,9 @@ public class Telemetry
     public void setId(String id) {this.id = id;}
     public void setOwnerId(String ownerId) {this.ownerId = ownerId;}
     public void setImage(String image) {this.image = image; }
+    public void setBids(ArrayList<Bid> bids) {
+        this.bids = bids;
+    }
     //endregion
     //region Getters
     public StatusEnum getStatus()
@@ -81,11 +88,13 @@ public class Telemetry
     {
         return details;
     }
-    public String getID()
-    {
+    public String getID() {
         return id;
     }
     public String getOwnerId() {return ownerId;}
     public String getImage() {return  image; }
+    public ArrayList<Bid> getBids() {
+        return bids;
+    }
     //endregion
 }

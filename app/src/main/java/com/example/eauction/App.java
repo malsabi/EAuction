@@ -18,6 +18,7 @@ import com.example.eauction.Models.User;
 import com.example.eauction.Models.ValidationResult;
 import com.example.eauction.Session.SessionManagement;
 import com.example.eauction.Utilities.PreferenceUtils;
+import com.example.eauction.Utilities.TelemetryMonitor;
 import com.example.eauction.Validations.UserValidation;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.FirebaseApp;
@@ -36,6 +37,7 @@ public class App extends Application implements LifecycleObserver
     //region Fields
     private FireStoreManager FireStore;
     private SessionManagement SessionManagement;
+    private TelemetryMonitor TelemetryMonitor;
     //endregion
 
     //region Getters
@@ -46,6 +48,10 @@ public class App extends Application implements LifecycleObserver
     public SessionManagement GetSessionManagement()
     {
         return SessionManagement;
+    }
+    public TelemetryMonitor GetTelemetryMonitor()
+    {
+        return TelemetryMonitor;
     }
     //endregion
 
@@ -62,6 +68,7 @@ public class App extends Application implements LifecycleObserver
         FirebaseApp.initializeApp(this);
         FireStore = new FireStoreManager();
         SessionManagement = new SessionManagement(FireStore);
+        TelemetryMonitor = new TelemetryMonitor(FireStore);
         ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
     }
 

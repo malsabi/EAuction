@@ -61,7 +61,7 @@ public class AuctionsFragment extends Fragment
                 this.UserObj = UserObj;
                 Log.d("AuctionsFragment", "GetUserInformation User Id: " + this.UserObj.getId());
 
-                ArrayList<Telemetry> UserTelemetries = Merge(UserObj.getOwnedCarPlateTelemetry(), UserObj.getOwnedCarTelemetry(), UserObj.getOwnedLandmarkTelemetry(), UserObj.getOwnedVipPhoneTelemetry(), UserObj.getOwnedGeneralTelemetry());
+                ArrayList<Telemetry> UserTelemetries = Merge(UserObj.getOwnedCarPlateTelemetry(), UserObj.getOwnedCarTelemetry(), UserObj.getOwnedLandmarkTelemetry(), UserObj.getOwnedVipPhoneTelemetry(), UserObj.getOwnedGeneralTelemetry(), UserObj.getOwnedServiceTelemetry());
 
                 LayoutManager = new LinearLayoutManager(getContext());
                 RecyclerViewAdapter = new TelemetryAdapter(UserTelemetries);
