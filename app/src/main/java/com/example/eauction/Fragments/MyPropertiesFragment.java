@@ -1,8 +1,10 @@
 package com.example.eauction.Fragments;
 
 import android.annotation.SuppressLint;
+import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,6 +19,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.eauction.Adapters.TelemetryAdapter;
+import com.example.eauction.Adapters.TelemetryMyPropertiesAdapter;
 import com.example.eauction.App;
 import com.example.eauction.Enums.StatusEnum;
 import com.example.eauction.Helpers.DateHelper;
@@ -32,9 +35,15 @@ import com.example.eauction.Models.Telemetry;
 import com.example.eauction.Models.User;
 import com.example.eauction.Models.VipPhoneNumber;
 import com.example.eauction.R;
+import com.example.eauction.SignUpActivity;
 import com.example.eauction.Utilities.PreferenceUtils;
 import com.royrodriguez.transitionbutton.TransitionButton;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Locale;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -48,7 +57,7 @@ public class MyPropertiesFragment extends Fragment
     @BindView(R.id.BtnAddTelemetryInsertActivity)
     TransitionButton BtnAddTelemetryInsertActivity;
 
-    private TelemetryAdapter RecyclerViewAdapter;
+    private TelemetryMyPropertiesAdapter RecyclerViewAdapter;
     private RecyclerView.LayoutManager LayoutManager;
 
     private App AppInstance;
@@ -85,7 +94,7 @@ public class MyPropertiesFragment extends Fragment
                 ArrayList<Telemetry> UserTelemetries = Merge(UserObj.getOwnedCarPlateTelemetry(), UserObj.getOwnedCarTelemetry(), UserObj.getOwnedLandmarkTelemetry(), UserObj.getOwnedVipPhoneTelemetry(), UserObj.getOwnedGeneralTelemetry(), UserObj.getOwnedServiceTelemetry());
 
                 LayoutManager = new LinearLayoutManager(getContext());
-                RecyclerViewAdapter = new TelemetryAdapter(UserTelemetries);
+                RecyclerViewAdapter = new TelemetryMyPropertiesAdapter(UserTelemetries);
                 RecyclerViewTelemetry.setLayoutManager(LayoutManager);
                 RecyclerViewTelemetry.setAdapter(RecyclerViewAdapter);
 
@@ -100,6 +109,7 @@ public class MyPropertiesFragment extends Fragment
                     dialog.setContentView(R.layout.auction_dialog);
                     EditText EtBasePrice = dialog.findViewById(R.id.EtBasePrice);
                     TransitionButton BtnSubmitAuction = dialog.findViewById(R.id.BtnSubmitAuction);
+                    InitAuctionEndDate(dialog.findViewById(R.id.EtAuctionEndDate));
                     dialog.show();
                     //endregion
 
@@ -124,6 +134,32 @@ public class MyPropertiesFragment extends Fragment
                 });
             }, PreferenceUtils.getEmail(this.getContext()));
         }
+    }
+
+    private void InitAuctionEndDate(EditText AuctionEnd){
+
+        Calendar MyCalendar = Calendar.getInstance();
+        DatePickerDialog.OnDateSetListener date = (view, year, monthOfYear, dayOfMonth) ->
+        {
+            MyCalendar.set(Calendar.YEAR, year);
+            MyCalendar.set(Calendar.MONTH, monthOfYear);
+            MyCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+            String myFormat = "dd/MM/yyyy";
+            SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+            AuctionEnd.setText(sdf.format(MyCalendar.getTime()));
+        };
+        AuctionEnd.setOnClickListener(v ->
+        {
+            DatePickerDialog dp = new DatePickerDialog(AuctionEnd.getContext(), R.style.DialogTheme, date, MyCalendar.get(Calendar.YEAR), MyCalendar.get(Calendar.MONTH), MyCalendar.get(Calendar.DAY_OF_MONTH));
+            dp.show();
+            dp.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
+            dp.getButton(DatePickerDialog.BUTTON_NEGATIVE).setBackgroundColor(Color.WHITE);
+            dp.getButton(DatePickerDialog.BUTTON_POSITIVE).setBackgroundColor(Color.WHITE);
+            dp.getButton(DatePickerDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.PrimaryRedColor));
+            dp.getButton(DatePickerDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.PrimaryRedColor));
+
+        });
+
     }
 
     @SafeVarargs

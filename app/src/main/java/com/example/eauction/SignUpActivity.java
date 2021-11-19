@@ -1,10 +1,13 @@
 package com.example.eauction;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -120,6 +123,9 @@ public class SignUpActivity extends AppCompatActivity
             dp.show();
             dp.getButton(DatePickerDialog.BUTTON_NEGATIVE).setBackgroundColor(Color.WHITE);
             dp.getButton(DatePickerDialog.BUTTON_POSITIVE).setBackgroundColor(Color.WHITE);
+            dp.getButton(DatePickerDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.PrimaryRedColor));
+            dp.getButton(DatePickerDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.PrimaryRedColor));
+            dp.getDatePicker().setMaxDate(System.currentTimeMillis());
         });
         //endregion
         //region Id TextWatcher
@@ -171,6 +177,8 @@ public class SignUpActivity extends AppCompatActivity
     }
     private void HandleUserImage()
     {
+        TakeImageFromGallery();
+        //TODO Image should uploaded of the user
     }
     private void HandleSignUpUser()
     {
@@ -217,6 +225,26 @@ public class SignUpActivity extends AppCompatActivity
         {
             PasswordRepeatEditText.setError("Password is not same, make sure you to enter the same password");
             SignUpButton.stopAnimation(TransitionButton.StopAnimationStyle.SHAKE, null);
+        }
+    }
+    private void TakeImageFromGallery()
+    {
+        Intent pickImage = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(pickImage, 1);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1)
+        {
+            if (resultCode == RESULT_OK)
+            {
+                assert data != null;
+                Uri selectedImageUri = data.getData();
+                ProfileImage.setImageURI(selectedImageUri);
+            }
         }
     }
 }

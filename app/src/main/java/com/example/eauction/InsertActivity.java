@@ -19,6 +19,7 @@ import com.example.eauction.Fragments.CarFragment;
 import com.example.eauction.Fragments.CarPlateFragment;
 import com.example.eauction.Fragments.GeneralItemFragment;
 import com.example.eauction.Fragments.LandmarkFragment;
+import com.example.eauction.Fragments.ServiceFragment;
 import com.example.eauction.Fragments.VIPNumberFragment;
 import com.example.eauction.Helpers.DateHelper;
 import com.example.eauction.Helpers.TelemetryHelper;
@@ -59,6 +60,7 @@ public class InsertActivity extends AppCompatActivity
     private final LandmarkFragment LandmarkObj = new LandmarkFragment();           //Fragment
     private final VIPNumberFragment VIPNumberObj = new VIPNumberFragment();        //Fragment
     private final GeneralItemFragment GeneralObj = new GeneralItemFragment();      //Fragment
+    private final ServiceFragment ServiceObj = new ServiceFragment();      //Fragment
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -99,6 +101,9 @@ public class InsertActivity extends AppCompatActivity
                         break;
                     case 4:
                         getSupportFragmentManager().beginTransaction().replace(R.id.TeleFragmentContainer, GeneralObj).commit();
+                        break;
+                    case 5:
+                        getSupportFragmentManager().beginTransaction().replace(R.id.TeleFragmentContainer, ServiceObj).commit();
                         break;
                     //Handle Service
                 }
@@ -152,10 +157,15 @@ public class InsertActivity extends AppCompatActivity
         {
             HandleVIPPhoneNumber();
         }
-        else
+        else if (Spinner.getSelectedItemPosition() == 4)
         {
             HandleGeneral();
         }
+        else
+        {
+            //HandleService();
+        }
+
     }
 
     private void GetUserInformation()
@@ -253,6 +263,7 @@ public class InsertActivity extends AppCompatActivity
             {
                 Toast.makeText(InsertActivity.this, Result.getMessage(), Toast.LENGTH_SHORT).show();
             }
+            AddTelemetryButton.stopAnimation(TransitionButton.StopAnimationStyle.SHAKE, null);
         }
     }
 
@@ -337,6 +348,7 @@ public class InsertActivity extends AppCompatActivity
             {
                 Toast.makeText(InsertActivity.this, Result.getMessage(), Toast.LENGTH_SHORT).show();
             }
+            AddTelemetryButton.stopAnimation(TransitionButton.StopAnimationStyle.SHAKE, null);
         }
     }
 
@@ -424,6 +436,7 @@ public class InsertActivity extends AppCompatActivity
             {
                 Toast.makeText(InsertActivity.this, Result.getMessage(), Toast.LENGTH_SHORT).show();
             }
+            AddTelemetryButton.stopAnimation(TransitionButton.StopAnimationStyle.SHAKE, null);
         }
     }
 
@@ -508,6 +521,7 @@ public class InsertActivity extends AppCompatActivity
             {
                 Toast.makeText(InsertActivity.this, Result.getMessage(), Toast.LENGTH_SHORT).show();
             }
+            AddTelemetryButton.stopAnimation(TransitionButton.StopAnimationStyle.SHAKE, null);
         }
     }
 
@@ -591,6 +605,7 @@ public class InsertActivity extends AppCompatActivity
             {
                 Toast.makeText(InsertActivity.this, Result.getMessage(), Toast.LENGTH_SHORT).show();
             }
+            AddTelemetryButton.stopAnimation(TransitionButton.StopAnimationStyle.SHAKE, null);
         }
     }
     //endregion

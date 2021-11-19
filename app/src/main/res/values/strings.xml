@@ -54,4 +54,8 @@
     <string name="confirm_password">Confirm Password</string>
     <string name="code">Code</string>
     <string name="verify_code">Verify Code</string>
+    <string name="service_name">Service Name</string>
+    <string name="end_date">End Date</string>
+    <string name="current_bid">Current Bid</string>
+    <string name="make_bid">Make bid</string>
 </resources>

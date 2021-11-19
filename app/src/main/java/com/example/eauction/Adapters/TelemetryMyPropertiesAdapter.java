@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class TelemetryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
+public class TelemetryMyPropertiesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 {
     public static final int CAR_TEL = 1;
     public static final int CARPLATE_TEL = 2;
@@ -48,7 +48,7 @@ public class TelemetryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         mListener = listener;
     }
 
-    public TelemetryAdapter(ArrayList<Telemetry> Telemetries)
+    public TelemetryMyPropertiesAdapter(ArrayList<Telemetry> Telemetries)
     {
         this.Telemetries = Telemetries;
         Log.d("TelemetryAdapter","Telemetries Size: " + Telemetries.size());
@@ -360,6 +360,7 @@ public class TelemetryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         String currentBid = "<b><u>" + "Current Bid:" + "</u></b> "+telemetry.getCurrentBid();
         String basePrice = "<b><u>" + "Base Price:" + "</u></b> "+telemetry.getBasePrice();
 
+        if(telemetry.getBasePrice() != 0 /*&& telemetry.getCurrentBid() != 0*/){
             TextView currentBidTV = new TextView(linearLayout.getContext());
             TextView basePriceTV = new TextView(linearLayout.getContext());
             currentBidTV.setPadding(8,0,0,0);
@@ -369,31 +370,15 @@ public class TelemetryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     LinearLayout.LayoutParams.WRAP_CONTENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
             );
-        params.setMargins(0, 0, 0, 16);
+            params.setMargins(0, 0, 0, 16);
 
-        currentBidTV.setText(Html.fromHtml(currentBid));
-        basePriceTV.setText(Html.fromHtml(basePrice));
-        currentBidTV.setLayoutParams(params);
-        basePriceTV.setLayoutParams(params);
+            currentBidTV.setText(Html.fromHtml(currentBid));
+            basePriceTV.setText(Html.fromHtml(basePrice));
+            currentBidTV.setLayoutParams(params);
+            basePriceTV.setLayoutParams(params);
 
-        linearLayout.addView(currentBidTV);
-        linearLayout.addView(basePriceTV);
-
-        String auctionStart = "<b><u>" + "Auction Start:" + "</u></b> " + telemetry.getAuctionStart();
-        TextView auctionStartTV = new TextView(linearLayout.getContext());
-        auctionStartTV.setPadding(8, 0, 0, 0);
-
-        auctionStartTV.setText(Html.fromHtml(auctionStart));
-        auctionStartTV.setLayoutParams(params);
-        linearLayout.addView(auctionStartTV);
-
-        String auctionEnd = "<b><u>" + "Auction End:" + "</u></b> " + telemetry.getAuctionEnd();
-        TextView auctionEndTV = new TextView(linearLayout.getContext());
-        auctionStartTV.setPadding(9, 0, 0, 0);
-
-        auctionEndTV.setText(Html.fromHtml(auctionEnd));
-        auctionEndTV.setLayoutParams(params);
-        linearLayout.addView(auctionEndTV);
-
+            linearLayout.addView(currentBidTV);
+            linearLayout.addView(basePriceTV);
+        }
     }
 }
