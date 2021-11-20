@@ -17,6 +17,7 @@
     <string name="auctions">Auctions</string>
     <string name="my_properties">My Properties</string>
     <string name="about_us">About us</string>
+    <string name="about_usub"><u><b>About us</b></u></string>
     <string name="terms_amp_conditions"><![CDATA[Terms & Conditions]]></string>
     <string name="contact_us">Contact Us</string>
     <string name="default_name">Default Name</string>
@@ -58,4 +59,25 @@
     <string name="end_date">End Date</string>
     <string name="current_bid">Current Bid</string>
     <string name="make_bid">Make bid</string>
+    <string name="full_name">Full Name</string>
+    <string name="terms_and_conditions"><b><u>Terms and Conditions</u></b></string>
+    <string name="term1">1- Participant in the auction shall bear responsibility to disclose information committed by him and that it does not include any mistake whatsoever its type.</string>
+    <string name="term2">2- The auctioneer must enter correct and accurate information related to the auction.</string>
+    <string name="term3">3- Participation in the auction be regarded as an acknowledgment by the bidder that he is ready to pay the complete amount in case of winning, and this within an extreme period of 20 working days and that in case of non-payment within this period, fining him the difference of the two prices according to the law, whereas he wasted the opportunity for another bidder and wasted completion of the deal.</string>
+    <string name="term4">4- Participant in the auction shall acknowledge the application of rules, terms, and conditions of the land department on all properties available that he reviewed, and he reviewed the same and informed about it by secure.</string>
+    <string name="term5">5- For bidding and services (low bid), the auctioneer must specify a period for the auction to end.</string>
+    <string name="term6">6- The winner details will be emailed to the seller once the auction time has ended. The seller must contact him within 48 hours of being notified.</string>
+    <string name="term7">7- All terms and conditions of the auction shall be considered as declared and served to all participants in the auction by SECURE E-AUCTION, whereas participant in the auction shall acknowledge that he reviewed all procedures related to the auction and that he shall have no right to object any disposal made by him during his participation in the auction.</string>
+
+    <string name="about_text1">
+        "Secure E-Auction" is a program that focuses on securing auctions and low bids. It is currently only available in the UAE, but we are confident that it will be available elsewhere given the large turnout of bidders. There are a lot of online auctions available in the UAE but what distinguishes our application from others is the implementation of a lot number of security standards.
+    </string>
+
+    <string name="about_text2">
+         The electronic auction provides excellent security to protect our customers\' privacy to protect user data from any attacks. We also implemented a lot of testing to analyze the system under all potential scenarios and to ensure that our app can deal with many types of hacking.
+    </string>
+    <string name="our_sponsor">Our Sponsor</string>
+    <string name="application_developer">Application Developer</string>
+    <string name="developer_name">Developer Name</string>
+
 </resources>

@@ -29,6 +29,8 @@ public class BidActivity extends AppCompatActivity {
     @BindView(R.id.EtCurrentBid)
     EditText EtCurrentBid;
 
+    public static final int BID_LABEL_ID = 112345672;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,6 +65,9 @@ public class BidActivity extends AppCompatActivity {
         ContentTV.setPadding(8,0,0,8);
         ContentTV.setTextColor(Color.BLACK);
         ContentTV.setText(content);
+        if(label.equals("Current Bid")) //TODO access the view from this id
+            ContentTV.setId(BID_LABEL_ID);
+
 
         TableRow tableRow = new TableRow(TableContent.getContext());
         tableRow.addView(labelTV);
