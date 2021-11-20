@@ -53,6 +53,7 @@ public class App extends Application implements LifecycleObserver
     {
         return TelemetryMonitor;
     }
+    public String GetUserId() { return PreferenceUtils.getEmail(this); }
     //endregion
 
     public App()

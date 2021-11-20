@@ -16,6 +16,7 @@ import com.example.eauction.Models.FireStoreResult;
 import com.example.eauction.Models.General;
 import com.example.eauction.Models.Landmark;
 import com.example.eauction.Models.Service;
+import com.example.eauction.Models.ServiceComment;
 import com.example.eauction.Models.Telemetry;
 import com.example.eauction.Models.User;
 import com.example.eauction.Models.VipPhoneNumber;
@@ -302,31 +303,6 @@ public class TelemetryMonitor
                 }, UserObj.getOwnedGeneralTelemetry(), UserObj.getEmail());
             }
             break;
-            case "Service":
-            {
-                Service ServiceAuction = (Service) TelemetryAuctionItem;
-                int Index = TelemetryHelper.GetTelemetryIndex(UserObj.getOwnedServiceTelemetry(), ServiceAuction.getID());
-                if (DeleteTelemetry)
-                {
-                    UserObj.getOwnedServiceTelemetry().remove(Index);
-                }
-                else
-                {
-                    UserObj.getOwnedServiceTelemetry().set(Index, ServiceAuction);
-                }
-                FireStore.SetServiceTelemetry(Result ->
-                {
-                    if (Result.isSuccess())
-                    {
-                        Log.d("TelemetryMonitor", "UpdateUserAuction:: SetServiceTelemetry: Successfully updated.");
-                    }
-                    else
-                    {
-                        Log.d("TelemetryMonitor", "UpdateUserAuction:: SetServiceTelemetry: Failed to be update, " + Result.getMessage());
-                    }
-                }, UserObj.getOwnedServiceTelemetry(), UserObj.getEmail());
-            }
-            break;
         }
     }
     private void ProcessHighestBid(Bid HighestBid, String TelemetryType, Telemetry TelemetryAuctionItem)
@@ -428,24 +404,6 @@ public class TelemetryMonitor
                         },  UserObj.getOwnedGeneralTelemetry(), HighestBid.getUserId());
                     }
                     break;
-                    case "Service":
-                    {
-                        Service ServiceAuction = (Service) TelemetryAuctionItem;
-                        ServiceAuction.setStatus(StatusEnum.UnAuctioned);
-                        UserObj.getOwnedServiceTelemetry().add(ServiceAuction);
-                        FireStore.SetServiceTelemetry(Result ->
-                        {
-                            if (Result.isSuccess())
-                            {
-                                Log.d("TelemetryMonitor", "ProcessHighestBid:: SetServiceTelemetry: Successfully");
-                            }
-                            else
-                            {
-                                Log.d("TelemetryMonitor", "ProcessHighestBid:: SetServiceTelemetry: Failed, " + Result.getMessage());
-                            }
-                        },  UserObj.getOwnedServiceTelemetry(), HighestBid.getUserId());
-                    }
-                    break;
                 }
             }
             else
@@ -453,7 +411,33 @@ public class TelemetryMonitor
                 Log.d("TelemetryMonitor", "ProcessHighestBid:: GetUserInformation: null");
             }
         }, HighestBid.getUserId());
-
+    }
+    public void UpdateUserService(Service ServerAuction, User UserObj)
+    {
+        int Index = TelemetryHelper.GetTelemetryIndex(UserObj.getOwnedServiceTelemetry(), ServerAuction.getID());
+        UserObj.getOwnedServiceTelemetry().set(Index, ServerAuction);
+        FireStore.SetServiceTelemetry(Result ->
+        {
+            if (Result.isSuccess())
+            {
+                Log.d("TelemetryMonitor", "UpdateUserService:: SetGeneralTelemetry: Successfully updated.");
+            }
+            else
+            {
+                Log.d("TelemetryMonitor", "UpdateUserService:: SetGeneralTelemetry: Failed to be update, " + Result.getMessage());
+            }
+        }, UserObj.getOwnedServiceTelemetry(), UserObj.getEmail());
+    }
+    public void ProcessLowestBid(Service ServiceAuction, ServiceComment LowestCostService, User UserObj)
+    {
+        Log.d("TelemetryMonitor", "ProcessLowestBid:: LowestCostService Cost: " + LowestCostService.getCost());
+        String Email = FireStore.DecryptField(UserObj.getEmail());
+        Log.d("TelemetryMonitor", "ProcessLowestBid:: Owner Service Email Address: " + Email);
+        String Title = "Service Provider for [" + ServiceAuction.getName() + "]";
+        String MessageInformation = String.format("Service Provider Information\n\nName: %s\nPhone Number: %s\nEmail Address: %s\nCost: %s\nComment: %s", LowestCostService.getName(), LowestCostService.getPhoneNumber(), LowestCostService.getEmail(), LowestCostService.getCost(), LowestCostService.getComment());
+        Log.d("TelemetryMonitor", "ProcessLowestBid:: \n Title: " + Title + "\nMessageInformation: " + MessageInformation);
+        TelemetryHelper.SendServiceInformation(FireStore.GetCompanyAccount(), FireStore.GetCompanyPassword(), Email, Title, MessageInformation);
+        Log.d("TelemetryMonitor", "ProcessLowestBid:: Finished");
     }
     //endregion
 
@@ -489,26 +473,51 @@ public class TelemetryMonitor
                                         //Finished
                                         T.setAuctionEnd("Finished");
                                         //Process
-                                        if (T.getCurrentBid() > 0 && T.getBids().size() > 0)
+                                        if (T instanceof Service)
                                         {
-                                            Bid HighestBid = T.getBids().get(0);
-                                            //Pass the telemetry to the highest bid winner.
-                                            for (Bid B : T.getBids())
+                                            Log.d("TelemetryMonitor", "Telemetry is Service Auction");
+                                            Service ServiceAuction = (Service)T;
+                                            //Pass the lowest cost service to the user owner.
+                                            if (ServiceAuction.getServiceComments().size() > 0)
                                             {
-                                                if (HighestBid.getCurrentBid() < B.getCurrentBid())
+                                                ServiceComment LowestCostService = ServiceAuction.getServiceComments().get(0);
+                                                for (ServiceComment SC : ServiceAuction.getServiceComments())
                                                 {
-                                                    HighestBid.setCurrentBid(B.getCurrentBid());
-                                                    HighestBid.setUserId(B.getUserId());
+                                                    if (Integer.parseInt(LowestCostService.getCost()) < Integer.parseInt(SC.getCost()))
+                                                    {
+                                                        LowestCostService.Set(SC);
+                                                    }
                                                 }
+                                                //Update the user that the service had comments and send him the lowest cost service provider in email.
+                                                ProcessLowestBid(ServiceAuction, LowestCostService, UserObj);
                                             }
-                                            ProcessHighestBid(HighestBid, TelemetryHelper.GetTelemetryType(T), T);
-                                            //Remove telemetry from the owner.
-                                            UpdateUserAuction(TelemetryHelper.GetTelemetryType(T), T, UserObj, true);
+                                            //Update the service to be finished.
+                                            UpdateUserService(ServiceAuction, UserObj);
                                         }
                                         else
                                         {
-                                            //Update the telemetry to be finished.
-                                            UpdateUserAuction(TelemetryHelper.GetTelemetryType(T), T, UserObj, false);
+                                            Log.d("TelemetryMonitor", "Telemetry is Normal Auction");
+                                            if (T.getCurrentBid() > 0 && T.getBids().size() > 0)
+                                            {
+                                                Bid HighestBid = T.getBids().get(0);
+                                                //Pass the telemetry to the highest bid winner.
+                                                for (Bid B : T.getBids())
+                                                {
+                                                    if (HighestBid.getCurrentBid() < B.getCurrentBid())
+                                                    {
+                                                        HighestBid.setCurrentBid(B.getCurrentBid());
+                                                        HighestBid.setUserId(B.getUserId());
+                                                    }
+                                                }
+                                                ProcessHighestBid(HighestBid, TelemetryHelper.GetTelemetryType(T), T);
+                                                //Remove telemetry from the owner.
+                                                UpdateUserAuction(TelemetryHelper.GetTelemetryType(T), T, UserObj, true);
+                                            }
+                                            else
+                                            {
+                                                //Update the telemetry to be finished.
+                                                UpdateUserAuction(TelemetryHelper.GetTelemetryType(T), T, UserObj, false);
+                                            }
                                         }
                                         //Delete the auction from the global auctions.
                                         DeleteGlobalAuction(TelemetryHelper.GetTelemetryType(T), T);

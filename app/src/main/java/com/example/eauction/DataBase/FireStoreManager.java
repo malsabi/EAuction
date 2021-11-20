@@ -1,5 +1,6 @@
 package com.example.eauction.DataBase;
 
+import android.telecom.Call;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -25,8 +26,13 @@ import com.example.eauction.Interfaces.SetUserTelemetryCallback;
 import com.example.eauction.Interfaces.RegisterUserCallback;
 import com.example.eauction.Interfaces.SignInUserCallback;
 import com.example.eauction.Interfaces.SignOutUserCallback;
+import com.example.eauction.Interfaces.UpdateCarAuctionsCallback;
+import com.example.eauction.Interfaces.UpdateCarPlateAuctionsCallback;
+import com.example.eauction.Interfaces.UpdateLandmarkAuctionsCallback;
+import com.example.eauction.Interfaces.UpdateServiceAuctionCallback;
 import com.example.eauction.Interfaces.UpdateUserPasswordCallback;
 import com.example.eauction.Interfaces.UpdateUserSessionCallback;
+import com.example.eauction.Interfaces.UpdateVIPPHoneNumberCallback;
 import com.example.eauction.Models.Car;
 import com.example.eauction.Models.CarPlate;
 import com.example.eauction.Models.FireStoreResult;
@@ -55,6 +61,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import javax.security.auth.callback.Callback;
+
 public class FireStoreManager extends FireStoreHelpers
 {
     private final FirebaseFirestore DB;
@@ -71,6 +79,13 @@ public class FireStoreManager extends FireStoreHelpers
         //SetPublicKey(AesProvider.CreatePublicKey());
         //AesProvider.GetPrivateKey();
     }
+
+    //region Getters
+    public AESProvider GetAesProvider()
+    {
+        return AesProvider;
+    }
+    //endregion
 
     //region User
     public void IsUserRegistered(IsUserRegisteredCallback IsRegisteredCallback, String Email, boolean EncryptEmail)
@@ -343,7 +358,6 @@ public class FireStoreManager extends FireStoreHelpers
             AddCarPlateCallback.onCallback(new FireStoreResult("", d.getMessage(), false));
         });
     }
-
     public void DeleteCarPlateAuction(DeleteUserAuctionCallback DeleteAuctionCallback, CarPlate CarPlateAuction)
     {
         DocumentReference CarPlateDocument = DB.collection("AUCTIONS").document("CARPLATE");
@@ -357,7 +371,6 @@ public class FireStoreManager extends FireStoreHelpers
             DeleteAuctionCallback.onCallback(false);
         });
     }
-
     public void GetCarPlateAuctions(final GetCarPlateAuctionsCallback Callback)
     {
         ArrayList<CarPlate> CarPlates = new ArrayList<>();
@@ -377,6 +390,53 @@ public class FireStoreManager extends FireStoreHelpers
                 }
                 Callback.onCallback(CarPlates);
             }
+        });
+    }
+    public void UpdateCarPlateAuctions(final UpdateCarPlateAuctionsCallback CallBack, CarPlate CarPlateAuction)
+    {
+        ArrayList<CarPlate> CarPlates = new ArrayList<>();
+        DocumentReference documentReference = DB.collection("AUCTIONS").document("CARPLATE");
+        documentReference.get().addOnSuccessListener(documentSnapshot ->
+        {
+            if (documentSnapshot.exists())
+            {
+                ArrayList<?> CarPlateTelemetries = (ArrayList<?>)documentSnapshot.get("CarPlateTelemetries");
+                Gson gson = new Gson();
+                for (int i = 0; i < (CarPlateTelemetries != null ? CarPlateTelemetries.size() : 0); i++)
+                {
+                    JsonElement jsonElement = gson.toJsonTree(CarPlateTelemetries.get(i));
+                    CarPlate CarPlate = gson.fromJson(jsonElement, CarPlate.class);
+                    if (CarPlateAuction.getID().equals(CarPlate.getID()))
+                    {
+                        CarPlates.add(CarPlateAuction);
+                    }
+                    else
+                    {
+                        CarPlates.add(CarPlate);
+                    }
+                    Log.d("FireStore", "GetCarPlateAuctions Received: " + CarPlate.getPlateNumber());
+                }
+                DB.collection("AUCTIONS").document("CARPLATE").update("CarPlateTelemetries", CarPlates)
+                .addOnSuccessListener(unused -> {
+                    Log.d("FireStore", "UpdateCarPlateAuctions Updated Successfully");
+                    CallBack.onCallback(true);
+                })
+                .addOnFailureListener(e ->
+                {
+                    Log.d("FireStore", "UpdateCarPlateAuctions Exception: " + e.getMessage());
+                    CallBack.onCallback(false);
+                });
+            }
+            else
+            {
+                Log.d("FireStore", "UpdateCarPlateAuctions document does not exists");
+                CallBack.onCallback(false);
+            }
+        })
+        .addOnFailureListener(e ->
+        {
+            Log.d("FireStore", "UpdateCarPlateAuctions Exception: " + e.getMessage());
+            CallBack.onCallback(false);
         });
     }
     //endregion
@@ -429,6 +489,56 @@ public class FireStoreManager extends FireStoreHelpers
                 }
                 Callback.onCallback(Cars);
             }
+        });
+    }
+    public void UpdateCarAuctions(final UpdateCarAuctionsCallback CallBack, Car CarAuction)
+    {
+        ArrayList<Car> Cars = new ArrayList<>();
+        DocumentReference documentReference = DB.collection("AUCTIONS").document("CAR");
+        documentReference.get().addOnSuccessListener(documentSnapshot ->
+        {
+            if (documentSnapshot.exists())
+            {
+                ArrayList<?> CarTelemetries = (ArrayList<?>)documentSnapshot.get("CarTelemetries");
+                Gson gson = new Gson();
+                for (int i = 0; i < (CarTelemetries != null ? CarTelemetries.size() : 0); i++)
+                {
+                    if (!CarTelemetries.get(i).toString().isEmpty())
+                    {
+                        JsonElement jsonElement = gson.toJsonTree(CarTelemetries.get(i));
+                        Car Car = gson.fromJson(jsonElement, Car.class);
+                        if (CarAuction.getID().equals(Car.getID()))
+                        {
+                            Cars.add(CarAuction);
+                        }
+                        else
+                        {
+                            Cars.add(Car);
+                        }
+                        Log.d("FireStore", "GetCarAuctions Received: " + Car.getModel());
+                    }
+                }
+                DB.collection("AUCTIONS").document("CAR").update("CarTelemetries", Cars)
+                .addOnSuccessListener(unused ->
+                {
+                    Log.d("FireStore", "UpdateCarAuctions Updated Successfully");
+                    CallBack.onCallback(true);
+                })
+                .addOnFailureListener(e ->
+                {
+                    Log.d("FireStore", "UpdateCarAuctions Exception: " + e.getMessage());
+                    CallBack.onCallback(false);
+                });
+            }
+            else
+            {
+                Log.d("FireStore", "UpdateCarAuctions document does not exists");
+                CallBack.onCallback(false);
+            }
+        }).addOnFailureListener(e ->
+        {
+            Log.d("FireStore", "UpdateCarAuctions Exception: " + e.getMessage());
+            CallBack.onCallback(false);
         });
     }
     //endregion
@@ -484,6 +594,56 @@ public class FireStoreManager extends FireStoreHelpers
             }
         });
     }
+    public void UpdateLandmarkAuctions(final UpdateLandmarkAuctionsCallback CallBack, Landmark LandmarkAuction)
+    {
+        ArrayList<Landmark> Landmarks = new ArrayList<>();
+        DocumentReference documentReference = DB.collection("AUCTIONS").document("LANDMARK");
+        documentReference.get().addOnSuccessListener(documentSnapshot ->
+        {
+            if (documentSnapshot.exists())
+            {
+                ArrayList<?> LandmarkTelemetries = (ArrayList<?>)documentSnapshot.get("LandmarkTelemetries");
+                Gson gson = new Gson();
+                for (int i = 0; i < (LandmarkTelemetries != null ? LandmarkTelemetries.size() : 0); i++)
+                {
+                    if (!LandmarkTelemetries.get(i).toString().isEmpty())
+                    {
+                        JsonElement jsonElement = gson.toJsonTree(LandmarkTelemetries.get(i));
+                        Landmark Landmark = gson.fromJson(jsonElement, Landmark.class);
+                        if (LandmarkAuction.getID().equals(Landmark.getID()))
+                        {
+                            Landmarks.add(LandmarkAuction);
+                        }
+                        else
+                        {
+                            Landmarks.add(Landmark);
+                        }
+                        Log.d("FireStore", "GetLandmarkAuctions Received: " + Landmark.getType());
+                    }
+                }
+                DB.collection("AUCTIONS").document("LANDMARK").update("LandmarkTelemetries", Landmarks)
+                .addOnSuccessListener(unused ->
+                {
+                    Log.d("FireStore", "UpdateLandmarkAuctions Updated Successfully");
+                    CallBack.onCallback(true);
+                })
+                .addOnFailureListener(e ->
+                {
+                    Log.d("FireStore", "UpdateLandmarkAuctions Exception: " + e.getMessage());
+                    CallBack.onCallback(false);
+                });
+            }
+            else
+            {
+                Log.d("FireStore", "UpdateLandmarkAuctions document does not exists");
+                CallBack.onCallback(false);
+            }
+        }).addOnFailureListener(e ->
+        {
+            Log.d("FireStore", "UpdateLandmarkAuctions Exception: " + e.getMessage());
+            CallBack.onCallback(false);
+        });
+    }
     //endregion
     //region "VIPPhoneNumber Auction"
     public void AddVIPPhoneNumberAuction(final SetUserTelemetryCallback AddVIPPhoneNumberCallback, VipPhoneNumber VipPhoneNumberAuction)
@@ -534,6 +694,56 @@ public class FireStoreManager extends FireStoreHelpers
                 }
                 Callback.onCallback(VIPPhoneNumbers);
             }
+        });
+    }
+    public void UpdateVIPPHoneNumberAuctions(final UpdateVIPPHoneNumberCallback CallBack, VipPhoneNumber VipPhoneNumberAuction)
+    {
+        ArrayList<VipPhoneNumber> VIPPhoneNumbers = new ArrayList<>();
+        DocumentReference documentReference = DB.collection("AUCTIONS").document("VIPPHONE");
+        documentReference.get().addOnSuccessListener(documentSnapshot ->
+        {
+            if (documentSnapshot.exists())
+            {
+                ArrayList<?> VIPPhoneTelemetries = (ArrayList<?>)documentSnapshot.get("VIPPhoneTelemetries");
+                Gson gson = new Gson();
+                for (int i = 0; i < (VIPPhoneTelemetries != null ? VIPPhoneTelemetries.size() : 0); i++)
+                {
+                    if (!VIPPhoneTelemetries.get(i).toString().isEmpty())
+                    {
+                        JsonElement jsonElement = gson.toJsonTree(VIPPhoneTelemetries.get(i));
+                        VipPhoneNumber VipPhoneNumber = gson.fromJson(jsonElement, VipPhoneNumber.class);
+                        if (VipPhoneNumberAuction.getID().equals(VipPhoneNumber.getID()))
+                        {
+                            VIPPhoneNumbers.add(VipPhoneNumberAuction);
+                        }
+                        else
+                        {
+                            VIPPhoneNumbers.add(VipPhoneNumber);
+                        }
+                        Log.d("FireStore", "GetVIPPHoneNumberAuctions Received: " + VipPhoneNumber.getPhoneNumber());
+                    }
+                }
+                DB.collection("AUCTIONS").document("VIPPHONE").update("VIPPhoneTelemetries", VIPPhoneNumbers)
+                .addOnSuccessListener(unused ->
+                {
+                    Log.d("FireStore", "UpdateVIPPHoneNumberAuctions Updated Successfully");
+                    CallBack.onCallback(true);
+                })
+                .addOnFailureListener(e ->
+                {
+                    Log.d("FireStore", "UpdateVIPPHoneNumberAuctions Exception: " + e.getMessage());
+                    CallBack.onCallback(false);
+                });
+            }
+            else
+            {
+                Log.d("FireStore", "UpdateVIPPHoneNumberAuctions document does not exists");
+                CallBack.onCallback(false);
+            }
+        }).addOnFailureListener(e ->
+        {
+            Log.d("FireStore", "UpdateVIPPHoneNumberAuctions Exception: " + e.getMessage());
+            CallBack.onCallback(false);
         });
     }
     //endregion
@@ -588,6 +798,57 @@ public class FireStoreManager extends FireStoreHelpers
             }
         });
     }
+    public void UpdateGeneralAuctions(final UpdateVIPPHoneNumberCallback CallBack, General GeneralAuction)
+    {
+        ArrayList<General> Generals = new ArrayList<>();
+        DocumentReference documentReference = DB.collection("AUCTIONS").document("GENERAL");
+        documentReference.get().addOnSuccessListener(documentSnapshot ->
+        {
+            if (documentSnapshot.exists())
+            {
+                ArrayList<?> GeneralTelemetries = (ArrayList<?>)documentSnapshot.get("GeneralTelemetries");
+                Gson gson = new Gson();
+                for (int i = 0; i < (GeneralTelemetries != null ? GeneralTelemetries.size() : 0); i++)
+                {
+                    if (!GeneralTelemetries.get(i).toString().isEmpty())
+                    {
+                        JsonElement jsonElement = gson.toJsonTree(GeneralTelemetries.get(i));
+                        General General = gson.fromJson(jsonElement, General.class);
+                        if (GeneralAuction.getID().equals(General.getID()))
+                        {
+                            Generals.add(GeneralAuction);
+                        }
+                        else
+                        {
+                            Generals.add(General);
+                        }
+                        Log.d("FireStore", "GetGeneralAuctions Received: " + General.getName());
+                    }
+                }
+                DB.collection("AUCTIONS").document("GENERAL").update("GeneralTelemetries", Generals)
+                .addOnSuccessListener(unused ->
+                {
+                    Log.d("FireStore", "UpdateGeneralAuctions Updated Successfully");
+                    CallBack.onCallback(true);
+                })
+                .addOnFailureListener(e ->
+                {
+                    Log.d("FireStore", "UpdateGeneralAuctions Exception: " + e.getMessage());
+                    CallBack.onCallback(false);
+                });
+            }
+            else
+            {
+                Log.d("FireStore", "UpdateGeneralAuctions document does not exists");
+                CallBack.onCallback(false);
+            }
+        })
+        .addOnFailureListener(e ->
+        {
+            Log.d("FireStore", "UpdateGeneralAuctions Exception: " + e.getMessage());
+            CallBack.onCallback(false);
+        });
+    }
     //endregion
     //region "Service Auction"
     public void AddServiceAuction(final SetUserTelemetryCallback AddServiceCallback, Service ServiceAuction)
@@ -640,7 +901,57 @@ public class FireStoreManager extends FireStoreHelpers
             }
         });
     }
+    public void UpdateServiceAuctions(final UpdateServiceAuctionCallback CallBack, Service ServiceAuction)
+    {
+        ArrayList<Service> Services = new ArrayList<>();
+        DocumentReference documentReference = DB.collection("AUCTIONS").document("SERVICE");
+        documentReference.get().addOnSuccessListener(documentSnapshot ->
+        {
+            if (documentSnapshot.exists())
+            {
+                ArrayList<?> ServiceTelemetries = (ArrayList<?>)documentSnapshot.get("ServiceTelemetries");
+                Gson gson = new Gson();
+                for (int i = 0; i < (ServiceTelemetries != null ? ServiceTelemetries.size() : 0); i++)
+                {
+                    if (!ServiceTelemetries.get(i).toString().isEmpty())
+                    {
+                        JsonElement jsonElement = gson.toJsonTree(ServiceTelemetries.get(i));
+                        Service Service = gson.fromJson(jsonElement, Service.class);
+                        Services.add(Service);
+                        Log.d("FireStore", "GetServiceAuctions Received: " + Service.getName());
+                    }
+                }
+                DB.collection("AUCTIONS").document("SERVICE").update("ServiceTelemetries", Services)
+                .addOnSuccessListener(unused ->
+                {
+                    Log.d("FireStore", "UpdateServiceAuctions Updated Successfully");
+                    CallBack.onCallback(true);
+                })
+                .addOnFailureListener(e ->
+                {
+                    Log.d("FireStore", "UpdateServiceAuctions Exception: " + e.getMessage());
+                    CallBack.onCallback(false);
+                });
+            }
+            else
+            {
+                Log.d("FireStore", "UpdateGeneralAuctions document does not exists");
+                CallBack.onCallback(false);
+            }
+        })
+        .addOnFailureListener(e ->
+        {
+            Log.d("FireStore", "UpdateGeneralAuctions Exception: " + e.getMessage());
+            CallBack.onCallback(false);
+        });
+    }
     //endregion
+    //endregion
+
+    //region Listeners
+    public void ListenCarAuctions()
+    {
+    }
     //endregion
 
     //region Company
@@ -670,6 +981,17 @@ public class FireStoreManager extends FireStoreHelpers
     {
         String EncryptedCompanyPassword = (String)new SyncFireStore().GetField("COMPANY", "Password", "Password", DB);
         return AesProvider.Decrypt(FirestoreEncoder.DecodeFromFirebaseKey(EncryptedCompanyPassword));
+    }
+    //endregion
+
+    //region Encryption Helpers
+    public String EncryptField(String Field)
+    {
+        return FirestoreEncoder.EncodeForFirebaseKey(AesProvider.Encrypt(Field));
+    }
+    public String DecryptField(String EncryptedField)
+    {
+        return (AesProvider.Decrypt(FirestoreEncoder.DecodeFromFirebaseKey(EncryptedField)));
     }
     //endregion
 }

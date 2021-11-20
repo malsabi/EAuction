@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.eauction.Adapters.TelemetryAdapter;
 import com.example.eauction.App;
 import com.example.eauction.BidActivity;
+import com.example.eauction.Helpers.TelemetryHelper;
 import com.example.eauction.Models.Bid;
 import com.example.eauction.Models.Car;
 import com.example.eauction.Models.CarPlate;
@@ -77,18 +78,22 @@ public class GlobalAuctionsFragment extends Fragment {
                     RecyclerViewAdapter.setOnItemClickListener(new TelemetryAdapter.OnItemClickListener() {
                         @Override
                         public void onItemClick(int position) {
-                            CarPlate generalItem =  (CarPlate) MergeList.get(position);
+                            CarPlate carPlateItem =  (CarPlate) MergeList.get(position);
                             Bundle extras = new Bundle();
-                            extras.putString("Plate Number", generalItem.getPlateNumber());
-                            extras.putString("Plate Code", generalItem.getPlateCode());
-                            extras.putString("Emirate", generalItem.getEmirate());
-                            extras.putString("Current Bid", generalItem.getCurrentBid()+"");
-                            extras.putString("Base Price", generalItem.getBasePrice()+"");
-                            extras.putString("Auction Start",generalItem.getAuctionStart());
-                            extras.putString("Auction End",generalItem.getAuctionEnd());
-                            extras.putString("Picture", generalItem.getImage());
-                            extras.putString("ID", generalItem.getID());
-                            extras.putString("Details", generalItem.getDetails());
+                            extras.putString("Plate Number", carPlateItem.getPlateNumber());
+                            extras.putString("Plate Code", carPlateItem.getPlateCode());
+                            extras.putString("Emirate", carPlateItem.getEmirate());
+                            extras.putString("Current Bid", carPlateItem.getCurrentBid()+"");
+                            extras.putString("Base Price", carPlateItem.getBasePrice()+"");
+                            extras.putString("Auction Start", carPlateItem.getAuctionStart());
+                            extras.putString("Auction End", carPlateItem.getAuctionEnd());
+                            extras.putString("Picture", carPlateItem.getImage());
+                            extras.putString("ID", carPlateItem.getID());
+                            extras.putString("Details", carPlateItem.getDetails());
+                            //Extra AuctionOwnerUserId, TelemetryType, UserId
+                            extras.putString("AuctionOwnerUserId", carPlateItem.getOwnerId());
+                            extras.putString("Type", TelemetryHelper.GetTelemetryType(carPlateItem));
+                            extras.putString("UserId", AppInstance.GetUserId());
                             Intent intent = new Intent(view.getContext(), BidActivity.class);
                             intent.putExtras(extras);
                             startActivity(intent);
@@ -125,6 +130,10 @@ public class GlobalAuctionsFragment extends Fragment {
                             extras.putString("Power", car.getHorsePower()+"");
                             extras.putString("ID", car.getID());
                             extras.putString("Details", car.getDetails());
+                            //Extra AuctionOwnerUserId, TelemetryType, UserId
+                            extras.putString("AuctionOwnerUserId", car.getOwnerId());
+                            extras.putString("Type", TelemetryHelper.GetTelemetryType(car));
+                            extras.putString("UserId", AppInstance.GetUserId());
                             Intent intent = new Intent(view.getContext(), BidActivity.class);
                             intent.putExtras(extras);
                             startActivity(intent);
@@ -161,6 +170,10 @@ public class GlobalAuctionsFragment extends Fragment {
                             extras.putString("Type", landmark.getType());
                             extras.putString("Location", landmark.getLocation());
                             extras.putString("Area", landmark.getArea()+"");
+                            //Extra AuctionOwnerUserId, TelemetryType, UserId
+                            extras.putString("AuctionOwnerUserId", landmark.getOwnerId());
+                            extras.putString("Type", TelemetryHelper.GetTelemetryType(landmark));
+                            extras.putString("UserId", AppInstance.GetUserId());
                             Intent intent = new Intent(view.getContext(), BidActivity.class);
                             intent.putExtras(extras);
                             startActivity(intent);
@@ -195,6 +208,10 @@ public class GlobalAuctionsFragment extends Fragment {
                             extras.putString("ID", vipPhoneNumber.getID());
                             extras.putString("Details", vipPhoneNumber.getDetails());
                             extras.putString("Phone Number", vipPhoneNumber.getPhoneNumber());
+                            //Extra AuctionOwnerUserId, TelemetryType, UserId
+                            extras.putString("AuctionOwnerUserId", vipPhoneNumber.getOwnerId());
+                            extras.putString("Type", TelemetryHelper.GetTelemetryType(vipPhoneNumber));
+                            extras.putString("UserId", AppInstance.GetUserId());
                             Intent intent = new Intent(view.getContext(), BidActivity.class);
                             intent.putExtras(extras);
                             startActivity(intent);
@@ -228,6 +245,10 @@ public class GlobalAuctionsFragment extends Fragment {
                             extras.putString("Picture", generalItem.getImage());
                             extras.putString("ID", generalItem.getID());
                             extras.putString("Details", generalItem.getDetails());
+                            //Extra AuctionOwnerUserId, TelemetryType, UserId
+                            extras.putString("AuctionOwnerUserId", generalItem.getOwnerId());
+                            extras.putString("Type", TelemetryHelper.GetTelemetryType(generalItem));
+                            extras.putString("UserId", AppInstance.GetUserId());
                             Intent intent = new Intent(view.getContext(), BidActivity.class);
                             intent.putExtras(extras);
                             startActivity(intent);

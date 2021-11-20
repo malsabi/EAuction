@@ -328,13 +328,29 @@ public class TelemetryValidation
 
         String Name = GeneralObj.getName();
 
-        if (Name.length() == 0 || Name.length() > 50)
+        if (Name.length() == 0 || Name.length() > 100)
         {
-            Result.setTitle("");
-            Result.setMessage("Name object should be between 0 and 50");
+            Result.setTitle("EtGeneralItemName");
+            Result.setMessage("Name object should be between 0 and 100");
             Result.setSuccess(false);
         }
+        return Result;
+    }
 
+    public ValidationResult ServiceValidation(Service ServiceModel)
+    {
+        ValidationResult Result = new ValidationResult();
+        Result.setMessage("Valid Data");
+        Result.setSuccess(true);
+
+        String Name = ServiceModel.getName();
+
+        if (Name.length() == 0 || Name.length() > 100)
+        {
+            Result.setTitle("EtServiceName");
+            Result.setMessage("Name object should be between 0 and 100");
+            Result.setSuccess(false);
+        }
         return Result;
     }
 

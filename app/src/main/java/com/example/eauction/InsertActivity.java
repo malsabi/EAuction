@@ -21,12 +21,12 @@ import com.example.eauction.Fragments.GeneralItemFragment;
 import com.example.eauction.Fragments.LandmarkFragment;
 import com.example.eauction.Fragments.ServiceFragment;
 import com.example.eauction.Fragments.VIPNumberFragment;
-import com.example.eauction.Helpers.DateHelper;
 import com.example.eauction.Helpers.TelemetryHelper;
 import com.example.eauction.Models.Car;
 import com.example.eauction.Models.CarPlate;
 import com.example.eauction.Models.General;
 import com.example.eauction.Models.Landmark;
+import com.example.eauction.Models.Service;
 import com.example.eauction.Models.User;
 import com.example.eauction.Models.ValidationResult;
 import com.example.eauction.Models.VipPhoneNumber;
@@ -60,7 +60,8 @@ public class InsertActivity extends AppCompatActivity
     private final LandmarkFragment LandmarkObj = new LandmarkFragment();           //Fragment
     private final VIPNumberFragment VIPNumberObj = new VIPNumberFragment();        //Fragment
     private final GeneralItemFragment GeneralObj = new GeneralItemFragment();      //Fragment
-    private final ServiceFragment ServiceObj = new ServiceFragment();      //Fragment
+    private final ServiceFragment ServiceObj = new ServiceFragment();              //Fragment
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -177,6 +178,10 @@ public class InsertActivity extends AppCompatActivity
                 this.UserObj = UserObj;
             }, PreferenceUtils.getEmail(this));
         }
+        else
+        {
+            HandleService();
+        }
     }
 
     //region "Fragment Handlers"
@@ -190,7 +195,6 @@ public class InsertActivity extends AppCompatActivity
         CarPlateModel.setPlateCode(CarPlateObj.CarPlateCode.getText().toString());
         CarPlateModel.setEmirate(((TextView)CarPlateObj.SpinnerCountry.getSelectedView()).getText().toString());
         CarPlateModel.setDetails(DetailsEditText.getText().toString());
-        CarPlateModel.setAuctionStart(DateHelper.GetCurrentDateTime());
         CarPlateModel.setStatus(StatusEnum.UnAuctioned);
         CarPlateModel.setImage(TelemetryHelper.ImageToBase64(UploadImageButton.getDrawable()));
         CarPlateModel.setId(TelemetryHelper.GetTelemetryHash(CarPlateModel.toString()));
@@ -277,7 +281,6 @@ public class InsertActivity extends AppCompatActivity
         CarModel.setName(CarObj.NameEditText.getText().toString());
         CarModel.setHorsePower(Integer.parseInt(CarObj.HorsePowerEditText.getText().toString()));
         CarModel.setDetails(DetailsEditText.getText().toString());
-        CarModel.setAuctionStart(DateHelper.GetCurrentDateTime());
         CarModel.setStatus(StatusEnum.UnAuctioned);
         CarModel.setImage(TelemetryHelper.ImageToBase64(UploadImageButton.getDrawable()));
         CarModel.setId(TelemetryHelper.GetTelemetryHash(CarModel.toString()));
@@ -362,7 +365,6 @@ public class InsertActivity extends AppCompatActivity
         LandmarkModel.setName(LandmarkObj.NameEditText.getText().toString());
         LandmarkModel.setArea(Integer.parseInt(LandmarkObj.AreaEditText.getText().toString()));
         LandmarkModel.setDetails(DetailsEditText.getText().toString());
-        LandmarkModel.setAuctionStart(DateHelper.GetCurrentDateTime());
         LandmarkModel.setStatus(StatusEnum.UnAuctioned);
         LandmarkModel.setImage(TelemetryHelper.ImageToBase64(UploadImageButton.getDrawable()));
         LandmarkModel.setId(TelemetryHelper.GetTelemetryHash(LandmarkModel.toString()));
@@ -448,7 +450,6 @@ public class InsertActivity extends AppCompatActivity
         VIPPhoneModel.setPhoneNumber(VIPNumberObj.PhoneNumber.getText().toString());
         VIPPhoneModel.setCompany(((TextView)VIPNumberObj.SpinnerPhoneCompany.getSelectedView()).getText().toString());
         VIPPhoneModel.setDetails(DetailsEditText.getText().toString());
-        VIPPhoneModel.setAuctionStart(DateHelper.GetCurrentDateTime());
         VIPPhoneModel.setStatus(StatusEnum.UnAuctioned);
         VIPPhoneModel.setImage(TelemetryHelper.ImageToBase64(UploadImageButton.getDrawable()));
         VIPPhoneModel.setId(TelemetryHelper.GetTelemetryHash(VIPPhoneModel.toString()));
@@ -532,7 +533,6 @@ public class InsertActivity extends AppCompatActivity
 
         GeneralModel.setName(GeneralObj.NameEditText.getText().toString());
         GeneralModel.setDetails(DetailsEditText.getText().toString());
-        GeneralModel.setAuctionStart(DateHelper.GetCurrentDateTime());
         GeneralModel.setStatus(StatusEnum.UnAuctioned);
         GeneralModel.setImage(TelemetryHelper.ImageToBase64(UploadImageButton.getDrawable()));
         GeneralModel.setId(TelemetryHelper.GetTelemetryHash(GeneralModel.toString()));
@@ -595,6 +595,89 @@ public class InsertActivity extends AppCompatActivity
         else
         {
             Log.d("InsertActivity", "HandleGeneral Validation Failed");
+            int resID = getResources().getIdentifier(Result.getTitle(), "id", getPackageName());
+            if (resID != 0)
+            {
+                EditText InvalidControl = findViewById(resID);
+                InvalidControl.setError(Result.getMessage());
+            }
+            else
+            {
+                Toast.makeText(InsertActivity.this, Result.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+            AddTelemetryButton.stopAnimation(TransitionButton.StopAnimationStyle.SHAKE, null);
+        }
+    }
+
+    public void HandleService()
+    {
+        Service ServiceModel = new Service(); //Model
+        TelemetryValidation TelemetryValidator = new TelemetryValidation(); //Validator
+
+        ServiceModel.setName(ServiceObj.ServiceNameEditText.getText().toString());
+        ServiceModel.setDetails(DetailsEditText.getText().toString());
+        ServiceModel.setStatus(StatusEnum.UnAuctioned);
+        ServiceModel.setImage(TelemetryHelper.ImageToBase64(UploadImageButton.getDrawable()));
+        ServiceModel.setId(TelemetryHelper.GetTelemetryHash(ServiceModel.toString()));
+
+        ValidationResult Result = TelemetryValidator.ServiceValidation(ServiceModel);
+
+        if (Result.isSuccess())
+        {
+            Log.d("InsertActivity", "HandleService Validation Succeeded");
+            if (UserObj != null)
+            {
+                Log.d("InsertActivity", "HandleService User ID: " + UserObj.getId());
+
+                //Set the Telemetry ID by the user ID which is the email.
+                ServiceModel.setOwnerId(UserObj.getEmail());
+
+                //If its empty create a new list with empty items.
+                if (UserObj.getOwnedServiceTelemetry() == null)
+                {
+                    UserObj.setOwnedServiceTelemetry(new ArrayList<Service>());
+                }
+                //Get the owned telemetries that the user have
+                ArrayList<Service> TempList = UserObj.getOwnedServiceTelemetry();
+
+                boolean IsTelemetryAdded = TelemetryHelper.IsTelemetryAdded(TempList, ServiceModel);
+
+                if (IsTelemetryAdded)
+                {
+                    Toast.makeText(InsertActivity.this, "You cannot add the same telemetry twice", Toast.LENGTH_SHORT).show();
+                    AddTelemetryButton.stopAnimation(TransitionButton.StopAnimationStyle.SHAKE, null);
+                }
+                else
+                {
+                    //Add the Telemetry Object to the Owned Telemetry List.
+                    TempList.add(ServiceModel);
+                    //Update the Owned Telemetry List.
+                    UserObj.setOwnedServiceTelemetry(TempList);
+                    //Update the Owned Telemetry in the fire store data base.
+                    AppInstance.GetFireStoreInstance().SetServiceTelemetry(SetResult ->
+                    {
+                        if (SetResult.isSuccess())
+                        {
+                            Toast.makeText(InsertActivity.this, "Telemetry Item added successfully.", Toast.LENGTH_SHORT).show();
+                            Log.d("InsertActivity", "HandleService Successfully Updated");
+                        }
+                        else
+                        {
+                            Toast.makeText(InsertActivity.this, "Failed to add, " + SetResult.getMessage(), Toast.LENGTH_SHORT).show();
+                            Log.d("InsertActivity", "HandleService Failed: " + SetResult.getMessage());
+                        }
+                        AddTelemetryButton.stopAnimation(TransitionButton.StopAnimationStyle.SHAKE, null);
+                    }, UserObj.getOwnedServiceTelemetry(), UserObj.getEmail());
+                }
+            }
+            else
+            {
+                Log.d("InsertActivity", "HandleService No User Found");
+            }
+        }
+        else
+        {
+            Log.d("InsertActivity", "HandleService Validation Failed");
             int resID = getResources().getIdentifier(Result.getTitle(), "id", getPackageName());
             if (resID != 0)
             {

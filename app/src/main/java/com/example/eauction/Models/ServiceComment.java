@@ -17,6 +17,8 @@ public class ServiceComment
         cost = "";
     }
 
+
+
     public ServiceComment(String name, String phoneNumber, String email, String comment, String cost)
     {
         this.name = name;
@@ -24,6 +26,16 @@ public class ServiceComment
         this.email = email;
         this.comment = comment;
         this.cost = cost;
+    }
+
+
+    public void Set(ServiceComment serviceComment)
+    {
+        name = serviceComment.getName();
+        phoneNumber = serviceComment.getPhoneNumber();
+        email = serviceComment.getEmail();
+        comment = serviceComment.getComment();
+        cost = serviceComment.getCost();
     }
 
     public String getName() {
