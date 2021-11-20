@@ -164,7 +164,7 @@ public class InsertActivity extends AppCompatActivity
         }
         else
         {
-            //HandleService();
+            HandleService();
         }
 
     }

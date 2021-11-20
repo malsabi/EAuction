@@ -19,6 +19,7 @@ import com.example.eauction.Models.Car;
 import com.example.eauction.Models.CarPlate;
 import com.example.eauction.Models.General;
 import com.example.eauction.Models.Landmark;
+import com.example.eauction.Models.Service;
 import com.example.eauction.Models.Telemetry;
 import com.example.eauction.Models.VipPhoneNumber;
 import com.example.eauction.R;
@@ -35,6 +36,7 @@ public class TelemetryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     public static final int VIPNUMBER_TEL = 3;
     public static final int GENERALITEM_TEL = 4;
     public static final int LANDMARK_TEL = 5;
+    public static final int SERVICE_TEL = 6;
 
     private final ArrayList<Telemetry> Telemetries;
     private OnItemClickListener mListener;
@@ -77,9 +79,13 @@ public class TelemetryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             v = LayoutInflater.from(context).inflate(R.layout.card_landmark, parent, false);
             holder = new LandmarkViewHolder(v, mListener);
         }
-        else{
+        else if(viewType == GENERALITEM_TEL){
             v = LayoutInflater.from(context).inflate(R.layout.card_general, parent, false);
             holder = new GeneralViewHolder(v, mListener);
+        }
+        else{
+            v = LayoutInflater.from(context).inflate(R.layout.card_service, parent, false);
+            holder = new ServiceViewHolder(v, mListener);
         }
 
         return holder;
@@ -160,7 +166,7 @@ public class TelemetryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             landMarkHolder.cvLandmarkImg.setImageBitmap(TelemetryHelper.Base64ToImage(landmark.getImage()));
             addCurrent_addBasePrice((LinearLayout) landMarkHolder.cvLandmarkArea.getParent(),landmark);
         }
-        else
+        else if(Telemetries.get(position) instanceof  General)
         {
             GeneralViewHolder generalViewHolder = (GeneralViewHolder)holder;
             General general = (General) Telemetries.get(position);
@@ -172,6 +178,18 @@ public class TelemetryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             generalViewHolder.cvDetails.setText(Html.fromHtml(cvDetailsLabel+general.getDetails()));
             generalViewHolder.cvItemGeneral.setImageBitmap(TelemetryHelper.Base64ToImage(general.getImage()));
             addCurrent_addBasePrice((LinearLayout) generalViewHolder.cvItemGeneral.getParent(),general);
+        }
+        else{
+            ServiceViewHolder serviceViewHolder = (ServiceViewHolder)holder;
+            Service service = (Service) Telemetries.get(position);
+
+            String cvItemNameLabel = "<b><u>" + "Service Name:" + "</u></b> ";
+            String cvDetailsLabel = "<b><u>" + "Service Details:" + "</u></b> ";
+
+            serviceViewHolder.cvServiceName.setText(Html.fromHtml(cvItemNameLabel+service.getName()));
+            serviceViewHolder.cvServiceDetails.setText(Html.fromHtml(cvDetailsLabel+service.getDetails()));
+            serviceViewHolder.cvServicePic.setImageBitmap(TelemetryHelper.Base64ToImage(service.getImage()));
+            addCurrent_addBasePrice((LinearLayout) serviceViewHolder.cvServiceName.getParent(),service);
         }
     }
 
@@ -193,8 +211,11 @@ public class TelemetryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             return VIPNUMBER_TEL;
         else if(Telemetries.get(position) instanceof Landmark)
             return LANDMARK_TEL;
-        else //Item is general
+        else if(Telemetries.get(position) instanceof General)//Item is general
             return GENERALITEM_TEL;
+        else
+            return SERVICE_TEL;
+
     }
     public static class CarViewHolder extends RecyclerView.ViewHolder{
 
@@ -340,6 +361,32 @@ public class TelemetryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         public TextView cvDetails;
 
         public GeneralViewHolder(@NonNull View itemView, OnItemClickListener listener)
+        {
+            super(itemView);
+            ButterKnife.bind(this,itemView);
+            itemView.setOnClickListener(view ->
+            {
+                if(listener != null){
+                    int position = getAdapterPosition();
+                    if(position != RecyclerView.NO_POSITION){
+                        listener.onItemClick(position);
+                    }
+                }
+            });
+        }
+    }
+    public static class ServiceViewHolder extends RecyclerView.ViewHolder{
+
+        @BindView(R.id.cvServicePic)
+        public ImageView cvServicePic;
+
+        @BindView(R.id.cvServiceName)
+        public TextView cvServiceName;
+
+        @BindView(R.id.cvServiceDetails)
+        public TextView cvServiceDetails;
+
+        public ServiceViewHolder(@NonNull View itemView, OnItemClickListener listener)
         {
             super(itemView);
             ButterKnife.bind(this,itemView);

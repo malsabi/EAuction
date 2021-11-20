@@ -108,6 +108,7 @@ public class MyPropertiesFragment extends Fragment
                     dialog.setCancelable(true);
                     dialog.setContentView(R.layout.auction_dialog);
                     EditText EtBasePrice = dialog.findViewById(R.id.EtBasePrice);
+                    EditText EtAuctionEndDate = dialog.findViewById(R.id.EtAuctionEndDate);
                     TransitionButton BtnSubmitAuction = dialog.findViewById(R.id.BtnSubmitAuction);
                     InitAuctionEndDate(dialog.findViewById(R.id.EtAuctionEndDate));
                     dialog.show();
@@ -125,6 +126,7 @@ public class MyPropertiesFragment extends Fragment
                             Toast.makeText(getContext(), UserBasePrice + "", Toast.LENGTH_SHORT).show();
                             SelectedTelemetryItem.setBasePrice(UserBasePrice);
                             SelectedTelemetryItem.setAuctionStart(DateHelper.GetCurrentDateTime());
+                            SelectedTelemetryItem.setAuctionEnd(EtAuctionEndDate.getText().toString());
                             SelectedTelemetryItem.setStatus(StatusEnum.Auctioned);
                             HandleTelemetryUpdate(SelectedTelemetryItem);
 
