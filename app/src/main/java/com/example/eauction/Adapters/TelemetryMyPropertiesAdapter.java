@@ -152,7 +152,7 @@ public class TelemetryMyPropertiesAdapter extends RecyclerView.Adapter<RecyclerV
         }
         else if(Telemetries.get(position) instanceof  General)
         {
-            TelemetryAdapter.GeneralViewHolder generalViewHolder = (TelemetryAdapter.GeneralViewHolder)holder;
+            GeneralViewHolder generalViewHolder = (GeneralViewHolder)holder;
             General general = (General) Telemetries.get(position);
 
             String cvItemNameLabel = "<b><u>" + "Name:" + "</u></b> ";

@@ -14,6 +14,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.EAuction">
         <activity
+            android:name=".BidServiceActivity"
+            android:exported="true" />
+        <activity
             android:name=".BidActivity"
             android:exported="true" />
         <activity
