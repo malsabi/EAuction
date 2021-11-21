@@ -79,5 +79,9 @@
     <string name="our_sponsor">Our Sponsor</string>
     <string name="application_developer">Application Developer</string>
     <string name="developer_name">Developer Name</string>
+    <string name="comments"><u>Comments</u></string>
+    <string name="assign_service_bid"><b><u>Assign Service Bid</u></b></string>
+    <string name="bid">Bid</string>
+    <string name="comment">Comment</string>
 
 </resources>

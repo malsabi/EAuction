@@ -7,7 +7,7 @@
     tools:context=".BidActivity">
 
     <ImageView
-        android:id="@+id/TelIV"
+        android:id="@+id/TelServiceIV"
         android:layout_width="64dp"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
@@ -37,7 +37,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.8" />
+        app:layout_constraintGuide_percent="0.76" />
 
     <ScrollView
         android:id="@+id/scrollView2"
@@ -50,7 +50,7 @@
 
 
         <TableLayout
-            android:id="@+id/TableContent"
+            android:id="@+id/TableServiceContent"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:paddingStart="16sp"
@@ -73,41 +73,55 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.8" />
 
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/EtCurrentBidFloatLabel"
-        android:layout_width="0dp"
+    <TextView
+        android:id="@+id/ServiceComments"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:theme="@style/TextInputLayoutStyle"
+        android:text="@string/comments"
+        android:textColor="@color/PrimaryRedColor"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_marginTop="16sp"
         app:layout_constraintEnd_toStartOf="@+id/guideline15"
         app:layout_constraintStart_toStartOf="@+id/guideline14"
-        app:layout_constraintTop_toTopOf="@+id/guideline17">
+        app:layout_constraintTop_toTopOf="@+id/guideline13" />
 
-        <EditText
-            android:id="@+id/EtCurrentBid"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@android:color/transparent"
-            android:ems="10"
-            android:hint="@string/current_bid"
-            android:inputType="number"
-            tools:ignore="TextFields" />
 
-    </com.google.android.material.textfield.TextInputLayout>
+<!--    <com.google.android.material.textfield.TextInputLayout-->
+<!--        android:id="@+id/EtCurrentBidFloatLabel"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:background="@android:color/transparent"-->
+<!--        android:theme="@style/TextInputLayoutStyle"-->
+<!--        app:layout_constraintEnd_toStartOf="@+id/guideline15"-->
+<!--        app:layout_constraintStart_toStartOf="@+id/guideline14"-->
+<!--        app:layout_constraintTop_toTopOf="@+id/guideline17"-->
+
+<!--        >-->
+
+<!--        <EditText-->
+<!--            android:id="@+id/EtServiceCurrentBid"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:background="@android:color/transparent"-->
+<!--            android:ems="10"-->
+<!--            android:hint="@string/current_bid"-->
+<!--            android:inputType="number"-->
+<!--            tools:ignore="TextFields" />-->
+
+<!--    </com.google.android.material.textfield.TextInputLayout>-->
 
     <com.royrodriguez.transitionbutton.TransitionButton
-        android:id="@+id/MakeBidBtn"
+        android:id="@+id/MakeBidServiceBtn"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:layout_margin="16sp"
-        android:text="@string/make_bid"
+        android:text="Service Bid"
         android:textColor="@android:color/white"
         app:defaultColor="@color/PrimaryRedColor"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guideline15"
         app:layout_constraintStart_toStartOf="@+id/guideline14"
-        app:layout_constraintTop_toBottomOf="@+id/EtCurrentBidFloatLabel"
         app:loaderColor="@android:color/white" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

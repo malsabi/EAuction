@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:layout_gravity="center"
+    android:gravity="center"
+    >
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/assign_service_bid"
+        android:textSize="24sp"
+        android:textAlignment="center"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"
+        android:textColor="@color/PrimaryRedColor"
+        />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/EtBasePriceFloat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:background="@android:color/transparent"
+        android:theme="@style/TextInputLayoutStyle"
+        >
+
+        <EditText
+            android:id="@+id/EtServiceBidDialog"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:ems="10"
+            android:hint="@string/bid"
+            android:inputType="number"
+            android:autofillHints="Base Price" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/EtAuctionEndDateFloatLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:theme="@style/TextInputLayoutStyle"
+        app:layout_constraintEnd_toStartOf="@+id/guideline3"
+        app:layout_constraintStart_toStartOf="@+id/guideline"
+        app:layout_constraintTop_toBottomOf="@+id/EtPasswordSignupRepeatFloatLabel"
+        app:layout_constraintVertical_bias="0.03"
+        android:paddingTop="16dp"
+        >
+
+        <EditText
+            android:id="@+id/EtServiceCommentDialog"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:ems="10"
+            android:hint="@string/comment"
+            android:paddingBottom="48dp"
+            />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.royrodriguez.transitionbutton.TransitionButton
+        android:id="@+id/BtnSubmitServiceBid"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/submit"
+        android:layout_marginTop="24dp"
+        android:textColor="@android:color/white"
+        app:defaultColor="@color/PrimaryRedColor"
+        app:loaderColor="@android:color/white" />
+
+</LinearLayout>

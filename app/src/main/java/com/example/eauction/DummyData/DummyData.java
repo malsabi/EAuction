@@ -4,6 +4,7 @@ import com.example.eauction.Models.Car;
 import com.example.eauction.Models.CarPlate;
 import com.example.eauction.Models.General;
 import com.example.eauction.Models.Landmark;
+import com.example.eauction.Models.ServiceComment;
 import com.example.eauction.Models.Telemetry;
 import com.example.eauction.Models.VipPhoneNumber;
 
@@ -61,6 +62,16 @@ public class DummyData {
         Telemetries.add(item);
 
         return Telemetries;
+    }
+
+    public static ArrayList<ServiceComment> GetDummyComments(){
+        ArrayList<ServiceComment> comments = new ArrayList<>();
+        comments.add(new ServiceComment("Ahmed Zaky","0552112535", "", "I had experience hosting kids shows, I played the prince in beauty and the beast before", "500"));
+        comments.add(new ServiceComment("Maitha","0552612535", "", "I will be writing the story and adjust the timeline", "600"));
+        comments.add(new ServiceComment("Alia Salem","0552112415", "", "I always had the passion of acting", "400"));
+        comments.add(new ServiceComment("Amnah","0552141246", "", "I competed in many anime reviews", "300"));
+        comments.add(new ServiceComment("Aishah ","0552152535", "", "Offering the best price out there", "100"));
+        return comments;
     }
 
 }
