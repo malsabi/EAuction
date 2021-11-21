@@ -358,17 +358,53 @@ public class FireStoreManager extends FireStoreHelpers
             AddCarPlateCallback.onCallback(new FireStoreResult("", d.getMessage(), false));
         });
     }
-    public void DeleteCarPlateAuction(DeleteUserAuctionCallback DeleteAuctionCallback, CarPlate CarPlateAuction)
+    public void DeleteCarPlateAuction(DeleteUserAuctionCallback CallBack, CarPlate CarPlateAuction)
     {
-        DocumentReference CarPlateDocument = DB.collection("AUCTIONS").document("CARPLATE");
-        CarPlateDocument.update("CarPlateTelemetries", FieldValue.arrayRemove(CarPlateAuction))
-        .addOnSuccessListener(d ->
+        ArrayList<CarPlate> CarPlates = new ArrayList<>();
+        DocumentReference documentReference = DB.collection("AUCTIONS").document("CARPLATE");
+        documentReference.get()
+        .addOnSuccessListener(documentSnapshot ->
         {
-            DeleteAuctionCallback.onCallback(true);
+            if (documentSnapshot.exists())
+            {
+                ArrayList<?> CarPlateTelemetries = (ArrayList<?>)documentSnapshot.get("CarPlateTelemetries");
+                Gson gson = new Gson();
+                for (int i = 0; i < (CarPlateTelemetries != null ? CarPlateTelemetries.size() : 0); i++)
+                {
+                    JsonElement jsonElement = gson.toJsonTree(CarPlateTelemetries.get(i));
+                    CarPlate CarPlate = gson.fromJson(jsonElement, CarPlate.class);
+                    if (CarPlateAuction.getID().equals(CarPlate.getID()))
+                    {
+                        Log.d("FireStore", "DeleteCarAuction:: Item is found and will be deleted: " + CarPlate.getID());
+                    }
+                    else
+                    {
+                        CarPlates.add(CarPlate);
+                    }
+                    Log.d("FireStore", "DeleteCarPlateAuction:: Received: " + CarPlate.getPlateNumber());
+                }
+                DB.collection("AUCTIONS").document("CARPLATE").update("CarPlateTelemetries", CarPlates)
+                .addOnSuccessListener(unused ->
+                {
+                    Log.d("FireStore", "DeleteCarPlateAuction:: Updated Successfully");
+                    CallBack.onCallback(true);
+                })
+                .addOnFailureListener(e ->
+                {
+                    Log.d("FireStore", "DeleteCarPlateAuction:: Exception: " + e.getMessage());
+                    CallBack.onCallback(false);
+                });
+            }
+            else
+            {
+                Log.d("FireStore", "DeleteCarPlateAuction:: document does not exists");
+                CallBack.onCallback(false);
+            }
         })
-        .addOnFailureListener(d ->
+        .addOnFailureListener(e ->
         {
-            DeleteAuctionCallback.onCallback(false);
+            Log.d("FireStore", "DeleteCarPlateAuction:: Exception: " + e.getMessage());
+            CallBack.onCallback(false);
         });
     }
     public void GetCarPlateAuctions(final GetCarPlateAuctionsCallback Callback)
@@ -386,17 +422,28 @@ public class FireStoreManager extends FireStoreHelpers
                     JsonElement jsonElement = gson.toJsonTree(CarPlateTelemetries.get(i));
                     CarPlate CarPlate = gson.fromJson(jsonElement, CarPlate.class);
                     CarPlates.add(CarPlate);
-                    Log.d("FireStore", "GetCarPlateAuctions Received: " + CarPlate.getPlateNumber());
+                    Log.d("FireStore", "GetCarPlateAuctions:: Received: " + CarPlate.getPlateNumber());
                 }
                 Callback.onCallback(CarPlates);
             }
+            else
+            {
+                Log.d("FireStore", "GetCarPlateAuctions:: document does not exists");
+                Callback.onCallback(null);
+            }
+        })
+        .addOnFailureListener(e ->
+        {
+            Log.d("FireStore", "GetCarPlateAuctions:: Exception: " + e.getMessage());
+            Callback.onCallback(null);
         });
     }
     public void UpdateCarPlateAuctions(final UpdateCarPlateAuctionsCallback CallBack, CarPlate CarPlateAuction)
     {
         ArrayList<CarPlate> CarPlates = new ArrayList<>();
         DocumentReference documentReference = DB.collection("AUCTIONS").document("CARPLATE");
-        documentReference.get().addOnSuccessListener(documentSnapshot ->
+        documentReference.get()
+        .addOnSuccessListener(documentSnapshot ->
         {
             if (documentSnapshot.exists())
             {
@@ -414,28 +461,28 @@ public class FireStoreManager extends FireStoreHelpers
                     {
                         CarPlates.add(CarPlate);
                     }
-                    Log.d("FireStore", "GetCarPlateAuctions Received: " + CarPlate.getPlateNumber());
+                    Log.d("FireStore", "UpdateCarPlateAuctions:: Received: " + CarPlate.getPlateNumber());
                 }
                 DB.collection("AUCTIONS").document("CARPLATE").update("CarPlateTelemetries", CarPlates)
                 .addOnSuccessListener(unused -> {
-                    Log.d("FireStore", "UpdateCarPlateAuctions Updated Successfully");
+                    Log.d("FireStore", "UpdateCarPlateAuctions:: Updated Successfully");
                     CallBack.onCallback(true);
                 })
                 .addOnFailureListener(e ->
                 {
-                    Log.d("FireStore", "UpdateCarPlateAuctions Exception: " + e.getMessage());
+                    Log.d("FireStore", "UpdateCarPlateAuctions:: Exception: " + e.getMessage());
                     CallBack.onCallback(false);
                 });
             }
             else
             {
-                Log.d("FireStore", "UpdateCarPlateAuctions document does not exists");
+                Log.d("FireStore", "UpdateCarPlateAuctions:: document does not exists");
                 CallBack.onCallback(false);
             }
         })
         .addOnFailureListener(e ->
         {
-            Log.d("FireStore", "UpdateCarPlateAuctions Exception: " + e.getMessage());
+            Log.d("FireStore", "UpdateCarPlateAuctions:: Exception: " + e.getMessage());
             CallBack.onCallback(false);
         });
     }
@@ -454,17 +501,56 @@ public class FireStoreManager extends FireStoreHelpers
             AddCarCallback.onCallback(new FireStoreResult("", d.getMessage(), false));
         });
     }
-    public void DeleteCarAuction(DeleteUserAuctionCallback DeleteAuctionCallback, Car CarAuction)
+    public void DeleteCarAuction(DeleteUserAuctionCallback CallBack, Car CarAuction)
     {
-        DocumentReference CarPlateDocument = DB.collection("AUCTIONS").document("CAR");
-        CarPlateDocument.update("CarTelemetries", FieldValue.arrayRemove(CarAuction))
-        .addOnSuccessListener(d ->
+        ArrayList<Car> Cars = new ArrayList<>();
+        DocumentReference documentReference = DB.collection("AUCTIONS").document("CAR");
+        documentReference.get()
+        .addOnSuccessListener(documentSnapshot ->
         {
-            DeleteAuctionCallback.onCallback(true);
+            if (documentSnapshot.exists())
+            {
+                ArrayList<?> CarTelemetries = (ArrayList<?>)documentSnapshot.get("CarTelemetries");
+                Gson gson = new Gson();
+                for (int i = 0; i < (CarTelemetries != null ? CarTelemetries.size() : 0); i++)
+                {
+                    if (!CarTelemetries.get(i).toString().isEmpty())
+                    {
+                        JsonElement jsonElement = gson.toJsonTree(CarTelemetries.get(i));
+                        Car Car = gson.fromJson(jsonElement, Car.class);
+                        if (CarAuction.getID().equals(Car.getID()))
+                        {
+                            Log.d("FireStore", "DeleteCarAuction:: Item is found and will be deleted: " + Car.getID());
+                        }
+                        else
+                        {
+                            Cars.add(Car);
+                        }
+                        Log.d("FireStore", "DeleteCarAuction:: Received: " + Car.getModel());
+                    }
+                }
+                DB.collection("AUCTIONS").document("CAR").update("CarTelemetries", Cars)
+                .addOnSuccessListener(unused ->
+                {
+                    Log.d("FireStore", "DeleteCarAuction:: Updated Successfully");
+                    CallBack.onCallback(true);
+                })
+                .addOnFailureListener(e ->
+                {
+                    Log.d("FireStore", "DeleteCarAuction:: Exception: " + e.getMessage());
+                    CallBack.onCallback(false);
+                });
+            }
+            else
+            {
+                Log.d("FireStore", "DeleteCarAuction:: document does not exists");
+                CallBack.onCallback(false);
+            }
         })
-        .addOnFailureListener(d ->
+        .addOnFailureListener(e ->
         {
-            DeleteAuctionCallback.onCallback(false);
+            Log.d("FireStore", "DeleteCarAuction:: Exception: " + e.getMessage());
+            CallBack.onCallback(false);
         });
     }
     public void GetCarAuctions(final GetCarAuctionsCallback Callback)
@@ -484,18 +570,29 @@ public class FireStoreManager extends FireStoreHelpers
                         JsonElement jsonElement = gson.toJsonTree(CarTelemetries.get(i));
                         Car Car = gson.fromJson(jsonElement, Car.class);
                         Cars.add(Car);
-                        Log.d("FireStore", "GetCarAuctions Received: " + Car.getModel());
+                        Log.d("FireStore", "GetCarAuctions:: Received: " + Car.getModel());
                     }
                 }
                 Callback.onCallback(Cars);
             }
+            else
+            {
+                Log.d("FireStore", "GetCarAuctions:: document does not exists");
+                Callback.onCallback(null);
+            }
+        })
+        .addOnFailureListener(e ->
+        {
+            Log.d("FireStore", "GetCarAuctions:: Exception: " + e.getMessage());
+            Callback.onCallback(null);
         });
     }
     public void UpdateCarAuctions(final UpdateCarAuctionsCallback CallBack, Car CarAuction)
     {
         ArrayList<Car> Cars = new ArrayList<>();
         DocumentReference documentReference = DB.collection("AUCTIONS").document("CAR");
-        documentReference.get().addOnSuccessListener(documentSnapshot ->
+        documentReference.get()
+        .addOnSuccessListener(documentSnapshot ->
         {
             if (documentSnapshot.exists())
             {
@@ -515,29 +612,30 @@ public class FireStoreManager extends FireStoreHelpers
                         {
                             Cars.add(Car);
                         }
-                        Log.d("FireStore", "GetCarAuctions Received: " + Car.getModel());
+                        Log.d("FireStore", "UpdateCarAuctions:: Received: " + Car.getModel());
                     }
                 }
                 DB.collection("AUCTIONS").document("CAR").update("CarTelemetries", Cars)
                 .addOnSuccessListener(unused ->
                 {
-                    Log.d("FireStore", "UpdateCarAuctions Updated Successfully");
+                    Log.d("FireStore", "UpdateCarAuctions:: Updated Successfully");
                     CallBack.onCallback(true);
                 })
                 .addOnFailureListener(e ->
                 {
-                    Log.d("FireStore", "UpdateCarAuctions Exception: " + e.getMessage());
+                    Log.d("FireStore", "UpdateCarAuctions:: Exception: " + e.getMessage());
                     CallBack.onCallback(false);
                 });
             }
             else
             {
-                Log.d("FireStore", "UpdateCarAuctions document does not exists");
+                Log.d("FireStore", "UpdateCarAuctions:: document does not exists");
                 CallBack.onCallback(false);
             }
-        }).addOnFailureListener(e ->
+        })
+        .addOnFailureListener(e ->
         {
-            Log.d("FireStore", "UpdateCarAuctions Exception: " + e.getMessage());
+            Log.d("FireStore", "UpdateCarAuctions:: Exception: " + e.getMessage());
             CallBack.onCallback(false);
         });
     }
@@ -557,20 +655,7 @@ public class FireStoreManager extends FireStoreHelpers
             AddLandmarkCallback.onCallback(new FireStoreResult("", d.getMessage(), false));
         });
     }
-    public void DeleteLandmarkAuction(DeleteUserAuctionCallback DeleteAuctionCallback, Landmark LandmarkAuction)
-    {
-        DocumentReference CarPlateDocument = DB.collection("AUCTIONS").document("LANDMARK");
-        CarPlateDocument.update("LandmarkTelemetries", FieldValue.arrayRemove(LandmarkAuction))
-        .addOnSuccessListener(d ->
-        {
-            DeleteAuctionCallback.onCallback(true);
-        })
-        .addOnFailureListener(d ->
-        {
-            DeleteAuctionCallback.onCallback(false);
-        });
-    }
-    public void GetLandmarkAuctions(final GetLandmarkAuctionsCallback Callback)
+    public void DeleteLandmarkAuction(DeleteUserAuctionCallback CallBack, Landmark LandmarkAuction)
     {
         ArrayList<Landmark> Landmarks = new ArrayList<>();
         DocumentReference documentReference = DB.collection("AUCTIONS").document("LANDMARK");
@@ -586,12 +671,73 @@ public class FireStoreManager extends FireStoreHelpers
                     {
                         JsonElement jsonElement = gson.toJsonTree(LandmarkTelemetries.get(i));
                         Landmark Landmark = gson.fromJson(jsonElement, Landmark.class);
+                        if (LandmarkAuction.getID().equals(Landmark.getID()))
+                        {
+                            Log.d("FireStore", "DeleteLandmarkAuction:: Item is found and will be deleted: " + Landmark.getID());
+                        }
+                        else
+                        {
+                            Landmarks.add(Landmark);
+                        }
+                        Log.d("FireStore", "DeleteLandmarkAuction:: Received: " + Landmark.getType());
+                    }
+                }
+                DB.collection("AUCTIONS").document("LANDMARK").update("LandmarkTelemetries", Landmarks)
+                .addOnSuccessListener(unused ->
+                {
+                    Log.d("FireStore", "DeleteLandmarkAuction:: Updated Successfully");
+                    CallBack.onCallback(true);
+                })
+                .addOnFailureListener(e ->
+                {
+                    Log.d("FireStore", "DeleteLandmarkAuction:: Exception: " + e.getMessage());
+                    CallBack.onCallback(false);
+                });
+            }
+            else
+            {
+                Log.d("FireStore", "DeleteLandmarkAuction:: document does not exists");
+                CallBack.onCallback(false);
+            }
+        }).addOnFailureListener(e ->
+        {
+            Log.d("FireStore", "DeleteLandmarkAuction:: Exception: " + e.getMessage());
+            CallBack.onCallback(false);
+        });
+    }
+    public void GetLandmarkAuctions(final GetLandmarkAuctionsCallback Callback)
+    {
+        ArrayList<Landmark> Landmarks = new ArrayList<>();
+        DocumentReference documentReference = DB.collection("AUCTIONS").document("LANDMARK");
+        documentReference
+        .get().addOnSuccessListener(documentSnapshot ->
+        {
+            if (documentSnapshot.exists())
+            {
+                ArrayList<?> LandmarkTelemetries = (ArrayList<?>)documentSnapshot.get("LandmarkTelemetries");
+                Gson gson = new Gson();
+                for (int i = 0; i < (LandmarkTelemetries != null ? LandmarkTelemetries.size() : 0); i++)
+                {
+                    if (!LandmarkTelemetries.get(i).toString().isEmpty())
+                    {
+                        JsonElement jsonElement = gson.toJsonTree(LandmarkTelemetries.get(i));
+                        Landmark Landmark = gson.fromJson(jsonElement, Landmark.class);
                         Landmarks.add(Landmark);
-                        Log.d("FireStore", "GetLandmarkAuctions Received: " + Landmark.getType());
+                        Log.d("FireStore", "GetLandmarkAuctions:: Received: " + Landmark.getType());
                     }
                 }
                 Callback.onCallback(Landmarks);
             }
+            else
+            {
+                Log.d("FireStore", "GetLandmarkAuctions:: document does not exists");
+                Callback.onCallback(null);
+            }
+        })
+        .addOnFailureListener(e ->
+        {
+            Log.d("FireStore", "GetLandmarkAuctions:: Exception: " + e.getMessage());
+            Callback.onCallback(null);
         });
     }
     public void UpdateLandmarkAuctions(final UpdateLandmarkAuctionsCallback CallBack, Landmark LandmarkAuction)
@@ -618,29 +764,29 @@ public class FireStoreManager extends FireStoreHelpers
                         {
                             Landmarks.add(Landmark);
                         }
-                        Log.d("FireStore", "GetLandmarkAuctions Received: " + Landmark.getType());
+                        Log.d("FireStore", "UpdateLandmarkAuctions:: Received: " + Landmark.getType());
                     }
                 }
                 DB.collection("AUCTIONS").document("LANDMARK").update("LandmarkTelemetries", Landmarks)
                 .addOnSuccessListener(unused ->
                 {
-                    Log.d("FireStore", "UpdateLandmarkAuctions Updated Successfully");
+                    Log.d("FireStore", "UpdateLandmarkAuctions:: Updated Successfully");
                     CallBack.onCallback(true);
                 })
                 .addOnFailureListener(e ->
                 {
-                    Log.d("FireStore", "UpdateLandmarkAuctions Exception: " + e.getMessage());
+                    Log.d("FireStore", "UpdateLandmarkAuctions:: Exception: " + e.getMessage());
                     CallBack.onCallback(false);
                 });
             }
             else
             {
-                Log.d("FireStore", "UpdateLandmarkAuctions document does not exists");
+                Log.d("FireStore", "UpdateLandmarkAuctions:: document does not exists");
                 CallBack.onCallback(false);
             }
         }).addOnFailureListener(e ->
         {
-            Log.d("FireStore", "UpdateLandmarkAuctions Exception: " + e.getMessage());
+            Log.d("FireStore", "UpdateLandmarkAuctions:: Exception: " + e.getMessage());
             CallBack.onCallback(false);
         });
     }
@@ -659,24 +805,63 @@ public class FireStoreManager extends FireStoreHelpers
             AddVIPPhoneNumberCallback.onCallback(new FireStoreResult("", d.getMessage(), false));
         });
     }
-    public void DeleteVIPPhoneNumberAuction(final DeleteUserAuctionCallback DeleteAuctionCallback, VipPhoneNumber VipPhoneNumberAuction)
+    public void DeleteVIPPhoneNumberAuction(final DeleteUserAuctionCallback CallBack, VipPhoneNumber VipPhoneNumberAuction)
     {
-        DocumentReference CarPlateDocument = DB.collection("AUCTIONS").document("VIPPHONE");
-        CarPlateDocument.update("VIPPhoneTelemetries", FieldValue.arrayRemove(VipPhoneNumberAuction))
-        .addOnSuccessListener(d ->
+        ArrayList<VipPhoneNumber> VIPPhoneNumbers = new ArrayList<>();
+        DocumentReference documentReference = DB.collection("AUCTIONS").document("VIPPHONE");
+        documentReference.get()
+        .addOnSuccessListener(documentSnapshot ->
         {
-            DeleteAuctionCallback.onCallback(true);
-        })
-        .addOnFailureListener(d ->
+            if (documentSnapshot.exists())
+            {
+                ArrayList<?> VIPPhoneTelemetries = (ArrayList<?>)documentSnapshot.get("VIPPhoneTelemetries");
+                Gson gson = new Gson();
+                for (int i = 0; i < (VIPPhoneTelemetries != null ? VIPPhoneTelemetries.size() : 0); i++)
+                {
+                    if (!VIPPhoneTelemetries.get(i).toString().isEmpty())
+                    {
+                        JsonElement jsonElement = gson.toJsonTree(VIPPhoneTelemetries.get(i));
+                        VipPhoneNumber VipPhoneNumber = gson.fromJson(jsonElement, VipPhoneNumber.class);
+                        if (VipPhoneNumberAuction.getID().equals(VipPhoneNumber.getID()))
+                        {
+                            Log.d("FireStore", "DeleteVIPPhoneNumberAuction:: Item is found and will be deleted: " + VipPhoneNumber.getID());
+                        }
+                        else
+                        {
+                            VIPPhoneNumbers.add(VipPhoneNumber);
+                        }
+                        Log.d("FireStore", "DeleteVIPPhoneNumberAuction:: Received: " + VipPhoneNumber.getPhoneNumber());
+                    }
+                }
+                DB.collection("AUCTIONS").document("VIPPHONE").update("VIPPhoneTelemetries", VIPPhoneNumbers)
+                .addOnSuccessListener(unused ->
+                {
+                    Log.d("FireStore", "DeleteVIPPhoneNumberAuction:: Updated Successfully");
+                    CallBack.onCallback(true);
+                })
+                .addOnFailureListener(e ->
+                {
+                    Log.d("FireStore", "DeleteVIPPhoneNumberAuction:: Exception: " + e.getMessage());
+                    CallBack.onCallback(false);
+                });
+            }
+            else
+            {
+                Log.d("FireStore", "DeleteVIPPhoneNumberAuction:: document does not exists");
+                CallBack.onCallback(false);
+            }
+        }).addOnFailureListener(e ->
         {
-            DeleteAuctionCallback.onCallback(false);
+            Log.d("FireStore", "DeleteVIPPhoneNumberAuction:: Exception: " + e.getMessage());
+            CallBack.onCallback(false);
         });
     }
     public void GetVIPPHoneNumberAuctions(GetVIPPhoneAuctionsCallback Callback)
     {
         ArrayList<VipPhoneNumber> VIPPhoneNumbers = new ArrayList<>();
         DocumentReference documentReference = DB.collection("AUCTIONS").document("VIPPHONE");
-        documentReference.get().addOnSuccessListener(documentSnapshot ->
+        documentReference.get()
+        .addOnSuccessListener(documentSnapshot ->
         {
             if (documentSnapshot.exists())
             {
@@ -689,11 +874,21 @@ public class FireStoreManager extends FireStoreHelpers
                         JsonElement jsonElement = gson.toJsonTree(VIPPhoneTelemetries.get(i));
                         VipPhoneNumber VipPhoneNumber = gson.fromJson(jsonElement, VipPhoneNumber.class);
                         VIPPhoneNumbers.add(VipPhoneNumber);
-                        Log.d("FireStore", "GetVIPPHoneNumberAuctions Received: " + VipPhoneNumber.getPhoneNumber());
+                        Log.d("FireStore", "GetVIPPHoneNumberAuctions:: Received: " + VipPhoneNumber.getPhoneNumber());
                     }
                 }
                 Callback.onCallback(VIPPhoneNumbers);
             }
+            else
+            {
+                Log.d("FireStore", "GetVIPPHoneNumberAuctions:: document does not exists");
+                Callback.onCallback(null);
+            }
+        })
+        .addOnFailureListener(e ->
+        {
+            Log.d("FireStore", "GetVIPPHoneNumberAuctions:: Exception: " + e.getMessage());
+            Callback.onCallback(null);
         });
     }
     public void UpdateVIPPHoneNumberAuctions(final UpdateVIPPHoneNumberCallback CallBack, VipPhoneNumber VipPhoneNumberAuction)
@@ -720,29 +915,29 @@ public class FireStoreManager extends FireStoreHelpers
                         {
                             VIPPhoneNumbers.add(VipPhoneNumber);
                         }
-                        Log.d("FireStore", "GetVIPPHoneNumberAuctions Received: " + VipPhoneNumber.getPhoneNumber());
+                        Log.d("FireStore", "UpdateVIPPHoneNumberAuctions:: Received: " + VipPhoneNumber.getPhoneNumber());
                     }
                 }
                 DB.collection("AUCTIONS").document("VIPPHONE").update("VIPPhoneTelemetries", VIPPhoneNumbers)
                 .addOnSuccessListener(unused ->
                 {
-                    Log.d("FireStore", "UpdateVIPPHoneNumberAuctions Updated Successfully");
+                    Log.d("FireStore", "UpdateVIPPHoneNumberAuctions:: Updated Successfully");
                     CallBack.onCallback(true);
                 })
                 .addOnFailureListener(e ->
                 {
-                    Log.d("FireStore", "UpdateVIPPHoneNumberAuctions Exception: " + e.getMessage());
+                    Log.d("FireStore", "UpdateVIPPHoneNumberAuctions:: Exception: " + e.getMessage());
                     CallBack.onCallback(false);
                 });
             }
             else
             {
-                Log.d("FireStore", "UpdateVIPPHoneNumberAuctions document does not exists");
+                Log.d("FireStore", "UpdateVIPPHoneNumberAuctions:: document does not exists");
                 CallBack.onCallback(false);
             }
         }).addOnFailureListener(e ->
         {
-            Log.d("FireStore", "UpdateVIPPHoneNumberAuctions Exception: " + e.getMessage());
+            Log.d("FireStore", "UpdateVIPPHoneNumberAuctions:: Exception: " + e.getMessage());
             CallBack.onCallback(false);
         });
     }
@@ -761,17 +956,54 @@ public class FireStoreManager extends FireStoreHelpers
             AddGeneralCallback.onCallback(new FireStoreResult("", d.getMessage(), false));
         });
     }
-    public void DeleteGeneralAuction(final DeleteUserAuctionCallback DeleteAuctionCallback, General GeneralAuction)
+    public void DeleteGeneralAuction(final DeleteUserAuctionCallback CallBack, General GeneralAuction)
     {
-        DocumentReference CarPlateDocument = DB.collection("AUCTIONS").document("GENERAL");
-        CarPlateDocument.update("GeneralTelemetries", FieldValue.arrayRemove(GeneralAuction))
-        .addOnSuccessListener(d ->
+        ArrayList<General> Generals = new ArrayList<>();
+        DocumentReference documentReference = DB.collection("AUCTIONS").document("GENERAL");
+        documentReference.get().addOnSuccessListener(documentSnapshot ->
         {
-            DeleteAuctionCallback.onCallback(true);
+            if (documentSnapshot.exists())
+            {
+                ArrayList<?> GeneralTelemetries = (ArrayList<?>)documentSnapshot.get("GeneralTelemetries");
+                Gson gson = new Gson();
+                for (int i = 0; i < (GeneralTelemetries != null ? GeneralTelemetries.size() : 0); i++)
+                {
+                    if (!GeneralTelemetries.get(i).toString().isEmpty())
+                    {
+                        JsonElement jsonElement = gson.toJsonTree(GeneralTelemetries.get(i));
+                        General General = gson.fromJson(jsonElement, General.class);
+                        if (General.getID().equals(GeneralAuction.getID()))
+                        {
+                            Log.d("FireStore", "DeleteGeneralAuction:: Item is found and will be deleted: " + GeneralAuction.getID());
+                        }
+                        else
+                        {
+                            Generals.add(General);
+                        }
+                    }
+                }
+                DB.collection("AUCTIONS").document("GENERAL").update("GeneralTelemetries", Generals)
+                .addOnSuccessListener(unused ->
+                {
+                    Log.d("FireStore", "DeleteServiceAuction:: Updated and deleted Successfully");
+                    CallBack.onCallback(true);
+                })
+                .addOnFailureListener(e ->
+                {
+                    Log.d("FireStore", "DeleteServiceAuction:: Exception: " + e.getMessage());
+                    CallBack.onCallback(false);
+                });
+            }
+            else
+            {
+                Log.d("FireStore", "DeleteGeneralAuction:: document does not exists");
+                CallBack.onCallback(false);
+            }
         })
-        .addOnFailureListener(d ->
+        .addOnFailureListener(e ->
         {
-            DeleteAuctionCallback.onCallback(false);
+            Log.d("FireStore", "DeleteGeneralAuction:: Exception: " + e.getMessage());
+            CallBack.onCallback(false);
         });
     }
     public void GetGeneralAuctions(final GetGeneralAuctionsCallback Callback)
@@ -791,11 +1023,21 @@ public class FireStoreManager extends FireStoreHelpers
                         JsonElement jsonElement = gson.toJsonTree(GeneralTelemetries.get(i));
                         General General = gson.fromJson(jsonElement, General.class);
                         Generals.add(General);
-                        Log.d("FireStore", "GetGeneralAuctions Received: " + General.getName());
+                        Log.d("FireStore", "GetGeneralAuctions:: Received: " + General.getName());
                     }
                 }
                 Callback.onCallback(Generals);
             }
+            else
+            {
+                Log.d("FireStore", "GetGeneralAuctions:: document does not exists");
+                Callback.onCallback(null);
+            }
+        })
+        .addOnFailureListener(e ->
+        {
+            Log.d("FireStore", "GetGeneralAuctions:: Exception: " + e.getMessage());
+            Callback.onCallback(null);
         });
     }
     public void UpdateGeneralAuctions(final UpdateVIPPHoneNumberCallback CallBack, General GeneralAuction)
@@ -822,30 +1064,30 @@ public class FireStoreManager extends FireStoreHelpers
                         {
                             Generals.add(General);
                         }
-                        Log.d("FireStore", "GetGeneralAuctions Received: " + General.getName());
+                        Log.d("FireStore", "UpdateGeneralAuctions:: Received: " + General.getName());
                     }
                 }
                 DB.collection("AUCTIONS").document("GENERAL").update("GeneralTelemetries", Generals)
                 .addOnSuccessListener(unused ->
                 {
-                    Log.d("FireStore", "UpdateGeneralAuctions Updated Successfully");
+                    Log.d("FireStore", "UpdateGeneralAuctions:: Updated Successfully");
                     CallBack.onCallback(true);
                 })
                 .addOnFailureListener(e ->
                 {
-                    Log.d("FireStore", "UpdateGeneralAuctions Exception: " + e.getMessage());
+                    Log.d("FireStore", "UpdateGeneralAuctions:: Exception: " + e.getMessage());
                     CallBack.onCallback(false);
                 });
             }
             else
             {
-                Log.d("FireStore", "UpdateGeneralAuctions document does not exists");
+                Log.d("FireStore", "UpdateGeneralAuctions:: document does not exists");
                 CallBack.onCallback(false);
             }
         })
         .addOnFailureListener(e ->
         {
-            Log.d("FireStore", "UpdateGeneralAuctions Exception: " + e.getMessage());
+            Log.d("FireStore", "UpdateGeneralAuctions:: Exception: " + e.getMessage());
             CallBack.onCallback(false);
         });
     }
@@ -864,17 +1106,54 @@ public class FireStoreManager extends FireStoreHelpers
             AddServiceCallback.onCallback(new FireStoreResult("", d.getMessage(), false));
         });
     }
-    public void DeleteServiceAuction(final DeleteUserAuctionCallback DeleteAuctionCallback, Service ServiceAuction)
+    public void DeleteServiceAuction(final DeleteUserAuctionCallback CallBack, Service ServiceAuction)
     {
-        DocumentReference CarPlateDocument = DB.collection("AUCTIONS").document("SERVICE");
-        CarPlateDocument.update("ServiceTelemetries", FieldValue.arrayRemove(ServiceAuction))
-        .addOnSuccessListener(d ->
+        ArrayList<Service> Services = new ArrayList<>();
+        DocumentReference documentReference = DB.collection("AUCTIONS").document("SERVICE");
+        documentReference.get().addOnSuccessListener(documentSnapshot ->
         {
-            DeleteAuctionCallback.onCallback(true);
+            if (documentSnapshot.exists())
+            {
+                ArrayList<?> ServiceTelemetries = (ArrayList<?>)documentSnapshot.get("ServiceTelemetries");
+                Gson gson = new Gson();
+                for (int i = 0; i < (ServiceTelemetries != null ? ServiceTelemetries.size() : 0); i++)
+                {
+                    if (!ServiceTelemetries.get(i).toString().isEmpty())
+                    {
+                        JsonElement jsonElement = gson.toJsonTree(ServiceTelemetries.get(i));
+                        Service Service = gson.fromJson(jsonElement, Service.class);
+                        if (Service.getID().equals(ServiceAuction.getID()))
+                        {
+                            Log.d("FireStore", "DeleteServiceAuction:: Item is found and will be deleted: " + ServiceAuction.getID());
+                        }
+                        else
+                        {
+                            Services.add(Service);
+                        }
+                    }
+                }
+                DB.collection("AUCTIONS").document("SERVICE").update("ServiceTelemetries", Services)
+                .addOnSuccessListener(unused ->
+                {
+                    Log.d("FireStore", "DeleteServiceAuction:: Updated and deleted Successfully");
+                    CallBack.onCallback(true);
+                })
+                .addOnFailureListener(e ->
+                {
+                    Log.d("FireStore", "DeleteServiceAuction:: Exception: " + e.getMessage());
+                    CallBack.onCallback(false);
+                });
+            }
+            else
+            {
+                Log.d("FireStore", "DeleteServiceAuction:: document does not exists");
+                CallBack.onCallback(false);
+            }
         })
-        .addOnFailureListener(d ->
+        .addOnFailureListener(e ->
         {
-            DeleteAuctionCallback.onCallback(false);
+            Log.d("FireStore", "DeleteServiceAuction:: Exception: " + e.getMessage());
+            CallBack.onCallback(false);
         });
     }
     public void GetServiceAuctions(final GetServiceAuctionsCallback Callback)
@@ -894,11 +1173,21 @@ public class FireStoreManager extends FireStoreHelpers
                         JsonElement jsonElement = gson.toJsonTree(ServiceTelemetries.get(i));
                         Service Service = gson.fromJson(jsonElement, Service.class);
                         Services.add(Service);
-                        Log.d("FireStore", "GetServiceAuctions Received: " + Service.getName());
+                        Log.d("FireStore", "GetServiceAuctions:: Received: " + Service.getName());
                     }
                 }
                 Callback.onCallback(Services);
             }
+            else
+            {
+                Log.d("FireStore", "GetServiceAuctions:: document does not exists");
+                Callback.onCallback(null);
+            }
+        })
+        .addOnFailureListener(e ->
+        {
+            Log.d("FireStore", "GetServiceAuctions:: Exception: " + e.getMessage());
+            Callback.onCallback(null);
         });
     }
     public void UpdateServiceAuctions(final UpdateServiceAuctionCallback CallBack, Service ServiceAuction)
@@ -918,30 +1207,30 @@ public class FireStoreManager extends FireStoreHelpers
                         JsonElement jsonElement = gson.toJsonTree(ServiceTelemetries.get(i));
                         Service Service = gson.fromJson(jsonElement, Service.class);
                         Services.add(Service);
-                        Log.d("FireStore", "GetServiceAuctions Received: " + Service.getName());
+                        Log.d("FireStore", "UpdateServiceAuctions:: Received: " + Service.getName());
                     }
                 }
                 DB.collection("AUCTIONS").document("SERVICE").update("ServiceTelemetries", Services)
                 .addOnSuccessListener(unused ->
                 {
-                    Log.d("FireStore", "UpdateServiceAuctions Updated Successfully");
+                    Log.d("FireStore", "UpdateServiceAuctions:: Updated Successfully");
                     CallBack.onCallback(true);
                 })
                 .addOnFailureListener(e ->
                 {
-                    Log.d("FireStore", "UpdateServiceAuctions Exception: " + e.getMessage());
+                    Log.d("FireStore", "UpdateServiceAuctions:: Exception: " + e.getMessage());
                     CallBack.onCallback(false);
                 });
             }
             else
             {
-                Log.d("FireStore", "UpdateGeneralAuctions document does not exists");
+                Log.d("FireStore", "UpdateGeneralAuctions:: document does not exists");
                 CallBack.onCallback(false);
             }
         })
         .addOnFailureListener(e ->
         {
-            Log.d("FireStore", "UpdateGeneralAuctions Exception: " + e.getMessage());
+            Log.d("FireStore", "UpdateGeneralAuctions:: Exception: " + e.getMessage());
             CallBack.onCallback(false);
         });
     }

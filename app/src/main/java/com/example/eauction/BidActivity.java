@@ -31,6 +31,7 @@ import com.example.eauction.Models.VipPhoneNumber;
 import com.royrodriguez.transitionbutton.TransitionButton;
 
 import java.security.acl.Owner;
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -38,7 +39,6 @@ import butterknife.ButterKnife;
 public class BidActivity extends AppCompatActivity
 {
     public static final int BID_LABEL_ID = 112345672;
-
 
     @BindView(R.id.TableContent)
     public TableLayout TableContent;
@@ -101,12 +101,12 @@ public class BidActivity extends AppCompatActivity
         }
         CurrentBidEditText.setText(extras.get("Current Bid").toString());
 
-        MakeBidButton.setOnClickListener(view -> HandleBid(Double.parseDouble(extras.get("Current Bid").toString())));
+        MakeBidButton.setOnClickListener(view -> HandleBid(Double.parseDouble(extras.get("Base Price").toString())));
     }
 
     @SuppressLint("SetTextI18n")
     private void AddTableRow(String label, String content, TableLayout TableContent){
-        String Label = "<b><u>" + label+":" + "</u></b> ";
+        String Label = "<b><u>" + label  + ":" + "</u></b> ";
         TextView labelTV = new TextView(TableContent.getContext());
         labelTV.setText(Html.fromHtml(Label));
         labelTV.setTextSize(20);
@@ -119,14 +119,13 @@ public class BidActivity extends AppCompatActivity
         ContentTV.setTextColor(Color.BLACK);
         ContentTV.setText(content + " AED");
         if(label.equals("Current Bid"))
+        {
             ContentTV.setId(BID_LABEL_ID);
-
-
+        }
         TableRow tableRow = new TableRow(TableContent.getContext());
         tableRow.addView(labelTV);
         tableRow.addView(ContentTV);
         tableRow.setPadding(0,0,0,32);
-
         TableContent.addView(tableRow);
     }
 
@@ -138,13 +137,13 @@ public class BidActivity extends AppCompatActivity
     }
 
     @SuppressLint("SetTextI18n")
-    private void HandleBid(double CurrentBidValue)
+    private void HandleBid(double BasePriceValue)
     {
         //Validation Phase.
-        double UserBidValue = Integer.parseInt(CurrentBidEditText.getText().toString());
-        if (UserBidValue <= CurrentBidValue)
+        double UserBidValue = Double.parseDouble(CurrentBidEditText.getText().toString());
+        if (UserBidValue <= BasePriceValue)
         {
-            Toast.makeText(this, "Invalid bid amount inserted.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Current bid value should be greater than the base price.", Toast.LENGTH_SHORT).show();
         }
         else if (TelemetryType.equals("") || AuctionOwnerUserId.equals(""))
         {
@@ -177,6 +176,10 @@ public class BidActivity extends AppCompatActivity
                         {
                             //Update the current bid in the user auction.
                             CarPlateAuction.setCurrentBid(UserBidValue);
+                            if (CarPlateAuction.getBids() == null)
+                            {
+                                CarPlateAuction.setBids(new ArrayList<>());
+                            }
                             CarPlateAuction.getBids().add(UserBid);
                             AuctionOwnerUserObj.getOwnedCarPlateTelemetry().set(Index, CarPlateAuction);
                             //Update Owner User Information
@@ -213,6 +216,10 @@ public class BidActivity extends AppCompatActivity
                         {
                             //Update the current bid in the user auction.
                             CarAuction.setCurrentBid(UserBidValue);
+                            if (CarAuction.getBids() == null)
+                            {
+                                CarAuction.setBids(new ArrayList<>());
+                            }
                             CarAuction.getBids().add(UserBid);
                             AuctionOwnerUserObj.getOwnedCarTelemetry().set(Index, CarAuction);
                             //Update Owner User Information
@@ -249,6 +256,10 @@ public class BidActivity extends AppCompatActivity
                         {
                             //Update the current bid in the user auction.
                             LandmarkAuction.setCurrentBid(UserBidValue);
+                            if (LandmarkAuction.getBids() == null)
+                            {
+                                LandmarkAuction.setBids(new ArrayList<>());
+                            }
                             LandmarkAuction.getBids().add(UserBid);
                             AuctionOwnerUserObj.getOwnedLandmarkTelemetry().set(Index, LandmarkAuction);
                             //Update Owner User Information
@@ -285,6 +296,10 @@ public class BidActivity extends AppCompatActivity
                         {
                             //Update the current bid in the user auction.
                             VipPhoneNumberAuction.setCurrentBid(UserBidValue);
+                            if (VipPhoneNumberAuction.getBids() == null)
+                            {
+                                VipPhoneNumberAuction.setBids(new ArrayList<>());
+                            }
                             VipPhoneNumberAuction.getBids().add(UserBid);
                             AuctionOwnerUserObj.getOwnedVipPhoneTelemetry().set(Index, VipPhoneNumberAuction);
                             //Update Owner User Information
@@ -321,6 +336,10 @@ public class BidActivity extends AppCompatActivity
                         {
                             //Update the current bid in the user auction.
                             GeneralAuction.setCurrentBid(UserBidValue);
+                            if (GeneralAuction.getBids() == null)
+                            {
+                                GeneralAuction.setBids(new ArrayList<>());
+                            }
                             GeneralAuction.getBids().add(UserBid);
                             AuctionOwnerUserObj.getOwnedGeneralTelemetry().set(Index, GeneralAuction);
                             //Update Owner User Information

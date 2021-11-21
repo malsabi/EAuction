@@ -429,18 +429,15 @@ public class TelemetryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         String auctionStart = "<b><u>" + "Auction Start:" + "</u></b> " + telemetry.getAuctionStart();
         TextView auctionStartTV = new TextView(linearLayout.getContext());
         auctionStartTV.setPadding(8, 0, 0, 0);
-
         auctionStartTV.setText(Html.fromHtml(auctionStart));
         auctionStartTV.setLayoutParams(params);
         linearLayout.addView(auctionStartTV);
 
         String auctionEnd = "<b><u>" + "Auction End:" + "</u></b> " + telemetry.getAuctionEnd();
         TextView auctionEndTV = new TextView(linearLayout.getContext());
-        auctionStartTV.setPadding(9, 0, 0, 0);
-
+        auctionEndTV.setPadding(8, 0, 0, 0);
         auctionEndTV.setText(Html.fromHtml(auctionEnd));
         auctionEndTV.setLayoutParams(params);
         linearLayout.addView(auctionEndTV);
-
     }
 }

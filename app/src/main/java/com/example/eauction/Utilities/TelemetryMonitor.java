@@ -21,6 +21,7 @@ import com.example.eauction.Models.Telemetry;
 import com.example.eauction.Models.User;
 import com.example.eauction.Models.VipPhoneNumber;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
@@ -420,11 +421,11 @@ public class TelemetryMonitor
         {
             if (Result.isSuccess())
             {
-                Log.d("TelemetryMonitor", "UpdateUserService:: SetGeneralTelemetry: Successfully updated.");
+                Log.d("TelemetryMonitor", "UpdateUserService:: SetServiceTelemetry: Successfully updated.");
             }
             else
             {
-                Log.d("TelemetryMonitor", "UpdateUserService:: SetGeneralTelemetry: Failed to be update, " + Result.getMessage());
+                Log.d("TelemetryMonitor", "UpdateUserService:: SetServiceTelemetry: Failed to be update, " + Result.getMessage());
             }
         }, UserObj.getOwnedServiceTelemetry(), UserObj.getEmail());
     }
@@ -461,16 +462,17 @@ public class TelemetryMonitor
                         {
                             ArrayList<Telemetry> UserTelemetries = Merge(UserObj.getOwnedCarPlateTelemetry(), UserObj.getOwnedCarTelemetry(), UserObj.getOwnedLandmarkTelemetry(), UserObj.getOwnedVipPhoneTelemetry(), UserObj.getOwnedGeneralTelemetry(), UserObj.getOwnedServiceTelemetry());
                             Log.d("TelemetryMonitor", "StartMonitor:: Received User Telemetries: " + UserTelemetries.size());
-                            LocalDateTime CurrentTime = LocalDateTime.now();
+                            LocalDate CurrentTime = LocalDate.now();
                             for (Telemetry T : UserTelemetries)
                             {
                                 if (DateHelper.IsDateValid(T.getAuctionEnd()))
                                 {
-                                    LocalDateTime TelemetryEndTime = DateHelper.ParseDateTime(T.getAuctionEnd());
-                                    if (CurrentTime.isEqual(TelemetryEndTime) || CurrentTime.isBefore(TelemetryEndTime))
+                                    LocalDate TelemetryEndTime = DateHelper.ParseDateTime(T.getAuctionEnd());
+                                    if (CurrentTime.isEqual(TelemetryEndTime) || CurrentTime.isAfter(TelemetryEndTime))
                                     {
                                         Log.d("TelemetryMonitor", "Telemetry Owner Id: " + T.getOwnerId() + " due date has been reached");
                                         //Finished
+                                        T.setStatus(StatusEnum.None);
                                         T.setAuctionEnd("Finished");
                                         //Process
                                         if (T instanceof Service)
@@ -478,7 +480,7 @@ public class TelemetryMonitor
                                             Log.d("TelemetryMonitor", "Telemetry is Service Auction");
                                             Service ServiceAuction = (Service)T;
                                             //Pass the lowest cost service to the user owner.
-                                            if (ServiceAuction.getServiceComments().size() > 0)
+                                            if (ServiceAuction.getServiceComments() != null && ServiceAuction.getServiceComments().size() > 0)
                                             {
                                                 ServiceComment LowestCostService = ServiceAuction.getServiceComments().get(0);
                                                 for (ServiceComment SC : ServiceAuction.getServiceComments())

@@ -1,5 +1,6 @@
 package com.example.eauction.Helpers;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -7,23 +8,23 @@ public class DateHelper
 {
     public static String GetCurrentDateTime()
     {
-        DateTimeFormatter DateFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter DateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate now = LocalDate.now();
         return DateFormatter.format(now);
     }
 
-    public static LocalDateTime ParseDateTime(String Date)
+    public static LocalDate ParseDateTime(String Date)
     {
-        DateTimeFormatter DateFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-        return LocalDateTime.parse(Date, DateFormatter);
+        DateTimeFormatter DateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        return LocalDate.parse(Date, DateFormatter);
     }
 
     public static boolean IsDateValid(String Date)
     {
         try
         {
-            DateTimeFormatter DateFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-            LocalDateTime.parse(Date, DateFormatter);
+            DateTimeFormatter DateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            LocalDate.parse(Date, DateFormatter);
             return true;
         }
         catch (Exception ex)

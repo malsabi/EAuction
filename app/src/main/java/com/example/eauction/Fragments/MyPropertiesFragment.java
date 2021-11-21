@@ -121,6 +121,10 @@ public class MyPropertiesFragment extends Fragment
                         {
                             Toast.makeText(getContext(), "Base price cannot be zero or below.", Toast.LENGTH_SHORT).show();
                         }
+                        else if (!DateHelper.IsDateValid(EtAuctionEndDate.getText().toString()))
+                        {
+                            Toast.makeText(getContext(), "Please insert a valid date.", Toast.LENGTH_SHORT).show();
+                        }
                         else
                         {
                             Toast.makeText(getContext(), UserBasePrice + "", Toast.LENGTH_SHORT).show();
