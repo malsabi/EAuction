@@ -82,6 +82,13 @@ public class MyPropertiesFragment extends Fragment
         return view;
     }
 
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        GetUserInformation();
+    }
+
     private void GetUserInformation()
     {
         if (PreferenceUtils.getEmail(this.getContext()) != null && PreferenceUtils.getPassword(this.getContext()) != null)

@@ -15,6 +15,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.Toast;
+
+import com.example.eauction.Helpers.TelemetryHelper;
 import com.example.eauction.Models.User;
 import com.royrodriguez.transitionbutton.TransitionButton;
 import java.text.SimpleDateFormat;
@@ -178,7 +180,6 @@ public class SignUpActivity extends AppCompatActivity
     private void HandleUserImage()
     {
         TakeImageFromGallery();
-        //TODO Image should uploaded of the user
     }
     private void HandleSignUpUser()
     {
@@ -195,7 +196,10 @@ public class SignUpActivity extends AppCompatActivity
             UserObj.setGender(MaleRadioButton.isChecked() ? "Male" : "Female");
             UserObj.setId(IdEditText.getText().toString());
             UserObj.setIsActive("Offline");
-
+            if (ProfileImage.getDrawable() != null)
+            {
+                UserObj.setProfilePicture(TelemetryHelper.ImageToBase64(ProfileImage.getDrawable()));
+            }
             AppInstance.GetFireStoreInstance().RegisterUser(Result ->
             {
                 if (Result.isSuccess())

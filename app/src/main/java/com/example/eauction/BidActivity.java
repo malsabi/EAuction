@@ -1,38 +1,30 @@
 package com.example.eauction;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.QuickContactBadge;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.example.eauction.Helpers.TelemetryHelper;
-import com.example.eauction.Interfaces.GetUserInformationCallback;
-import com.example.eauction.Interfaces.SetUserInformationCallback;
-import com.example.eauction.Interfaces.UpdateCarPlateAuctionsCallback;
 import com.example.eauction.Models.Bid;
 import com.example.eauction.Models.Car;
 import com.example.eauction.Models.CarPlate;
 import com.example.eauction.Models.General;
 import com.example.eauction.Models.Landmark;
-import com.example.eauction.Models.User;
 import com.example.eauction.Models.VipPhoneNumber;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.royrodriguez.transitionbutton.TransitionButton;
-
-import java.security.acl.Owner;
 import java.util.ArrayList;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -102,8 +94,12 @@ public class BidActivity extends AppCompatActivity
         CurrentBidEditText.setText(extras.get("Current Bid").toString());
 
         MakeBidButton.setOnClickListener(view -> HandleBid(Double.parseDouble(extras.get("Base Price").toString())));
+
+        HandleListeners(TelemetryType);
     }
 
+
+    //region Content Handling
     @SuppressLint("SetTextI18n")
     private void AddTableRow(String label, String content, TableLayout TableContent){
         String Label = "<b><u>" + label  + ":" + "</u></b> ";
@@ -128,12 +124,241 @@ public class BidActivity extends AppCompatActivity
         tableRow.setPadding(0,0,0,32);
         TableContent.addView(tableRow);
     }
-
     @SuppressLint("SetTextI18n")
     private void EditContent(String Content)
     {
         TextView ContentTextView = findViewById(BID_LABEL_ID);
         ContentTextView.setText(Content + " AED");
+    }
+    public double GetContentBid()
+    {
+        TextView ContentTextView = findViewById(BID_LABEL_ID);
+        String ContentBid = ContentTextView.getText().toString().replace(" AED", "");
+        return Double.parseDouble(ContentBid);
+    }
+    //endregion
+
+    //region Listeners/Bid Handling
+    private void HandleListeners(String TelemetryType)
+    {
+        if (TelemetryType.equals("") || AuctionOwnerUserId.equals(""))
+        {
+            Toast.makeText(this, "No telemetry is found", Toast.LENGTH_SHORT).show();
+        }
+        else
+        {
+            Log.d("BidActivity", "HandleListeners:: Starting");
+            switch (TelemetryType)
+            {
+                case "CarPlate":
+                {
+                    AppInstance.GetFireStoreInstance().GetFirebaseFirestore().collection("AUCTIONS").document("CARPLATE")
+                    .addSnapshotListener((documentSnapshot, error) ->
+                    {
+                        if (documentSnapshot != null && documentSnapshot.exists())
+                        {
+                            boolean IsFound = false;
+                            ArrayList<?> CarPlateTelemetries = (ArrayList<?>)documentSnapshot.get("CarPlateTelemetries");
+                            Gson gson = new Gson();
+                            for (int i = 0; i < (CarPlateTelemetries != null ? CarPlateTelemetries.size() : 0); i++)
+                            {
+                                JsonElement jsonElement = gson.toJsonTree(CarPlateTelemetries.get(i));
+                                CarPlate CarPlate = gson.fromJson(jsonElement, CarPlate.class);
+                                if (CarPlate.getID().equals(TelemetryId))
+                                {
+                                    Log.d("BidActivity", "HandleListeners:: Required CarPlate Item is found, Current Bid: " + CarPlate.getCurrentBid());
+                                    EditContent(String.valueOf(CarPlate.getCurrentBid()));
+                                    IsFound = true;
+                                    break;
+                                }
+                                Log.d("BidActivity", "HandleListeners:: Updated CarPlate Received: " + CarPlate.getPlateNumber());
+                            }
+                            if (!IsFound)
+                            {
+                                Log.d("BidActivity", "HandleListeners:: BidActivity will be closed");
+                                Toast.makeText(this, "Car Plate auction session is finished", Toast.LENGTH_SHORT).show();
+                                startActivity(new Intent(this, MainActivity.class));
+                                finish();
+                            }
+                        }
+                        else
+                        {
+                            Log.d("BidActivity", "HandleListeners:: CarPlate: document does not exists");
+                        }
+                    });
+                    Log.d("BidActivity", "HandleListeners:: CarPlate Listener added successfully.");
+                }
+                break;
+                case "Car":
+                {
+                    AppInstance.GetFireStoreInstance().GetFirebaseFirestore().collection("AUCTIONS").document("CAR")
+                    .addSnapshotListener((documentSnapshot, error) ->
+                    {
+                        if (documentSnapshot != null && documentSnapshot.exists())
+                        {
+                            boolean IsFound = false;
+                            ArrayList<?> CarTelemetries = (ArrayList<?>)documentSnapshot.get("CarTelemetries");
+                            Gson gson = new Gson();
+                            for (int i = 0; i < (CarTelemetries != null ? CarTelemetries.size() : 0); i++)
+                            {
+                                if (!CarTelemetries.get(i).toString().isEmpty())
+                                {
+                                    JsonElement jsonElement = gson.toJsonTree(CarTelemetries.get(i));
+                                    Car Car = gson.fromJson(jsonElement, Car.class);
+                                    if (Car.getID().equals(TelemetryId))
+                                    {
+                                        Log.d("BidActivity", "HandleListeners:: Required Car Item is found, Current Bid: " + Car.getCurrentBid());
+                                        EditContent(String.valueOf(Car.getCurrentBid()));
+                                        IsFound = true;
+                                        break;
+                                    }
+                                    Log.d("BidActivity", "HandleListeners:: Updated Car Received: " + Car.getName());
+                                }
+                            }
+                            if (!IsFound)
+                            {
+                                Log.d("BidActivity", "HandleListeners:: BidActivity will be closed");
+                                Toast.makeText(this, "Car auction session is finished", Toast.LENGTH_SHORT).show();
+                                startActivity(new Intent(this, MainActivity.class));
+                                finish();
+                            }
+                        }
+                        else
+                        {
+                            Log.d("BidActivity", "HandleListeners:: Car: document does not exists");
+                        }
+                    });
+                    Log.d("BidActivity", "HandleListeners:: Car Listener added successfully.");
+                }
+                break;
+                case "Landmark":
+                {
+                    AppInstance.GetFireStoreInstance().GetFirebaseFirestore().collection("AUCTIONS").document("LANDMARK")
+                    .addSnapshotListener((documentSnapshot, error) ->
+                    {
+                        if (documentSnapshot != null && documentSnapshot.exists())
+                        {
+                            boolean IsFound = false;
+                            ArrayList<?> LandmarkTelemetries = (ArrayList<?>)documentSnapshot.get("LandmarkTelemetries");
+                            Gson gson = new Gson();
+                            for (int i = 0; i < (LandmarkTelemetries != null ? LandmarkTelemetries.size() : 0); i++)
+                            {
+                                if (!LandmarkTelemetries.get(i).toString().isEmpty())
+                                {
+                                    JsonElement jsonElement = gson.toJsonTree(LandmarkTelemetries.get(i));
+                                    Landmark Landmark = gson.fromJson(jsonElement, Landmark.class);
+                                    if (Landmark.getID().equals(TelemetryId))
+                                    {
+                                        Log.d("BidActivity", "HandleListeners:: Required Landmark Item is found, Current Bid: " + Landmark.getCurrentBid());
+                                        EditContent(String.valueOf(Landmark.getCurrentBid()));
+                                        IsFound = true;
+                                        break;
+                                    }
+                                    Log.d("BidActivity", "HandleListeners:: Updated Landmark Received: " + Landmark.getName());
+                                }
+                            }
+                            if (!IsFound)
+                            {
+                                Log.d("BidActivity", "HandleListeners:: BidActivity will be closed");
+                                Toast.makeText(this, "Landmark auction session is finished", Toast.LENGTH_SHORT).show();
+                                startActivity(new Intent(this, MainActivity.class));
+                                finish();
+                            }
+                        }
+                        else
+                        {
+                            Log.d("BidActivity", "HandleListeners:: Landmark: document does not exists");
+                        }
+                    });
+                    Log.d("BidActivity", "HandleListeners:: Landmark Listener added successfully.");
+                }
+                break;
+                case "VipPhoneNumber":
+                {
+                    AppInstance.GetFireStoreInstance().GetFirebaseFirestore().collection("AUCTIONS").document("VIPPHONE")
+                    .addSnapshotListener((documentSnapshot, error) ->
+                    {
+                        if (documentSnapshot != null && documentSnapshot.exists())
+                        {
+                            boolean IsFound = false;
+                            ArrayList<?> VIPPhoneTelemetries = (ArrayList<?>)documentSnapshot.get("VIPPhoneTelemetries");
+                            Gson gson = new Gson();
+                            for (int i = 0; i < (VIPPhoneTelemetries != null ? VIPPhoneTelemetries.size() : 0); i++)
+                            {
+                                if (!VIPPhoneTelemetries.get(i).toString().isEmpty())
+                                {
+                                    JsonElement jsonElement = gson.toJsonTree(VIPPhoneTelemetries.get(i));
+                                    VipPhoneNumber VipPhoneNumber = gson.fromJson(jsonElement, VipPhoneNumber.class);
+                                    if (VipPhoneNumber.getID().equals(TelemetryId))
+                                    {
+                                        Log.d("BidActivity", "HandleListeners:: Required VipPhoneNumber Item is found, Current Bid: " + VipPhoneNumber.getCurrentBid());
+                                        EditContent(String.valueOf(VipPhoneNumber.getCurrentBid()));
+                                        IsFound = true;
+                                        break;
+                                    }
+                                    Log.d("BidActivity", "HandleListeners:: Updated VipPhoneNumber Received: " + VipPhoneNumber.getPhoneNumber());
+                                }
+                            }
+                            if (!IsFound)
+                            {
+                                Log.d("BidActivity", "HandleListeners:: BidActivity will be closed");
+                                Toast.makeText(this, "Vip Phone Number auction session is finished", Toast.LENGTH_SHORT).show();
+                                startActivity(new Intent(this, MainActivity.class));
+                                finish();
+                            }
+                        }
+                        else
+                        {
+                            Log.d("BidActivity", "HandleListeners:: VipPhoneNumber: document does not exists");
+                        }
+                    });
+                    Log.d("BidActivity", "HandleListeners:: VipPhoneNumber Listener added successfully.");
+                }
+                break;
+                case "General":
+                {
+                    AppInstance.GetFireStoreInstance().GetFirebaseFirestore().collection("AUCTIONS").document("GENERAL")
+                    .addSnapshotListener((documentSnapshot, error) ->
+                    {
+                        if (documentSnapshot != null && documentSnapshot.exists())
+                        {
+                            boolean IsFound = false;
+                            ArrayList<?> GeneralTelemetries = (ArrayList<?>)documentSnapshot.get("GeneralTelemetries");
+                            Gson gson = new Gson();
+                            for (int i = 0; i < (GeneralTelemetries != null ? GeneralTelemetries.size() : 0); i++)
+                            {
+                                if (!GeneralTelemetries.get(i).toString().isEmpty())
+                                {
+                                    JsonElement jsonElement = gson.toJsonTree(GeneralTelemetries.get(i));
+                                    General General = gson.fromJson(jsonElement, General.class);
+                                    if (General.getID().equals(TelemetryId))
+                                    {
+                                        Log.d("BidActivity", "HandleListeners:: Required General Item is found, Current Bid: " + General.getCurrentBid());
+                                        EditContent(String.valueOf(General.getCurrentBid()));
+                                        IsFound = true;
+                                        break;
+                                    }
+                                    Log.d("BidActivity", "HandleListeners:: Updated Generals Received: " + General.getName());
+                                }
+                            }
+                            if (!IsFound)
+                            {
+                                Log.d("BidActivity", "HandleListeners:: BidActivity will be closed");
+                                Toast.makeText(this, "General auction session is finished", Toast.LENGTH_SHORT).show();
+                                startActivity(new Intent(this, MainActivity.class));
+                                finish();
+                            }
+                        }
+                        else
+                        {
+                            Log.d("BidActivity", "HandleListeners:: VipPhoneNumber: document does not exists");
+                        }
+                    });
+                    Log.d("BidActivity", "HandleListeners:: General Listener added successfully.");
+                }
+                break;
+            }
+        }
     }
 
     @SuppressLint("SetTextI18n")
@@ -172,6 +397,10 @@ public class BidActivity extends AppCompatActivity
                             //Update the current bid in the view
                             EditContent(String.valueOf(CarPlateAuction.getCurrentBid()));
                         }
+                        else if (GetContentBid() >= UserBidValue)
+                        {
+                            Toast.makeText(this, "Invalid Bid. Please add a higher bid value.", Toast.LENGTH_SHORT).show();
+                        }
                         else
                         {
                             //Update the current bid in the user auction.
@@ -188,6 +417,11 @@ public class BidActivity extends AppCompatActivity
                                 if (!Result)
                                 {
                                     Toast.makeText(this, "Failed to set the current bid.", Toast.LENGTH_SHORT).show();
+                                }
+                                else
+                                {
+                                    //Update the current bid in the view
+                                    EditContent(String.valueOf(CarPlateAuction.getCurrentBid()));
                                 }
                             }, AuctionOwnerUserObj);
                             //Update Global Auctions
@@ -212,6 +446,10 @@ public class BidActivity extends AppCompatActivity
                             //Update the current bid in the view
                             EditContent(String.valueOf(CarAuction.getCurrentBid()));
                         }
+                        else if (GetContentBid() >= UserBidValue)
+                        {
+                            Toast.makeText(this, "Invalid Bid. Please add a higher bid value.", Toast.LENGTH_SHORT).show();
+                        }
                         else
                         {
                             //Update the current bid in the user auction.
@@ -219,6 +457,11 @@ public class BidActivity extends AppCompatActivity
                             if (CarAuction.getBids() == null)
                             {
                                 CarAuction.setBids(new ArrayList<>());
+                            }
+                            else
+                            {
+                                //Update the current bid in the view
+                                EditContent(String.valueOf(CarAuction.getCurrentBid()));
                             }
                             CarAuction.getBids().add(UserBid);
                             AuctionOwnerUserObj.getOwnedCarTelemetry().set(Index, CarAuction);
@@ -252,6 +495,10 @@ public class BidActivity extends AppCompatActivity
                             //Update the current bid in the view
                             EditContent(String.valueOf(LandmarkAuction.getCurrentBid()));
                         }
+                        else if (GetContentBid() >= UserBidValue)
+                        {
+                            Toast.makeText(this, "Invalid Bid. Please add a higher bid value.", Toast.LENGTH_SHORT).show();
+                        }
                         else
                         {
                             //Update the current bid in the user auction.
@@ -259,6 +506,11 @@ public class BidActivity extends AppCompatActivity
                             if (LandmarkAuction.getBids() == null)
                             {
                                 LandmarkAuction.setBids(new ArrayList<>());
+                            }
+                            else
+                            {
+                                //Update the current bid in the view
+                                EditContent(String.valueOf(LandmarkAuction.getCurrentBid()));
                             }
                             LandmarkAuction.getBids().add(UserBid);
                             AuctionOwnerUserObj.getOwnedLandmarkTelemetry().set(Index, LandmarkAuction);
@@ -292,6 +544,10 @@ public class BidActivity extends AppCompatActivity
                             //Update the current bid in the view
                             EditContent(String.valueOf(VipPhoneNumberAuction.getCurrentBid()));
                         }
+                        else if (GetContentBid() >= UserBidValue)
+                        {
+                            Toast.makeText(this, "Invalid Bid. Please add a higher bid value.", Toast.LENGTH_SHORT).show();
+                        }
                         else
                         {
                             //Update the current bid in the user auction.
@@ -299,6 +555,11 @@ public class BidActivity extends AppCompatActivity
                             if (VipPhoneNumberAuction.getBids() == null)
                             {
                                 VipPhoneNumberAuction.setBids(new ArrayList<>());
+                            }
+                            else
+                            {
+                                //Update the current bid in the view
+                                EditContent(String.valueOf(VipPhoneNumberAuction.getCurrentBid()));
                             }
                             VipPhoneNumberAuction.getBids().add(UserBid);
                             AuctionOwnerUserObj.getOwnedVipPhoneTelemetry().set(Index, VipPhoneNumberAuction);
@@ -332,6 +593,10 @@ public class BidActivity extends AppCompatActivity
                             //Update the current bid in the view
                             EditContent(String.valueOf(GeneralAuction.getCurrentBid()));
                         }
+                        else if (GetContentBid() >= UserBidValue)
+                        {
+                            Toast.makeText(this, "Invalid Bid. Please add a higher bid value.", Toast.LENGTH_SHORT).show();
+                        }
                         else
                         {
                             //Update the current bid in the user auction.
@@ -339,6 +604,11 @@ public class BidActivity extends AppCompatActivity
                             if (GeneralAuction.getBids() == null)
                             {
                                 GeneralAuction.setBids(new ArrayList<>());
+                            }
+                            else
+                            {
+                                //Update the current bid in the view
+                                EditContent(String.valueOf(GeneralAuction.getCurrentBid()));
                             }
                             GeneralAuction.getBids().add(UserBid);
                             AuctionOwnerUserObj.getOwnedGeneralTelemetry().set(Index, GeneralAuction);
@@ -365,4 +635,5 @@ public class BidActivity extends AppCompatActivity
             }, AuctionOwnerUserId);
         }
     }
+    //endregion
 }

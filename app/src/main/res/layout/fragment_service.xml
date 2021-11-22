@@ -20,7 +20,7 @@
             android:ems="10"
             android:hint="@string/service_name"
             android:inputType="text"
-            android:maxLength="12" />
+            android:maxLength="150" />
 
     </com.google.android.material.textfield.TextInputLayout>
 </LinearLayout>

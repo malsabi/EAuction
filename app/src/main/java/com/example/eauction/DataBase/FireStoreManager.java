@@ -4,6 +4,7 @@ import android.telecom.Call;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.example.eauction.Cryptograpgy.AESProvider;
 import com.example.eauction.Cryptograpgy.FirestoreEncoder;
@@ -50,8 +51,10 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 
@@ -81,6 +84,10 @@ public class FireStoreManager extends FireStoreHelpers
     }
 
     //region Getters
+    public FirebaseFirestore GetFirebaseFirestore()
+    {
+        return DB;
+    }
     public AESProvider GetAesProvider()
     {
         return AesProvider;
@@ -1206,7 +1213,14 @@ public class FireStoreManager extends FireStoreHelpers
                     {
                         JsonElement jsonElement = gson.toJsonTree(ServiceTelemetries.get(i));
                         Service Service = gson.fromJson(jsonElement, Service.class);
-                        Services.add(Service);
+                        if (ServiceAuction.getID().equals(Service.getID()))
+                        {
+                            Services.add(ServiceAuction);
+                        }
+                        else
+                        {
+                            Services.add(Service);
+                        }
                         Log.d("FireStore", "UpdateServiceAuctions:: Received: " + Service.getName());
                     }
                 }
@@ -1235,12 +1249,6 @@ public class FireStoreManager extends FireStoreHelpers
         });
     }
     //endregion
-    //endregion
-
-    //region Listeners
-    public void ListenCarAuctions()
-    {
-    }
     //endregion
 
     //region Company

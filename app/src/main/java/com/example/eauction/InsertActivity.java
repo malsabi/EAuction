@@ -19,6 +19,7 @@ import com.example.eauction.Fragments.CarFragment;
 import com.example.eauction.Fragments.CarPlateFragment;
 import com.example.eauction.Fragments.GeneralItemFragment;
 import com.example.eauction.Fragments.LandmarkFragment;
+import com.example.eauction.Fragments.MyPropertiesFragment;
 import com.example.eauction.Fragments.ServiceFragment;
 import com.example.eauction.Fragments.VIPNumberFragment;
 import com.example.eauction.Helpers.TelemetryHelper;
@@ -106,7 +107,6 @@ public class InsertActivity extends AppCompatActivity
                     case 5:
                         getSupportFragmentManager().beginTransaction().replace(R.id.TeleFragmentContainer, ServiceObj).commit();
                         break;
-                    //Handle Service
                 }
             }
             @Override
@@ -239,6 +239,7 @@ public class InsertActivity extends AppCompatActivity
                         {
                             Toast.makeText(InsertActivity.this, "Telemetry Item added successfully.", Toast.LENGTH_SHORT).show();
                             Log.d("InsertActivity", "HandleCarPlate Successfully Updated");
+                            finish();
                         }
                         else
                         {
@@ -246,6 +247,7 @@ public class InsertActivity extends AppCompatActivity
                             Log.d("InsertActivity", "HandleCarPlate Failed: " + SetResult.getMessage());
                         }
                         AddTelemetryButton.stopAnimation(TransitionButton.StopAnimationStyle.SHAKE, null);
+                        //....
                     }, UserObj.getOwnedCarPlateTelemetry(), UserObj.getEmail());
                 }
             }
@@ -323,6 +325,7 @@ public class InsertActivity extends AppCompatActivity
                         {
                             Toast.makeText(InsertActivity.this, "Telemetry Item added successfully.", Toast.LENGTH_SHORT).show();
                             Log.d("InsertActivity", "HandleCar Successfully Updated");
+                            finish();
                         }
                         else
                         {
@@ -410,6 +413,7 @@ public class InsertActivity extends AppCompatActivity
                         {
                             Toast.makeText(InsertActivity.this, "Telemetry Item added successfully.", Toast.LENGTH_SHORT).show();
                             Log.d("InsertActivity", "HandleLandmark Successfully Updated");
+                            finish();
                         }
                         else
                         {
@@ -494,6 +498,7 @@ public class InsertActivity extends AppCompatActivity
                         {
                             Toast.makeText(InsertActivity.this, "Telemetry Item added successfully.", Toast.LENGTH_SHORT).show();
                             Log.d("InsertActivity", "HandleVIPPhoneNumber Successfully Updated");
+                            finish();
                         }
                         else
                         {
@@ -577,6 +582,7 @@ public class InsertActivity extends AppCompatActivity
                         {
                             Toast.makeText(InsertActivity.this, "Telemetry Item added successfully.", Toast.LENGTH_SHORT).show();
                             Log.d("InsertActivity", "HandleGeneral Successfully Updated");
+                            finish();
                         }
                         else
                         {
@@ -660,6 +666,7 @@ public class InsertActivity extends AppCompatActivity
                         {
                             Toast.makeText(InsertActivity.this, "Telemetry Item added successfully.", Toast.LENGTH_SHORT).show();
                             Log.d("InsertActivity", "HandleService Successfully Updated");
+                            finish();
                         }
                         else
                         {

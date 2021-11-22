@@ -227,9 +227,7 @@ public class FireStoreHelpers
         Map<String, Object> HashMap = new HashMap<>();
         HashMap.put("Key", PrivateKey);
 
-
-
-        DB.collection("SECURITY").document("Private-Key").set(HashMap)
+        DB.collection("SECURITY").document("Key1").set(HashMap)
         .addOnSuccessListener(d ->
         {
             Log.d("FireStore", "SetPrivateKey Method Finished: Success");
@@ -245,8 +243,7 @@ public class FireStoreHelpers
         Map<String, Object> HashMap = new HashMap<>();
         HashMap.put("Key", PublicKey);
 
-
-        DB.collection("SECURITY").document("Public-Key").set(HashMap)
+        DB.collection("SECURITY").document("Key2").set(HashMap)
         .addOnSuccessListener(d ->
         {
             Log.d("FireStore", "SetPublicKey Method Finished: Success");
@@ -258,7 +255,7 @@ public class FireStoreHelpers
     public String GetPrivateKey()
     {
         Log.d("FireStore", "GetPrivateKey Method Started");
-        String EncryptedPrivateKey = (String)new SyncFireStore().GetField("SECURITY", "Private-Key", "Key", DB);
+        String EncryptedPrivateKey = (String)new SyncFireStore().GetField("SECURITY", "Key1", "Key", DB);
         Log.d("FireStore", "GetPrivateKey Method Finished, EncryptedPrivateKey: " + EncryptedPrivateKey);
         return EncryptedPrivateKey;
     }
@@ -266,7 +263,7 @@ public class FireStoreHelpers
     public String GetPublicKey()
     {
         Log.d("FireStore", "GetPublicKey Method Started");
-        String EncryptedPublicKey = (String)new SyncFireStore().GetField("SECURITY", "Public-Key", "Key", DB);
+        String EncryptedPublicKey = (String)new SyncFireStore().GetField("SECURITY", "Key2", "Key", DB);
         Log.d("FireStore", "GetPublicKey Method Finished, EncryptedPublicKey: " + EncryptedPublicKey);
         return EncryptedPublicKey;
     }

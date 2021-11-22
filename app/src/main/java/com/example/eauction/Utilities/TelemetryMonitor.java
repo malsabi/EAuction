@@ -467,6 +467,7 @@ public class TelemetryMonitor
                             {
                                 if (DateHelper.IsDateValid(T.getAuctionEnd()))
                                 {
+                                    Log.d("TelemetryMonitor", "StartMonitor:: Telemetry getAuctionEnd is valid: " + T.getAuctionEnd());
                                     LocalDate TelemetryEndTime = DateHelper.ParseDateTime(T.getAuctionEnd());
                                     if (CurrentTime.isEqual(TelemetryEndTime) || CurrentTime.isAfter(TelemetryEndTime))
                                     {
@@ -485,7 +486,7 @@ public class TelemetryMonitor
                                                 ServiceComment LowestCostService = ServiceAuction.getServiceComments().get(0);
                                                 for (ServiceComment SC : ServiceAuction.getServiceComments())
                                                 {
-                                                    if (Integer.parseInt(LowestCostService.getCost()) < Integer.parseInt(SC.getCost()))
+                                                    if (Double.parseDouble(LowestCostService.getCost()) < Double.parseDouble(SC.getCost()))
                                                     {
                                                         LowestCostService.Set(SC);
                                                     }
@@ -493,6 +494,12 @@ public class TelemetryMonitor
                                                 //Update the user that the service had comments and send him the lowest cost service provider in email.
                                                 ProcessLowestBid(ServiceAuction, LowestCostService, UserObj);
                                             }
+
+                                            //Reset the Service Information.
+                                            ServiceAuction.setCurrentBid(0.0);
+                                            ServiceAuction.setAuctionStart("");
+                                            ServiceAuction.setAuctionEnd("");
+                                            ServiceAuction.setServiceComments(null);
                                             //Update the service to be finished.
                                             UpdateUserService(ServiceAuction, UserObj);
                                         }
@@ -511,12 +518,20 @@ public class TelemetryMonitor
                                                         HighestBid.setUserId(B.getUserId());
                                                     }
                                                 }
+                                                T.setCurrentBid(0.0);
+                                                T.setBids(null);
+                                                T.setAuctionStart("");
+                                                T.setAuctionEnd("");
                                                 ProcessHighestBid(HighestBid, TelemetryHelper.GetTelemetryType(T), T);
                                                 //Remove telemetry from the owner.
                                                 UpdateUserAuction(TelemetryHelper.GetTelemetryType(T), T, UserObj, true);
                                             }
                                             else
                                             {
+                                                T.setCurrentBid(0.0);
+                                                T.setBids(null);
+                                                T.setAuctionStart("");
+                                                T.setAuctionEnd("");
                                                 //Update the telemetry to be finished.
                                                 UpdateUserAuction(TelemetryHelper.GetTelemetryType(T), T, UserObj, false);
                                             }
@@ -524,6 +539,10 @@ public class TelemetryMonitor
                                         //Delete the auction from the global auctions.
                                         DeleteGlobalAuction(TelemetryHelper.GetTelemetryType(T), T);
                                     }
+                                }
+                                else
+                                {
+                                    Log.d("TelemetryMonitor", "StartMonitor:: Telemetry getAuctionEnd is invalid: " + T.getAuctionEnd());
                                 }
                             }
                         }, UserId);

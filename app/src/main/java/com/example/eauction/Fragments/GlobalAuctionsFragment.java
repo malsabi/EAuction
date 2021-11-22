@@ -271,27 +271,25 @@ public class GlobalAuctionsFragment extends Fragment {
                     LayoutManager = new LinearLayoutManager(getContext());
                     ArrayList<Telemetry> MergeList = Merge(Result);
                     RecyclerViewAdapter = new TelemetryAdapter(MergeList);
-                    RecyclerViewAdapter.setOnItemClickListener(new TelemetryAdapter.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(int position) {
-                            Service serviceItem =  (Service) MergeList.get(position);
-                            Bundle extras = new Bundle();
-                            extras.putString("Name", serviceItem.getName());
-                            extras.putString("Current Bid", serviceItem.getCurrentBid()+"");
-                            extras.putString("Base Price", serviceItem.getBasePrice()+"");
-                            extras.putString("Auction Start",serviceItem.getAuctionStart());
-                            extras.putString("Auction End",serviceItem.getAuctionEnd());
-                            extras.putString("Picture", serviceItem.getImage());
-                            extras.putString("ID", serviceItem.getID());
-                            extras.putString("Details", serviceItem.getDetails());
-                            //Extra AuctionOwnerUserId, TelemetryType, UserId
-                            extras.putString("AuctionOwnerUserId", serviceItem.getOwnerId());
-                            extras.putString("Type", TelemetryHelper.GetTelemetryType(serviceItem));
-                            extras.putString("UserId", AppInstance.GetUserId());
-                            Intent intent = new Intent(view.getContext(), BidServiceActivity.class);
-                            intent.putExtras(extras);
-                            startActivity(intent);
-                        }
+                    RecyclerViewAdapter.setOnItemClickListener(position ->
+                    {
+                        Service serviceItem =  (Service) MergeList.get(position);
+                        Bundle extras = new Bundle();
+                        extras.putString("Name", serviceItem.getName());
+                        extras.putString("Current Bid", serviceItem.getCurrentBid()+"");
+                        extras.putString("Base Price", serviceItem.getBasePrice()+"");
+                        extras.putString("Auction Start",serviceItem.getAuctionStart());
+                        extras.putString("Auction End",serviceItem.getAuctionEnd());
+                        extras.putString("Picture", serviceItem.getImage());
+                        extras.putString("ID", serviceItem.getID());
+                        extras.putString("Details", serviceItem.getDetails());
+                        //Extra AuctionOwnerUserId, TelemetryType, UserId
+                        extras.putString("AuctionOwnerUserId", serviceItem.getOwnerId());
+                        extras.putString("Type", TelemetryHelper.GetTelemetryType(serviceItem));
+                        extras.putString("UserId", AppInstance.GetUserId());
+                        Intent intent = new Intent(view.getContext(), BidServiceActivity.class);
+                        intent.putExtras(extras);
+                        startActivity(intent);
                     });
                     RvAuctionedGlobalProperties.setLayoutManager(LayoutManager);
                     RvAuctionedGlobalProperties.setAdapter(RecyclerViewAdapter);
