@@ -113,11 +113,21 @@ public class BidActivity extends AppCompatActivity
         ContentTV.setTextSize(20);
         ContentTV.setPadding(8,0,0,8);
         ContentTV.setTextColor(Color.BLACK);
-        ContentTV.setText(content + " AED");
+
+        if(label.equals("Current Bid") || label.equals("Base Price")){
+            ContentTV.setText(content + " AED");
+        }
+        else
+        {
+            ContentTV.setText(content);
+        }
+
+
         if(label.equals("Current Bid"))
         {
             ContentTV.setId(BID_LABEL_ID);
         }
+
         TableRow tableRow = new TableRow(TableContent.getContext());
         tableRow.addView(labelTV);
         tableRow.addView(ContentTV);

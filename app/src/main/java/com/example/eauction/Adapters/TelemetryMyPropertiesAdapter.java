@@ -163,6 +163,25 @@ public class TelemetryMyPropertiesAdapter extends RecyclerView.Adapter<RecyclerV
             generalViewHolder.cvItemGeneral.setImageBitmap(TelemetryHelper.Base64ToImage(general.getImage()));
             addCurrent_addBasePrice((LinearLayout) generalViewHolder.cvItemGeneral.getParent(),general);
         }
+        else if(Telemetries.get(position) instanceof  Landmark)
+        {
+            LandmarkViewHolder landmarkViewHolder = (LandmarkViewHolder)holder;
+            Landmark landmark = (Landmark) Telemetries.get(position);
+
+            String cvItemNameLabel = "<b><u>" + "Name:" + "</u></b> ";
+            String cvDetailsLabel = "<b><u>" + "Details:" + "</u></b> ";
+            String cvTypeLabel = "<b><u>" + "Type:" + "</u></b> ";
+            String cvLocation = "<b><u>" + "Location:" + "</u></b> ";
+            String cvArea = "<b><u>" + "Area:" + "</u></b> ";
+
+            landmarkViewHolder.cvLandmarkName.setText(Html.fromHtml(cvItemNameLabel+landmark.getName()));
+            landmarkViewHolder.cvLandmarkDetails.setText(Html.fromHtml(cvDetailsLabel+landmark.getDetails()));
+            landmarkViewHolder.cvLandmarkType.setText(Html.fromHtml(cvTypeLabel+landmark.getType()));
+            landmarkViewHolder.cvLandmarkLocation.setText(Html.fromHtml(cvLocation+landmark.getLocation()));
+            landmarkViewHolder.cvLandmarkArea.setText(Html.fromHtml(cvArea+landmark.getArea()));
+            landmarkViewHolder.cvLandmarkImg.setImageBitmap(TelemetryHelper.Base64ToImage(landmark.getImage()));
+            addCurrent_addBasePrice((LinearLayout) landmarkViewHolder.cvLandmarkName.getParent(),landmark);
+        }
         else{
             TelemetryMyPropertiesAdapter.ServiceViewHolder serviceViewHolder = (TelemetryMyPropertiesAdapter.ServiceViewHolder)holder;
             Service service = (Service) Telemetries.get(position);
@@ -285,6 +304,9 @@ public class TelemetryMyPropertiesAdapter extends RecyclerView.Adapter<RecyclerV
 
         @BindView(R.id.cvLandmarkArea)
         public TextView cvLandmarkArea;
+
+        @BindView(R.id.cvLandmarkDetails)
+        public TextView cvLandmarkDetails;
 
         public LandmarkViewHolder(@NonNull View itemView, OnItemClickListener listener) {
             super(itemView);

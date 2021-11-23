@@ -1,10 +1,12 @@
 package com.example.eauction;
 
+import static android.widget.TextView.AUTO_SIZE_TEXT_TYPE_UNIFORM;
 import static com.example.eauction.BidActivity.BID_LABEL_ID;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.transition.Visibility;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
@@ -14,11 +16,14 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -199,18 +204,36 @@ public class BidServiceActivity extends AppCompatActivity
         labelTV.setTextColor(Color.GRAY);
 
         TextView ContentTV = new TextView(TableContent.getContext());
-        ContentTV.setTextSize(20);
-        ContentTV.setPadding(8,0,0,8);
         ContentTV.setTextColor(Color.BLACK);
+
+        if(label.equals("Base Price")){
+            ContentTV.setTextSize(20);
+            ContentTV.setText(content + " AED");
+        }
+        else if(label.equals("Details"))
+        {
+
+            ContentTV.setPadding(0,0,8,0);
+            ContentTV.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
+            //ContentTV.setHeight(LinearLayout.LayoutParams.WRAP_CONTENT);
+            ContentTV.setText(content);
+            ContentTV.setGravity(Gravity.CENTER);
+            //ContentTV.setHeight(LinearLayout.LayoutParams.MATCH_PARENT);
+
+        }
+        else{
+            ContentTV.setTextSize(20);
+            ContentTV.setPadding(8,0,0,8);
+            ContentTV.setText(content);
+        }
         if(label.equals("Current Bid"))
         {
             ContentTV.setText(content + " AED");
+            ContentTV.setVisibility(View.GONE); //Hiding value and label
+            labelTV.setVisibility(View.GONE);
             ContentTV.setId(BID_LABEL_ID);
         }
-        else
-        {
-            ContentTV.setText(content);
-        }
+
         TableRow tableRow = new TableRow(TableContent.getContext());
         tableRow.addView(labelTV);
         tableRow.addView(ContentTV);

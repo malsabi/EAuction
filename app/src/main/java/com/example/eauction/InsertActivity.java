@@ -115,7 +115,7 @@ public class InsertActivity extends AppCompatActivity
             }
         });
         UploadImageButton.setOnClickListener(view -> TakeImageFromGallery());
-        AddTelemetryButton.setOnClickListener(view -> AddTelemetryHandler());
+        AddTelemetryButton.setOnClickListener(view -> AddTelemetryHandler()); 
     }
 
     private void TakeImageFromGallery()

@@ -158,11 +158,13 @@ public class TelemetryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             String cvLandmarkTypeLabel = "<b><u>" + "Type:" + "</u></b> ";
             String cvLandmarkLocationLabel = "<b><u>" + "Location:" + "</u></b> ";
             String cvLandmarkAreaLabel = "<b><u>" + "Area:" + "</u></b> ";
+            String cvLandmarkDetails = "<b><u>" + "Details:" + "</u></b> ";
 
             landMarkHolder.cvLandmarkName.setText(Html.fromHtml(cvLandmarkNameLabel+landmark.getName()));
             landMarkHolder.cvLandmarkType.setText(Html.fromHtml(cvLandmarkTypeLabel+landmark.getType()));
             landMarkHolder.cvLandmarkLocation.setText(Html.fromHtml(cvLandmarkLocationLabel+landmark.getLocation()));
             landMarkHolder.cvLandmarkArea.setText(Html.fromHtml(cvLandmarkAreaLabel+landmark.getArea()));
+            landMarkHolder.cvLandmarkDetails.setText(Html.fromHtml(cvLandmarkDetails+landmark.getDetails()));
             landMarkHolder.cvLandmarkImg.setImageBitmap(TelemetryHelper.Base64ToImage(landmark.getImage()));
             addCurrent_addBasePrice((LinearLayout) landMarkHolder.cvLandmarkArea.getParent(),landmark);
         }
@@ -302,6 +304,9 @@ public class TelemetryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         @BindView(R.id.cvLandmarkArea)
         public TextView cvLandmarkArea;
+
+        @BindView(R.id.cvLandmarkDetails)
+        public TextView cvLandmarkDetails;
 
         public LandmarkViewHolder(@NonNull View itemView, OnItemClickListener listener) {
             super(itemView);
