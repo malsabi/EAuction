@@ -204,28 +204,19 @@ public class BidServiceActivity extends AppCompatActivity
         labelTV.setTextColor(Color.GRAY);
 
         TextView ContentTV = new TextView(TableContent.getContext());
+        ContentTV.setTextSize(20);
+        ContentTV.setPadding(8,0,0,8);
         ContentTV.setTextColor(Color.BLACK);
 
-        if(label.equals("Base Price")){
-            ContentTV.setTextSize(20);
+        if(label.equals("Current Bid") || label.equals("Base Price")){
             ContentTV.setText(content + " AED");
         }
-        else if(label.equals("Details"))
+        else
         {
-
-            ContentTV.setPadding(0,0,8,0);
-            ContentTV.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
-            //ContentTV.setHeight(LinearLayout.LayoutParams.WRAP_CONTENT);
-            ContentTV.setText(content);
-            ContentTV.setGravity(Gravity.CENTER);
-            //ContentTV.setHeight(LinearLayout.LayoutParams.MATCH_PARENT);
-
-        }
-        else{
-            ContentTV.setTextSize(20);
-            ContentTV.setPadding(8,0,0,8);
+            TableContent.setColumnShrinkable(1, true);
             ContentTV.setText(content);
         }
+
         if(label.equals("Current Bid"))
         {
             ContentTV.setText(content + " AED");

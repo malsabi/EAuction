@@ -1,6 +1,7 @@
 package com.example.eauction.Adapters;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.text.Html;
 import android.util.Log;
@@ -37,6 +38,7 @@ public class TelemetryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     public static final int GENERALITEM_TEL = 4;
     public static final int LANDMARK_TEL = 5;
     public static final int SERVICE_TEL = 6;
+    private static final int CURRENT_BID_ID = 123123;
 
     private final ArrayList<Telemetry> Telemetries;
     private OnItemClickListener mListener;
@@ -113,7 +115,7 @@ public class TelemetryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             carHolder.cvHorsePower.setText(Html.fromHtml(carHorsePowerLabel+car.getHorsePower()));
             carHolder.cvCarDetails.setText(Html.fromHtml(carDetailsLabel+car.getDetails()));
             carHolder.cvCarImage.setImageBitmap(TelemetryHelper.Base64ToImage(car.getImage()));
-            addCurrent_addBasePrice((LinearLayout) carHolder.cvCarDetails.getParent(),car);
+            addCurrent_addBasePrice((LinearLayout) carHolder.cvCarDetails.getParent(),car, false);
         }
         else if(Telemetries.get(position) instanceof  CarPlate)
         {
@@ -131,7 +133,7 @@ public class TelemetryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             carPlateHolder.cvPlateNumber.setText(Html.fromHtml(plateNumberLabel+carPlate.getPlateNumber()));
             carPlateHolder.cvEmirate.setText(Html.fromHtml(emirateLabel+carPlate.getEmirate()));
             carPlateHolder.cvCarPlate.setImageBitmap(TelemetryHelper.Base64ToImage(carPlate.getImage()));
-            addCurrent_addBasePrice((LinearLayout) carPlateHolder.cvCarPlate.getParent(),carPlate);
+            addCurrent_addBasePrice((LinearLayout) carPlateHolder.cvCarPlate.getParent(),carPlate, false);
         }
         else if(Telemetries.get(position) instanceof  VipPhoneNumber)
         {
@@ -147,7 +149,7 @@ public class TelemetryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             vipPhoneHolder.cvCompanyName.setText(Html.fromHtml(cvCompanyNameLabel+vipPhoneNumber.getCompany()));
             vipPhoneHolder.cvCompanyDetails.setText(Html.fromHtml(cvCompanyDetailsLabel+vipPhoneNumber.getDetails()));
             vipPhoneHolder.cvPhoneNumberImg.setImageBitmap(TelemetryHelper.Base64ToImage(vipPhoneNumber.getImage()));
-            addCurrent_addBasePrice((LinearLayout) vipPhoneHolder.cvPhoneNumberImg.getParent(),vipPhoneNumber);
+            addCurrent_addBasePrice((LinearLayout) vipPhoneHolder.cvPhoneNumberImg.getParent(),vipPhoneNumber, false);
         }
         else if(Telemetries.get(position) instanceof  Landmark)
         {
@@ -166,7 +168,7 @@ public class TelemetryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             landMarkHolder.cvLandmarkArea.setText(Html.fromHtml(cvLandmarkAreaLabel+landmark.getArea()));
             landMarkHolder.cvLandmarkDetails.setText(Html.fromHtml(cvLandmarkDetails+landmark.getDetails()));
             landMarkHolder.cvLandmarkImg.setImageBitmap(TelemetryHelper.Base64ToImage(landmark.getImage()));
-            addCurrent_addBasePrice((LinearLayout) landMarkHolder.cvLandmarkArea.getParent(),landmark);
+            addCurrent_addBasePrice((LinearLayout) landMarkHolder.cvLandmarkArea.getParent(),landmark, false);
         }
         else if(Telemetries.get(position) instanceof  General)
         {
@@ -179,7 +181,7 @@ public class TelemetryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             generalViewHolder.cvItemName.setText(Html.fromHtml(cvItemNameLabel+general.getName()));
             generalViewHolder.cvDetails.setText(Html.fromHtml(cvDetailsLabel+general.getDetails()));
             generalViewHolder.cvItemGeneral.setImageBitmap(TelemetryHelper.Base64ToImage(general.getImage()));
-            addCurrent_addBasePrice((LinearLayout) generalViewHolder.cvItemGeneral.getParent(),general);
+            addCurrent_addBasePrice((LinearLayout) generalViewHolder.cvItemGeneral.getParent(),general, false);
         }
         else{
             ServiceViewHolder serviceViewHolder = (ServiceViewHolder)holder;
@@ -191,7 +193,9 @@ public class TelemetryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             serviceViewHolder.cvServiceName.setText(Html.fromHtml(cvItemNameLabel+service.getName()));
             serviceViewHolder.cvServiceDetails.setText(Html.fromHtml(cvDetailsLabel+service.getDetails()));
             serviceViewHolder.cvServicePic.setImageBitmap(TelemetryHelper.Base64ToImage(service.getImage()));
-            addCurrent_addBasePrice((LinearLayout) serviceViewHolder.cvServiceName.getParent(),service);
+            addCurrent_addBasePrice((LinearLayout) serviceViewHolder.cvServiceName.getParent(),service, true);
+
+
         }
     }
 
@@ -407,7 +411,7 @@ public class TelemetryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         }
     }
 
-    private void addCurrent_addBasePrice(LinearLayout linearLayout, Telemetry telemetry)
+    private void addCurrent_addBasePrice(LinearLayout linearLayout, Telemetry telemetry, boolean isService)
     {
         String currentBid = "<b><u>" + "Current Bid:" + "</u></b> "+telemetry.getCurrentBid();
         String basePrice = "<b><u>" + "Base Price:" + "</u></b> "+telemetry.getBasePrice();
@@ -424,6 +428,13 @@ public class TelemetryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         params.setMargins(0, 0, 0, 16);
 
         currentBidTV.setText(Html.fromHtml(currentBid));
+        currentBidTV.setId(CURRENT_BID_ID);
+        String actName = ((Activity)linearLayout.getContext()).getLocalClassName();
+
+        if(actName.equals("MainActivity") && isService){
+            currentBidTV.setVisibility(View.GONE);
+        }
+
         basePriceTV.setText(Html.fromHtml(basePrice));
         currentBidTV.setLayoutParams(params);
         basePriceTV.setLayoutParams(params);

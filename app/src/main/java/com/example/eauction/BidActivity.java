@@ -119,6 +119,7 @@ public class BidActivity extends AppCompatActivity
         }
         else
         {
+            TableContent.setColumnShrinkable(1, true);
             ContentTV.setText(content);
         }
 
