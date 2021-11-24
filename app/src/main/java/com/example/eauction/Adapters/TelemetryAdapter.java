@@ -11,8 +11,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eauction.Helpers.TelemetryHelper;
@@ -430,10 +433,19 @@ public class TelemetryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         currentBidTV.setText(Html.fromHtml(currentBid));
         currentBidTV.setId(CURRENT_BID_ID);
         String actName = ((Activity)linearLayout.getContext()).getLocalClassName();
+        String fragmentName = ((AppCompatActivity)linearLayout.getContext())
+                .getSupportFragmentManager()
+                .getFragments()
+                .get(0)
+                .getClass()
+                .getName();
+        fragmentName = fragmentName.substring(fragmentName.lastIndexOf('.') + 1);
+        Log.i("fragment",fragmentName);
 
-        if(actName.equals("MainActivity") && isService){
+        if(actName.equals("MainActivity") && isService && fragmentName.equals("GlobalAuctionsFragment")) {
             currentBidTV.setVisibility(View.GONE);
         }
+
 
         basePriceTV.setText(Html.fromHtml(basePrice));
         currentBidTV.setLayoutParams(params);
